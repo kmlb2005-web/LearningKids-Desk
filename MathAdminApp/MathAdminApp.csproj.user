@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="Presentacion\ControlExamenes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Presentacion\ControlPreguntas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Presentacion\ControlResultados.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Presentacion\ControlUnidades.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Presentacion\ControlUsuarios.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormPreguntaDetalle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormUnidadDetalle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormUsuarioDetalle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
