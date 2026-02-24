@@ -78,28 +78,33 @@ namespace MathAdminApp.Presentacion
             {
                 Text = "Agregar Pregunta",
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = Color.FromArgb(63, 81, 181),
-                ForeColor = Color.White,
+                BackColor = Color.FromArgb(255, 179, 0), // Amarillo base
+                ForeColor = Color.Black,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(155, 35),
                 Location = new Point(0, 8),
                 Cursor = Cursors.Hand
             };
             btnAgregar.FlatAppearance.BorderSize = 0;
+            btnAgregar.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 202, 40);
+            btnAgregar.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 160, 0);
             btnAgregar.Click += BtnAgregar_Click;
+
 
             btnEliminar = new Button
             {
                 Text = "Eliminar",
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = Color.FromArgb(211, 47, 47),
-                ForeColor = Color.White,
+                BackColor = Color.FromArgb(255, 179, 0), // Amarillo base
+                ForeColor = Color.Black,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(100, 35),
                 Location = new Point(170, 8),
                 Cursor = Cursors.Hand
             };
             btnEliminar.FlatAppearance.BorderSize = 0;
+            btnEliminar.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 202, 40);
+            btnEliminar.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 160, 0);
             btnEliminar.Click += BtnEliminar_Click;
 
             panelBotones.Controls.Add(btnAgregar);
@@ -121,16 +126,24 @@ namespace MathAdminApp.Presentacion
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 RowHeadersVisible = false,
                 Font = new Font("Segoe UI", 10),
-                GridColor = Color.FromArgb(230, 230, 230)
+                GridColor = Color.FromArgb(255, 179, 0) // Amarillo fuerte
             };
 
-            dgvPreguntas.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(63, 81, 181);
-            dgvPreguntas.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            // Desactivar estilos del sistema
+            dgvPreguntas.EnableHeadersVisualStyles = false;
+
+            // ----- ENCABEZADO -----
+            dgvPreguntas.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118);
+            dgvPreguntas.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvPreguntas.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 241, 118);
+            dgvPreguntas.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
             dgvPreguntas.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             dgvPreguntas.ColumnHeadersHeight = 40;
-            dgvPreguntas.EnableHeadersVisualStyles = false;
-            dgvPreguntas.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 210, 240);
+
+            // ----- SELECCIÓN -----
+            dgvPreguntas.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 202, 40);
             dgvPreguntas.DefaultCellStyle.SelectionForeColor = Color.Black;
+
             dgvPreguntas.RowTemplate.Height = 35;
 
             this.Controls.Add(dgvPreguntas);

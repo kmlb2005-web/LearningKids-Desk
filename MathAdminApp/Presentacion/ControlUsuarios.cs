@@ -72,18 +72,30 @@ namespace MathAdminApp.Presentacion
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 RowHeadersVisible = false,
                 Font = new Font("Segoe UI", 10),
-                GridColor = Color.FromArgb(230, 230, 230)
+                GridColor = Color.FromArgb(255, 179, 0)
             };
+            // Desactivar estilo visual del sistema
+            dgvUsuarios.EnableHeadersVisualStyles = false;
+
+            // Encabezado fondo amarillo fuerte
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 179, 0); // Amarillo fuerte
+
+            // Texto del encabezado en negro
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+
+            // Color cuando se selecciona el encabezado
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 179, 0);
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
 
             // Estilo del encabezado
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(63, 81, 181);
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118);
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
             dgvUsuarios.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             dgvUsuarios.ColumnHeadersHeight = 40;
             dgvUsuarios.EnableHeadersVisualStyles = false;
 
             // Estilo de seleccion
-            dgvUsuarios.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 210, 240);
+            dgvUsuarios.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 202, 40);
             dgvUsuarios.DefaultCellStyle.SelectionForeColor = Color.Black;
             dgvUsuarios.RowTemplate.Height = 35;
 
@@ -97,7 +109,7 @@ namespace MathAdminApp.Presentacion
             {
                 Text = texto,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = color,
+                BackColor = Color.FromArgb(255, 179, 0),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(130, 35),

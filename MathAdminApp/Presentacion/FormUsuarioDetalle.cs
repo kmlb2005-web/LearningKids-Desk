@@ -49,7 +49,7 @@ namespace MathAdminApp.Presentacion
         private void InicializarComponentes()
         {
             this.Text = _esEdicion ? "Editar Alumno" : "Agregar Alumno";
-            this.Size = new Size(420, 400);
+            this.Size = new Size(420, 420);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -104,7 +104,7 @@ namespace MathAdminApp.Presentacion
             {
                 Text = "Guardar",
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                BackColor = Color.FromArgb(63, 81, 181),
+                BackColor = Color.FromArgb(255, 179, 0),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(170, 40),
@@ -118,8 +118,8 @@ namespace MathAdminApp.Presentacion
             {
                 Text = "Cancelar",
                 Font = new Font("Segoe UI", 11),
-                BackColor = Color.FromArgb(200, 200, 200),
-                ForeColor = Color.FromArgb(60, 60, 60),
+                BackColor = Color.FromArgb(255, 179, 0),
+                ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(170, 40),
                 Location = new Point(210, y),
