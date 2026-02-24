@@ -35,10 +35,11 @@ namespace MathAdminApp.Presentacion
             {
                 Dock = DockStyle.Top,
                 Height = 50,
-                BackColor = Color.Transparent
+                BackColor = Color.Transparent,
+                Padding = new Padding(0, 5, 0, 5)
             };
 
-            btnAgregar = CrearBoton("Agregar Unidad", Color.FromArgb(63, 81, 181));
+            btnAgregar = CrearBoton("Agregar Tema", Color.FromArgb(63, 81, 181));
             btnAgregar.Location = new Point(0, 8);
             btnAgregar.Click += BtnAgregar_Click;
 
@@ -70,16 +71,25 @@ namespace MathAdminApp.Presentacion
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 RowHeadersVisible = false,
                 Font = new Font("Segoe UI", 10),
-                GridColor = Color.FromArgb(230, 230, 230)
+                GridColor = Color.FromArgb(255, 179, 0)
             };
 
-            dgvUnidades.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 150, 136);
-            dgvUnidades.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            // Desactivar estilo visual del sistema
+            dgvUnidades.EnableHeadersVisualStyles = false;
+
+            // --- Encabezado ---
+            dgvUnidades.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118); // Amarillo claro
+            dgvUnidades.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvUnidades.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 179, 0);
+            dgvUnidades.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
             dgvUnidades.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             dgvUnidades.ColumnHeadersHeight = 40;
-            dgvUnidades.EnableHeadersVisualStyles = false;
-            dgvUnidades.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 230, 225);
+
+
+            // --- Selección de filas ---
+            dgvUnidades.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 202, 40);
             dgvUnidades.DefaultCellStyle.SelectionForeColor = Color.Black;
+
             dgvUnidades.RowTemplate.Height = 35;
 
             this.Controls.Add(dgvUnidades);
@@ -87,20 +97,20 @@ namespace MathAdminApp.Presentacion
         }
 
         private Button CrearBoton(string texto, Color color)
-        {
-            var btn = new Button
-            {
-                Text = texto,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = color,
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(140, 35),
-                Cursor = Cursors.Hand
-            };
-            btn.FlatAppearance.BorderSize = 0;
-            return btn;
-        }
+        {  
+              var btn = new Button
+                {
+                    Text = texto,
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    BackColor = Color.FromArgb(255, 179, 0),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Size = new Size(130, 35),
+                    Cursor = Cursors.Hand
+                };
+                btn.FlatAppearance.BorderSize = 0;
+                return btn;
+            }
 
         private void CargarDatos()
         {

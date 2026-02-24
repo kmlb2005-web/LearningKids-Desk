@@ -83,7 +83,7 @@ namespace MathAdminApp.Presentacion
             {
                 Text = "Guardar",
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                BackColor = Color.FromArgb(0, 150, 136),
+                BackColor = Color.FromArgb(255, 179, 0),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(170, 40),
@@ -97,8 +97,8 @@ namespace MathAdminApp.Presentacion
             {
                 Text = "Cancelar",
                 Font = new Font("Segoe UI", 11),
-                BackColor = Color.FromArgb(200, 200, 200),
-                ForeColor = Color.FromArgb(60, 60, 60),
+                BackColor = Color.FromArgb(255, 179, 0),
+                ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(170, 40),
                 Location = new Point(210, y),
