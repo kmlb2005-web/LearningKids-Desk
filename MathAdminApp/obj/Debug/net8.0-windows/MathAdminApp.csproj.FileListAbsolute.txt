@@ -113,3 +113,5 @@ C:\Users\valer\OneDrive\Desktop\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-
 C:\Users\valer\OneDrive\Desktop\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.genruntimeconfig.cache
 C:\Users\valer\OneDrive\Desktop\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\ref\MathAdminApp.dll
 C:\Users\valer\OneDrive\Desktop\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Presentacion.FormLogin.resources
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Presentacion.FormLogin.resources
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Properties.Resources.resources

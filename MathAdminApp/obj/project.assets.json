@@ -470,23 +470,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\valer\\.nuget\\packages\\": {},
+    "C:\\Users\\tsssb\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\valer\\OneDrive\\Desktop\\LearningKids-Desk\\MathAdminApp\\MathAdminApp.csproj",
+      "projectUniqueName": "C:\\Users\\tsssb\\source\\repos\\LearningKids-Desk\\MathAdminApp\\MathAdminApp.csproj",
       "projectName": "MathAdminApp",
-      "projectPath": "C:\\Users\\valer\\OneDrive\\Desktop\\LearningKids-Desk\\MathAdminApp\\MathAdminApp.csproj",
-      "packagesPath": "C:\\Users\\valer\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\valer\\OneDrive\\Desktop\\LearningKids-Desk\\MathAdminApp\\obj\\",
+      "projectPath": "C:\\Users\\tsssb\\source\\repos\\LearningKids-Desk\\MathAdminApp\\MathAdminApp.csproj",
+      "packagesPath": "C:\\Users\\tsssb\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\tsssb\\source\\repos\\LearningKids-Desk\\MathAdminApp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\valer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\tsssb\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

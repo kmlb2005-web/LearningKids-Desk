@@ -52,16 +52,13 @@ namespace MathAdminApp.Presentacion
                 BackColor = Color.FromArgb(255, 249, 196) // Amarillo pastel suave
             };
 
-            lblBienvenida = new Label
+            PictureBox picBienvenida = new PictureBox
             {
-                Text = "Learning Kids\n\nPlataforma Administrativa\nde Matematicas",
-                ForeColor = Color.Black,
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter,
-                Dock = DockStyle.Fill,
-                Padding = new Padding(20)
+                Image = Properties.Resources.LearningKidsLogo,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Dock = DockStyle.Fill
             };
-            panelIzquierdo.Controls.Add(lblBienvenida);
+            panelIzquierdo.Controls.Add(picBienvenida);
 
             // --- Panel derecho (formulario de login) ---
             panelDerecho = new Panel
@@ -108,7 +105,7 @@ namespace MathAdminApp.Presentacion
 
             lblContrasena = new Label
             {
-                Text = "Contrasena",
+                Text = "Contraseña",
                 Font = new Font("Segoe UI", 10),
                 ForeColor = Color.FromArgb(80, 80, 80),
                 AutoSize = true,
