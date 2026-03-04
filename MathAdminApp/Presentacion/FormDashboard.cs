@@ -49,7 +49,7 @@ namespace MathAdminApp.Presentacion
         private void InicializarComponentes()
         {
             // --- Configuracion del formulario ---
-            this.Text = "MathAdmin - Panel de Administracion";
+            this.Text = "LearningsKids - Panel de Administracion";
             this.Size = new Size(1100, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.MinimumSize = new Size(900, 600);
@@ -66,7 +66,7 @@ namespace MathAdminApp.Presentacion
 
             lblTituloPagina = new Label
             {
-                Text = "Dashboard",
+                Text = "Learning Kids Admin",
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
                 ForeColor = Color.FromArgb(50, 50, 50),
                 AutoSize = true,
@@ -91,16 +91,16 @@ namespace MathAdminApp.Presentacion
             {
                 Dock = DockStyle.Left,
                 Width = 210,
-                BackColor = Color.FromArgb(47, 54, 82), // Azul oscuro
+                BackColor = Color.FromArgb(255, 255, 204),
                 Padding = new Padding(0, 10, 0, 10)
             };
 
             // Logo / Titulo del menu
             var lblLogo = new Label
             {
-                Text = "MathAdmin",
+                Text = "Learning Kids",
                 Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                ForeColor = Color.White,
+                ForeColor = Color.Black,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Dock = DockStyle.Top,
                 Height = 50,
@@ -109,9 +109,9 @@ namespace MathAdminApp.Presentacion
 
             var lblVersion = new Label
             {
-                Text = "v1.0 - Administrador",
+                Text = "Administrador",
                 Font = new Font("Segoe UI", 8),
-                ForeColor = Color.FromArgb(150, 160, 180),
+                ForeColor = Color.Black,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Dock = DockStyle.Top,
                 Height = 25
@@ -120,15 +120,15 @@ namespace MathAdminApp.Presentacion
             // Botones del menu
             btnDashboard = CrearBotonMenu("  Inicio", 0);
             btnUsuarios = CrearBotonMenu("  Usuarios", 1);
-            btnUnidades = CrearBotonMenu("  Unidades", 2);
+            btnUnidades = CrearBotonMenu("  Temas", 2);
             btnExamenes = CrearBotonMenu("  Examenes", 3);
             btnPreguntas = CrearBotonMenu("  Preguntas", 4);
             btnResultados = CrearBotonMenu("  Resultados", 5);
             btnCerrarSesion = CrearBotonMenu("  Cerrar Sesion", 7);
-            btnCerrarSesion.ForeColor = Color.FromArgb(255, 150, 150);
+            btnCerrarSesion.ForeColor = Color.Black;
 
             // Eventos de clic del menu
-            btnDashboard.Click += (s, e) => { MostrarDashboard(); ActualizarTitulo("Dashboard"); };
+            btnDashboard.Click += (s, e) => { MostrarDashboard(); ActualizarTitulo("Learning Kids Admin"); };
             btnUsuarios.Click += (s, e) => { MostrarUsuarios(); ActualizarTitulo("Gestion de Usuarios"); };
             btnUnidades.Click += (s, e) => { MostrarUnidades(); ActualizarTitulo("Gestion de Unidades"); };
             btnExamenes.Click += (s, e) => { MostrarExamenes(); ActualizarTitulo("Gestion de Examenes"); };
@@ -137,7 +137,7 @@ namespace MathAdminApp.Presentacion
             btnCerrarSesion.Click += BtnCerrarSesion_Click;
 
             // Agregar botones al menu (orden inverso por Dock = Top)
-            panelMenu.Controls.Add(btnCerrarSesion);
+            panelMenu.Controls.Add(btnCerrarSesion); 
             btnCerrarSesion.Dock = DockStyle.Bottom;
 
             var panelBotones = new FlowLayoutPanel
@@ -182,8 +182,8 @@ namespace MathAdminApp.Presentacion
             {
                 Text = texto,
                 Font = new Font("Segoe UI", 11),
-                ForeColor = Color.FromArgb(200, 210, 220),
-                BackColor = Color.FromArgb(47, 54, 82),
+                ForeColor = BackColor = Color.Black,
+                BackColor = Color.FromArgb(255, 235, 59),
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(210, 42),
                 TextAlign = ContentAlignment.MiddleLeft,
@@ -191,7 +191,7 @@ namespace MathAdminApp.Presentacion
                 Cursor = Cursors.Hand
             };
             btn.FlatAppearance.BorderSize = 0;
-            btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(63, 71, 105);
+            btn.FlatAppearance.MouseOverBackColor = BackColor = Color.FromArgb(255, 255, 204);
 
             return btn;
         }
@@ -218,7 +218,7 @@ namespace MathAdminApp.Presentacion
         private void MostrarDashboard()
         {
             LimpiarContenido();
-            ActualizarTitulo("Dashboard");
+            ActualizarTitulo("Learning Kids Admin");
 
             panelEstadisticas = new Panel
             {
@@ -229,15 +229,15 @@ namespace MathAdminApp.Presentacion
 
             // Tarjeta: Total Alumnos
             var tarjetaAlumnos = CrearTarjetaEstadistica("Total Alumnos", "0",
-                Color.FromArgb(63, 81, 181), new Point(0, 0));
+                Color.FromArgb(255, 179, 0), new Point(0, 0));
 
             // Tarjeta: Total Unidades
             var tarjetaUnidades = CrearTarjetaEstadistica("Total Unidades", "0",
-                Color.FromArgb(0, 150, 136), new Point(250, 0));
+                Color.FromArgb(255, 202, 40), new Point(250, 0));
 
             // Tarjeta: Examenes Creados
             var tarjetaExamenes = CrearTarjetaEstadistica("Examenes Creados", "0",
-                Color.FromArgb(156, 39, 176), new Point(500, 0));
+                Color.FromArgb(255, 235, 59), new Point(500, 0));
 
             panelEstadisticas.Controls.Add(tarjetaAlumnos);
             panelEstadisticas.Controls.Add(tarjetaUnidades);

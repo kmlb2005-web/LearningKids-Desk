@@ -14,6 +14,7 @@ namespace MathAdminApp.Presentacion
     public class FormLogin : Form
     {
         // --- Controles de la interfaz ---
+        private PictureBox picLogo = null!;
         private Label lblTitulo = null!;
         private Label lblSubtitulo = null!;
         private Label lblUsuario = null!;
@@ -36,31 +37,28 @@ namespace MathAdminApp.Presentacion
         private void InicializarComponentes()
         {
             // --- Configuracion del formulario ---
-            this.Text = "MathAdmin - Inicio de Sesion";
+            this.Text = "LearningKids - Inicio de Sesion";
             this.Size = new Size(800, 480);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.BackColor = Color.White;
+            this.BackColor = Color.Black;
 
-            // --- Panel izquierdo decorativo (azul) ---
+            // --- Panel izquierdo decorativo (amarillo pastel) ---
             panelIzquierdo = new Panel
             {
                 Dock = DockStyle.Left,
                 Width = 320,
-                BackColor = Color.FromArgb(63, 81, 181) // Azul material
+                BackColor = Color.FromArgb(255, 249, 196) // Amarillo pastel suave
             };
 
-            lblBienvenida = new Label
+            PictureBox picBienvenida = new PictureBox
             {
-                Text = "MathAdmin\n\nPlataforma Administrativa\nde Matematicas\n6to Primaria",
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter,
-                Dock = DockStyle.Fill,
-                Padding = new Padding(20)
+                Image = Properties.Resources.LearningKidsLogo,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Dock = DockStyle.Fill
             };
-            panelIzquierdo.Controls.Add(lblBienvenida);
+            panelIzquierdo.Controls.Add(picBienvenida);
 
             // --- Panel derecho (formulario de login) ---
             panelDerecho = new Panel
@@ -81,7 +79,7 @@ namespace MathAdminApp.Presentacion
 
             lblSubtitulo = new Label
             {
-                Text = "Ingrese sus credenciales de administrador",
+                Text = "Ingrese sus datos de administrador",
                 Font = new Font("Segoe UI", 10),
                 ForeColor = Color.FromArgb(130, 130, 130),
                 AutoSize = true,
@@ -107,7 +105,7 @@ namespace MathAdminApp.Presentacion
 
             lblContrasena = new Label
             {
-                Text = "Contrasena",
+                Text = "Contraseña",
                 Font = new Font("Segoe UI", 10),
                 ForeColor = Color.FromArgb(80, 80, 80),
                 AutoSize = true,
@@ -127,8 +125,8 @@ namespace MathAdminApp.Presentacion
             {
                 Text = "Ingresar",
                 Font = new Font("Segoe UI", 12, FontStyle.Bold),
-                BackColor = Color.FromArgb(63, 81, 181),
-                ForeColor = Color.White,
+                BackColor = Color.FromArgb(255, 235, 59), // Amarillo más intenso
+                ForeColor = Color.Black, // Negro para que contraste mejor con amarillo
                 FlatStyle = FlatStyle.Flat,
                 Size = new Size(360, 45),
                 Location = new Point(50, 310),

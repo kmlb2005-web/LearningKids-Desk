@@ -89,16 +89,24 @@ namespace MathAdminApp.Presentacion
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 RowHeadersVisible = false,
                 Font = new Font("Segoe UI", 10),
-                GridColor = Color.FromArgb(230, 230, 230)
+                GridColor = Color.FromArgb(255, 179, 0) // ✅ Igual que las otras
             };
 
-            dgvResultados.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(63, 81, 181);
-            dgvResultados.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            // Desactivar estilos del sistema
+            dgvResultados.EnableHeadersVisualStyles = false;
+
+            // ----- ENCABEZADO -----
+            dgvResultados.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118);
+            dgvResultados.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvResultados.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 241, 118);
+            dgvResultados.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
             dgvResultados.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             dgvResultados.ColumnHeadersHeight = 40;
-            dgvResultados.EnableHeadersVisualStyles = false;
-            dgvResultados.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 210, 240);
+
+            // ----- SELECCIÓN -----
+            dgvResultados.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 202, 40);
             dgvResultados.DefaultCellStyle.SelectionForeColor = Color.Black;
+
             dgvResultados.RowTemplate.Height = 35;
 
             this.Controls.Add(dgvResultados);
