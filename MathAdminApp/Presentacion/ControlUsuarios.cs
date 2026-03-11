@@ -5,13 +5,10 @@
 
 using MathAdminApp.LogicaNegocio;
 using MathAdminApp.Modelos;
+using System.Drawing.Drawing2D;
 
 namespace MathAdminApp.Presentacion
 {
-    /// <summary>
-    /// Control de usuario para la gestion de alumnos.
-    /// Se incrusta en el panel de contenido del Dashboard.
-    /// </summary>
     public class ControlUsuarios : UserControl
     {
         private DataGridView dgvUsuarios = null!;
@@ -19,6 +16,12 @@ namespace MathAdminApp.Presentacion
         private Button btnEditar = null!;
         private Button btnDesactivar = null!;
         private Panel panelBotones = null!;
+        private Panel panelBusqueda = null!;
+        private TextBox txtBuscar = null!;
+        private Button btnBuscar = null!;
+        private Button btnLimpiar = null!;
+        private Label lblBuscar = null!;
+
         private readonly UsuarioBLL _bll = new();
 
         public ControlUsuarios()
@@ -31,7 +34,52 @@ namespace MathAdminApp.Presentacion
         {
             this.BackColor = Color.FromArgb(240, 242, 245);
 
-            // --- Barra de botones ---
+            // =============================
+            // PANEL BUSQUEDA
+            // =============================
+
+            panelBusqueda = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 70,
+                BackColor = Color.FromArgb(248, 249, 250),
+                Padding = new Padding(15)
+            };
+
+            lblBuscar = new Label
+            {
+                Text = "Buscar alumno:",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                AutoSize = true,
+                Location = new Point(5, 20)
+            };
+
+            txtBuscar = new TextBox
+            {
+                Font = new Font("Segoe UI", 11),
+                Size = new Size(250, 30),
+                Location = new Point(120, 18)
+            };
+
+            btnBuscar = CrearBoton("Buscar");
+            btnBuscar.Size = new Size(90, 32);
+            btnBuscar.Location = new Point(380, 17);
+            btnBuscar.Click += BtnBuscar_Click;
+
+            btnLimpiar = CrearBoton("Limpiar");
+            btnLimpiar.Size = new Size(90, 32);
+            btnLimpiar.Location = new Point(480, 17);
+            btnLimpiar.Click += BtnLimpiar_Click;
+
+            panelBusqueda.Controls.Add(lblBuscar);
+            panelBusqueda.Controls.Add(txtBuscar);
+            panelBusqueda.Controls.Add(btnBuscar);
+            panelBusqueda.Controls.Add(btnLimpiar);
+
+            // =============================
+            // PANEL BOTONES
+            // =============================
+
             panelBotones = new Panel
             {
                 Dock = DockStyle.Top,
@@ -40,15 +88,15 @@ namespace MathAdminApp.Presentacion
                 Padding = new Padding(0, 5, 0, 5)
             };
 
-            btnAgregar = CrearBoton("Agregar Alumno", Color.FromArgb(63, 81, 181));
+            btnAgregar = CrearBoton("Agregar Alumno");
             btnAgregar.Location = new Point(0, 8);
             btnAgregar.Click += BtnAgregar_Click;
 
-            btnEditar = CrearBoton("Editar", Color.FromArgb(0, 150, 136));
+            btnEditar = CrearBoton("Editar");
             btnEditar.Location = new Point(170, 8);
             btnEditar.Click += BtnEditar_Click;
 
-            btnDesactivar = CrearBoton("Desactivar", Color.FromArgb(211, 47, 47));
+            btnDesactivar = CrearBoton("Desactivar");
             btnDesactivar.Location = new Point(310, 8);
             btnDesactivar.Click += BtnDesactivar_Click;
 
@@ -56,7 +104,10 @@ namespace MathAdminApp.Presentacion
             panelBotones.Controls.Add(btnEditar);
             panelBotones.Controls.Add(btnDesactivar);
 
-            // --- Tabla de usuarios ---
+            // =============================
+            // TABLA
+            // =============================
+
             dgvUsuarios = new DataGridView
             {
                 Dock = DockStyle.Fill,
@@ -74,36 +125,32 @@ namespace MathAdminApp.Presentacion
                 Font = new Font("Segoe UI", 10),
                 GridColor = Color.FromArgb(255, 179, 0)
             };
-            // Desactivar estilo visual del sistema
+
             dgvUsuarios.EnableHeadersVisualStyles = false;
 
-            // Encabezado fondo amarillo fuerte
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 179, 0); // Amarillo fuerte
-
-            // Texto del encabezado en negro
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
-
-            // Color cuando se selecciona el encabezado
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 179, 0);
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
-
-            // Estilo del encabezado
             dgvUsuarios.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118);
             dgvUsuarios.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 179, 0);
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
             dgvUsuarios.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            dgvUsuarios.ColumnHeadersHeight = 40;
-            dgvUsuarios.EnableHeadersVisualStyles = false;
 
-            // Estilo de seleccion
+            dgvUsuarios.ColumnHeadersHeight = 40;
+
             dgvUsuarios.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 202, 40);
             dgvUsuarios.DefaultCellStyle.SelectionForeColor = Color.Black;
+
             dgvUsuarios.RowTemplate.Height = 35;
 
             this.Controls.Add(dgvUsuarios);
             this.Controls.Add(panelBotones);
+            this.Controls.Add(panelBusqueda);
         }
 
-        private Button CrearBoton(string texto, Color color)
+        // =============================
+        // CREAR BOTON
+        // =============================
+
+        private Button CrearBoton(string texto)
         {
             var btn = new Button
             {
@@ -115,95 +162,107 @@ namespace MathAdminApp.Presentacion
                 Size = new Size(130, 35),
                 Cursor = Cursors.Hand
             };
+
             btn.FlatAppearance.BorderSize = 0;
+
+            btn.Paint += (s, e) =>
+            {
+                RedondearBoton(btn, 20);
+            };
+
             return btn;
         }
 
-        /// <summary>
-        /// Carga los datos de alumnos en la tabla.
-        /// </summary>
+        // =============================
+        // BOTONES REDONDOS
+        // =============================
+
+        private void RedondearBoton(Button boton, int radio)
+        {
+            GraphicsPath path = new GraphicsPath();
+            path.StartFigure();
+
+            path.AddArc(new Rectangle(0, 0, radio, radio), 180, 90);
+            path.AddArc(new Rectangle(boton.Width - radio, 0, radio, radio), 270, 90);
+            path.AddArc(new Rectangle(boton.Width - radio, boton.Height - radio, radio, radio), 0, 90);
+            path.AddArc(new Rectangle(0, boton.Height - radio, radio, radio), 90, 90);
+
+            path.CloseFigure();
+
+            boton.Region = new Region(path);
+        }
+
+        // =============================
+        // CARGAR DATOS
+        // =============================
+
         private void CargarDatos()
         {
-            try
-            {
-                var alumnos = _bll.ObtenerAlumnos();
-                dgvUsuarios.DataSource = null;
-                dgvUsuarios.DataSource = alumnos;
+            dgvUsuarios.DataSource = null;
+            dgvUsuarios.DataSource = _bll.ObtenerAlumnos();
 
-                // Ocultar columnas innecesarias
-                if (dgvUsuarios.Columns.Contains("Contrasena"))
-                    dgvUsuarios.Columns["Contrasena"].Visible = false;
-                if (dgvUsuarios.Columns.Contains("Rol"))
-                    dgvUsuarios.Columns["Rol"].Visible = false;
+            if (dgvUsuarios.Columns.Contains("Contrasena"))
+                dgvUsuarios.Columns["Contrasena"].Visible = false;
 
-                // Renombrar columnas visibles
-                if (dgvUsuarios.Columns.Contains("Id"))
-                    dgvUsuarios.Columns["Id"].HeaderText = "ID";
-                if (dgvUsuarios.Columns.Contains("NombreUsuario"))
-                    dgvUsuarios.Columns["NombreUsuario"].HeaderText = "Usuario";
-                if (dgvUsuarios.Columns.Contains("FechaCreacion"))
-                    dgvUsuarios.Columns["FechaCreacion"].HeaderText = "Fecha Registro";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar alumnos:\n{ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            if (dgvUsuarios.Columns.Contains("Rol"))
+                dgvUsuarios.Columns["Rol"].Visible = false;
+
+            if (dgvUsuarios.Columns.Contains("NombreUsuario"))
+                dgvUsuarios.Columns["NombreUsuario"].HeaderText = "Usuario";
+
+            if (dgvUsuarios.Columns.Contains("FechaCreacion"))
+                dgvUsuarios.Columns["FechaCreacion"].HeaderText = "Fecha Registro";
+        }
+
+        private void BtnBuscar_Click(object? sender, EventArgs e)
+        {
+            var texto = txtBuscar.Text.ToLower();
+
+            var lista = _bll.ObtenerAlumnos()
+                .Where(a => a.Nombre.ToLower().Contains(texto) ||
+                            a.NombreUsuario.ToLower().Contains(texto))
+                .ToList();
+
+            dgvUsuarios.DataSource = lista;
+        }
+
+        private void BtnLimpiar_Click(object? sender, EventArgs e)
+        {
+            txtBuscar.Clear();
+            CargarDatos();
         }
 
         private void BtnAgregar_Click(object? sender, EventArgs e)
         {
             var form = new FormUsuarioDetalle();
+
             if (form.ShowDialog() == DialogResult.OK)
-            {
                 CargarDatos();
-            }
         }
 
         private void BtnEditar_Click(object? sender, EventArgs e)
         {
-            if (dgvUsuarios.CurrentRow == null)
-            {
-                MessageBox.Show("Seleccione un alumno para editar.", "Aviso",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+            if (dgvUsuarios.CurrentRow == null) return;
 
             var usuario = (Usuario)dgvUsuarios.CurrentRow.DataBoundItem;
+
             var form = new FormUsuarioDetalle(usuario);
+
             if (form.ShowDialog() == DialogResult.OK)
-            {
                 CargarDatos();
-            }
         }
 
         private void BtnDesactivar_Click(object? sender, EventArgs e)
         {
-            if (dgvUsuarios.CurrentRow == null)
-            {
-                MessageBox.Show("Seleccione un alumno para desactivar.", "Aviso",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+            if (dgvUsuarios.CurrentRow == null) return;
 
             var usuario = (Usuario)dgvUsuarios.CurrentRow.DataBoundItem;
-            var resultado = MessageBox.Show($"Desea desactivar al alumno '{usuario.Nombre}'?",
-                "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (resultado == DialogResult.Yes)
+            if (MessageBox.Show($"Desea desactivar a {usuario.Nombre}?",
+                "Confirmar", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                try
-                {
-                    _bll.DesactivarAlumno(usuario.Id);
-                    CargarDatos();
-                    MessageBox.Show("Alumno desactivado correctamente.", "Exito",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error: {ex.Message}", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                _bll.DesactivarAlumno(usuario.Id);
+                CargarDatos();
             }
         }
     }

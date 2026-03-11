@@ -5,13 +5,10 @@
 
 using MathAdminApp.LogicaNegocio;
 using MathAdminApp.Modelos;
+using System.Drawing.Drawing2D;
 
 namespace MathAdminApp.Presentacion
 {
-    /// <summary>
-    /// Control de usuario para la gestion de examenes.
-    /// Permite filtrar por unidad y crear/eliminar examenes.
-    /// </summary>
     public class ControlExamenes : UserControl
     {
         private ComboBox cmbUnidad = null!;
@@ -20,6 +17,7 @@ namespace MathAdminApp.Presentacion
         private TextBox txtNombreExamen = null!;
         private Button btnCrear = null!;
         private Button btnEliminar = null!;
+        private Button btnEditar = null!;
         private Panel panelSuperior = null!;
         private Panel panelCrear = null!;
 
@@ -91,43 +89,26 @@ namespace MathAdminApp.Presentacion
                 BorderStyle = BorderStyle.FixedSingle
             };
 
-            btnCrear = new Button
-            {
-                Text = "Crear Examen",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = Color.FromArgb(255, 179, 0), // Amarillo fuerte
-                ForeColor = Color.Black,
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(130, 32),
-                Location = new Point(450, 12),
-                Cursor = Cursors.Hand
-            };
-            btnCrear.FlatAppearance.BorderSize = 0;
-            btnCrear.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 202, 40); // Hover
-            btnCrear.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 179, 0); // Click
+            btnCrear = CrearBoton("Crear Examen");
+            btnCrear.Location = new Point(450, 12);
             btnCrear.Click += BtnCrear_Click;
 
-
-            btnEliminar = new Button
-            {
-                Text = "Eliminar",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = Color.FromArgb(255, 179, 0), // Amarillo fuerte
-                ForeColor = Color.Black,
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(100, 32),
-                Location = new Point(590, 12),
-                Cursor = Cursors.Hand
-            };
-            btnEliminar.FlatAppearance.BorderSize = 0;
-            btnEliminar.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 179, 0);
-            btnEliminar.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 160, 0);
+            btnEliminar = CrearBoton("Eliminar");
+            btnEliminar.Size = new Size(100, 32);
+            btnEliminar.Location = new Point(590, 12);
             btnEliminar.Click += BtnEliminar_Click;
+
+            btnEditar = CrearBoton("Editar");
+            btnEditar.Size = new Size(100, 32);
+            btnEditar.Location = new Point(700, 12);
+            btnEditar.Click += BtnEditar_Click;
 
             panelCrear.Controls.Add(lblNuevo);
             panelCrear.Controls.Add(txtNombreExamen);
             panelCrear.Controls.Add(btnCrear);
             panelCrear.Controls.Add(btnEliminar);
+            panelCrear.Controls.Add(btnEditar);
+
             // --- Tabla de examenes ---
             dgvExamenes = new DataGridView
             {
@@ -144,21 +125,18 @@ namespace MathAdminApp.Presentacion
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 RowHeadersVisible = false,
                 Font = new Font("Segoe UI", 10),
-                GridColor = Color.FromArgb(255, 179, 0) // Amarillo fuerte
+                GridColor = Color.FromArgb(255, 179, 0)
             };
 
-            // Desactivar estilo visual del sistema
             dgvExamenes.EnableHeadersVisualStyles = false;
 
-            // ----- ENCABEZADO -----
-            dgvExamenes.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118); // Amarillo claro
+            dgvExamenes.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118);
             dgvExamenes.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
             dgvExamenes.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 241, 118);
             dgvExamenes.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
             dgvExamenes.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             dgvExamenes.ColumnHeadersHeight = 40;
 
-            // ----- SELECCIÓN -----
             dgvExamenes.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 202, 40);
             dgvExamenes.DefaultCellStyle.SelectionForeColor = Color.Black;
 
@@ -167,6 +145,89 @@ namespace MathAdminApp.Presentacion
             this.Controls.Add(dgvExamenes);
             this.Controls.Add(panelCrear);
             this.Controls.Add(panelSuperior);
+        }
+
+        // =============================
+        // CREAR BOTON REDONDO
+        // =============================
+
+        private Button CrearBoton(string texto)
+        {
+            var btn = new Button
+            {
+                Text = texto,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                BackColor = Color.FromArgb(255, 179, 0),
+                ForeColor = Color.Black,
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(130, 32),
+                Cursor = Cursors.Hand
+            };
+
+            btn.FlatAppearance.BorderSize = 0;
+
+            btn.Paint += (s, e) =>
+            {
+                RedondearBoton(btn, 20);
+            };
+
+            return btn;
+        }
+
+        // =============================
+        // REDONDEAR BOTON
+        // =============================
+
+        private void RedondearBoton(Button boton, int radio)
+        {
+            GraphicsPath path = new GraphicsPath();
+            path.StartFigure();
+
+            path.AddArc(new Rectangle(0, 0, radio, radio), 180, 90);
+            path.AddArc(new Rectangle(boton.Width - radio, 0, radio, radio), 270, 90);
+            path.AddArc(new Rectangle(boton.Width - radio, boton.Height - radio, radio, radio), 0, 90);
+            path.AddArc(new Rectangle(0, boton.Height - radio, radio, radio), 90, 90);
+
+            path.CloseFigure();
+
+            boton.Region = new Region(path);
+        }
+
+        private void BtnEditar_Click(object? sender, EventArgs e)
+        {
+            if (dgvExamenes.CurrentRow == null)
+            {
+                MessageBox.Show("Seleccione un examen.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var examen = (Examen)dgvExamenes.CurrentRow.DataBoundItem;
+
+            string nuevoNombre = Microsoft.VisualBasic.Interaction.InputBox(
+                "Ingrese el nuevo nombre del examen:",
+                "Editar examen",
+                examen.Nombre);
+
+            if (string.IsNullOrWhiteSpace(nuevoNombre))
+                return;
+
+            try
+            {
+                examen.Nombre = nuevoNombre.Trim();
+
+                _examenBll.Actualizar(examen);
+
+                CmbUnidad_SelectedIndexChanged(null, EventArgs.Empty);
+
+                MessageBox.Show("Examen actualizado correctamente.",
+                    "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al actualizar:\n{ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void CargarUnidades()
@@ -241,9 +302,11 @@ namespace MathAdminApp.Presentacion
                     Nombre = txtNombreExamen.Text.Trim(),
                     UnidadId = unidad.Id
                 };
+
                 _examenBll.Agregar(examen);
                 txtNombreExamen.Clear();
                 CargarExamenes(unidad.Id);
+
                 MessageBox.Show("Examen creado.", "Exito",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -269,6 +332,7 @@ namespace MathAdminApp.Presentacion
             }
 
             var examen = (Examen)dgvExamenes.CurrentRow.DataBoundItem;
+
             var resultado = MessageBox.Show($"Desea eliminar el examen '{examen.Nombre}'?",
                 "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 

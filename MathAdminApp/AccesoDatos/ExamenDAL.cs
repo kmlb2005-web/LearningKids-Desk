@@ -69,6 +69,25 @@ namespace MathAdminApp.AccesoDatos
             return comando.ExecuteNonQuery() > 0;
         }
 
+        // =========================================================
+        // ACTUALIZAR EXAMEN
+        // =========================================================
+        public bool Actualizar(Examen examen)
+        {
+            using var conexion = ConexionBD.ObtenerConexion();
+            conexion.Open();
+
+            string query = @"UPDATE Examenes 
+                             SET Nombre = @Nombre
+                             WHERE Id = @Id";
+
+            using var comando = new SqlCommand(query, conexion);
+            comando.Parameters.AddWithValue("@Nombre", examen.Nombre);
+            comando.Parameters.AddWithValue("@Id", examen.Id);
+
+            return comando.ExecuteNonQuery() > 0;
+        }
+
         /// <summary>
         /// Elimina un examen de la base de datos.
         /// </summary>

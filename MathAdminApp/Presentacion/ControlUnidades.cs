@@ -5,12 +5,10 @@
 
 using MathAdminApp.LogicaNegocio;
 using MathAdminApp.Modelos;
+using System.Drawing.Drawing2D;
 
 namespace MathAdminApp.Presentacion
 {
-    /// <summary>
-    /// Control de usuario para la gestion de unidades.
-    /// </summary>
     public class ControlUnidades : UserControl
     {
         private DataGridView dgvUnidades = null!;
@@ -18,6 +16,12 @@ namespace MathAdminApp.Presentacion
         private Button btnEditar = null!;
         private Button btnEliminar = null!;
         private Panel panelBotones = null!;
+        private Panel panelBusqueda = null!;
+        private TextBox txtBuscar = null!;
+        private Button btnBuscar = null!;
+        private Button btnLimpiar = null!;
+        private Label lblBuscar = null!;
+
         private readonly UnidadBLL _bll = new();
 
         public ControlUnidades()
@@ -30,7 +34,52 @@ namespace MathAdminApp.Presentacion
         {
             this.BackColor = Color.FromArgb(240, 242, 245);
 
-            // --- Barra de botones ---
+            // =============================
+            // PANEL BUSQUEDA
+            // =============================
+
+            panelBusqueda = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 70,
+                BackColor = Color.FromArgb(248, 249, 250),
+                Padding = new Padding(15)
+            };
+
+            lblBuscar = new Label
+            {
+                Text = "Buscar unidad:",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                AutoSize = true,
+                Location = new Point(5, 20)
+            };
+
+            txtBuscar = new TextBox
+            {
+                Font = new Font("Segoe UI", 11),
+                Size = new Size(250, 30),
+                Location = new Point(120, 18)
+            };
+
+            btnBuscar = CrearBoton("Buscar", Color.FromArgb(255, 179, 0));
+            btnBuscar.Size = new Size(90, 32);
+            btnBuscar.Location = new Point(380, 17);
+            btnBuscar.Click += BtnBuscar_Click;
+
+            btnLimpiar = CrearBoton("Limpiar", Color.FromArgb(255, 179, 0));
+            btnLimpiar.Size = new Size(90, 32);
+            btnLimpiar.Location = new Point(480, 17);
+            btnLimpiar.Click += BtnLimpiar_Click;
+
+            panelBusqueda.Controls.Add(lblBuscar);
+            panelBusqueda.Controls.Add(txtBuscar);
+            panelBusqueda.Controls.Add(btnBuscar);
+            panelBusqueda.Controls.Add(btnLimpiar);
+
+            // =============================
+            // PANEL BOTONES
+            // =============================
+
             panelBotones = new Panel
             {
                 Dock = DockStyle.Top,
@@ -55,7 +104,10 @@ namespace MathAdminApp.Presentacion
             panelBotones.Controls.Add(btnEditar);
             panelBotones.Controls.Add(btnEliminar);
 
-            // --- Tabla ---
+            // =============================
+            // TABLA
+            // =============================
+
             dgvUnidades = new DataGridView
             {
                 Dock = DockStyle.Fill,
@@ -74,19 +126,16 @@ namespace MathAdminApp.Presentacion
                 GridColor = Color.FromArgb(255, 179, 0)
             };
 
-            // Desactivar estilo visual del sistema
             dgvUnidades.EnableHeadersVisualStyles = false;
 
-            // --- Encabezado ---
-            dgvUnidades.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118); // Amarillo claro
+            dgvUnidades.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118);
             dgvUnidades.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
             dgvUnidades.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 179, 0);
             dgvUnidades.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
             dgvUnidades.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+
             dgvUnidades.ColumnHeadersHeight = 40;
 
-
-            // --- Selección de filas ---
             dgvUnidades.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 202, 40);
             dgvUnidades.DefaultCellStyle.SelectionForeColor = Color.Black;
 
@@ -94,23 +143,58 @@ namespace MathAdminApp.Presentacion
 
             this.Controls.Add(dgvUnidades);
             this.Controls.Add(panelBotones);
+            this.Controls.Add(panelBusqueda);
         }
 
+        // =============================
+        // CREAR BOTON
+        // =============================
+
         private Button CrearBoton(string texto, Color color)
-        {  
-              var btn = new Button
-                {
-                    Text = texto,
-                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                    BackColor = Color.FromArgb(255, 179, 0),
-                    ForeColor = Color.White,
-                    FlatStyle = FlatStyle.Flat,
-                    Size = new Size(130, 35),
-                    Cursor = Cursors.Hand
-                };
-                btn.FlatAppearance.BorderSize = 0;
-                return btn;
-            }
+        {
+            var btn = new Button
+            {
+                Text = texto,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                BackColor = Color.FromArgb(255, 179, 0),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(130, 35),
+                Cursor = Cursors.Hand
+            };
+
+            btn.FlatAppearance.BorderSize = 0;
+
+            btn.Paint += (s, e) =>
+            {
+                RedondearBoton(btn, 20);
+            };
+
+            return btn;
+        }
+
+        // =============================
+        // BOTONES REDONDOS
+        // =============================
+
+        private void RedondearBoton(Button boton, int radio)
+        {
+            GraphicsPath path = new GraphicsPath();
+            path.StartFigure();
+
+            path.AddArc(new Rectangle(0, 0, radio, radio), 180, 90);
+            path.AddArc(new Rectangle(boton.Width - radio, 0, radio, radio), 270, 90);
+            path.AddArc(new Rectangle(boton.Width - radio, boton.Height - radio, radio, radio), 0, 90);
+            path.AddArc(new Rectangle(0, boton.Height - radio, radio, radio), 90, 90);
+
+            path.CloseFigure();
+
+            boton.Region = new Region(path);
+        }
+
+        // =============================
+        // CARGAR DATOS
+        // =============================
 
         private void CargarDatos()
         {
@@ -132,6 +216,27 @@ namespace MathAdminApp.Presentacion
                 MessageBox.Show($"Error al cargar unidades:\n{ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        // =============================
+        // BUSCAR
+        // =============================
+
+        private void BtnBuscar_Click(object? sender, EventArgs e)
+        {
+            var texto = txtBuscar.Text.ToLower();
+
+            var lista = _bll.ObtenerTodas()
+                .Where(u => u.Nombre.ToLower().Contains(texto))
+                .ToList();
+
+            dgvUnidades.DataSource = lista;
+        }
+
+        private void BtnLimpiar_Click(object? sender, EventArgs e)
+        {
+            txtBuscar.Clear();
+            CargarDatos();
         }
 
         private void BtnAgregar_Click(object? sender, EventArgs e)

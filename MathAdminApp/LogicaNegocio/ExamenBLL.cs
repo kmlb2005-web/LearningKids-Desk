@@ -27,6 +27,20 @@ namespace MathAdminApp.LogicaNegocio
             return _dal.Agregar(examen);
         }
 
+        // =============================
+        // ACTUALIZAR EXAMEN
+        // =============================
+        public bool Actualizar(Examen examen)
+        {
+            if (string.IsNullOrWhiteSpace(examen.Nombre))
+                throw new ArgumentException("El nombre del examen es obligatorio.");
+
+            if (examen.Id <= 0)
+                throw new ArgumentException("Examen inválido.");
+
+            return _dal.Actualizar(examen);
+        }
+
         public bool Eliminar(int id) => _dal.Eliminar(id);
 
         public int ContarExamenes() => _dal.ContarExamenes();
