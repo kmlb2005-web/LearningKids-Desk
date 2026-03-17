@@ -1,25 +1,17 @@
-// ============================================================
-// Presentacion: FormDashboard
-// Pantalla principal del administrador con menu de navegacion
-// ============================================================
-
 using MathAdminApp.LogicaNegocio;
 using MathAdminApp.Modelos;
+using System.Drawing.Drawing2D;
 
 namespace MathAdminApp.Presentacion
 {
-    /// <summary>
-    /// Formulario principal del administrador.
-    /// Contiene el menu lateral y el area de contenido.
-    /// </summary>
     public class FormDashboard : Form
     {
-        // --- Controles de la interfaz ---
         private Panel panelMenu = null!;
         private Panel panelContenido = null!;
         private Panel panelSuperior = null!;
         private Label lblTituloPagina = null!;
         private Label lblUsuarioActual = null!;
+
         private Button btnDashboard = null!;
         private Button btnUsuarios = null!;
         private Button btnUnidades = null!;
@@ -28,10 +20,6 @@ namespace MathAdminApp.Presentacion
         private Button btnResultados = null!;
         private Button btnCerrarSesion = null!;
 
-        // Contadores del dashboard
-        private Label lblTotalAlumnos = null!;
-        private Label lblTotalUnidades = null!;
-        private Label lblTotalExamenes = null!;
         private Panel panelEstadisticas = null!;
 
         private readonly Usuario _usuarioActual;
@@ -43,111 +31,128 @@ namespace MathAdminApp.Presentacion
             MostrarDashboard();
         }
 
-        /// <summary>
-        /// Configura todos los controles del formulario.
-        /// </summary>
         private void InicializarComponentes()
         {
-            // --- Configuracion del formulario ---
             this.Text = "LearningsKids - Panel de Administracion";
             this.Size = new Size(1100, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.MinimumSize = new Size(900, 600);
             this.BackColor = Color.FromArgb(240, 242, 245);
 
-            // --- Panel superior ---
+            // PANEL SUPERIOR
             panelSuperior = new Panel
             {
                 Dock = DockStyle.Top,
                 Height = 60,
-                BackColor = Color.White,
-                Padding = new Padding(20, 0, 20, 0)
+                BackColor = Color.White
             };
 
             lblTituloPagina = new Label
             {
                 Text = "Learning Kids Admin",
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                ForeColor = Color.FromArgb(50, 50, 50),
-                AutoSize = true,
-                Location = new Point(230, 15)
+                Location = new Point(230, 15),
+                AutoSize = true
             };
 
             lblUsuarioActual = new Label
             {
-                Text = $"Administrador: {_usuarioActual.Nombre}",
+                Text = $"⚙ Administrador: {_usuarioActual.Nombre}",
                 Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(100, 100, 100),
                 AutoSize = true,
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(800, 20)
+                Location = new Point(820, 20)
             };
 
             panelSuperior.Controls.Add(lblTituloPagina);
             panelSuperior.Controls.Add(lblUsuarioActual);
 
-            // --- Panel menu lateral ---
+            // MENU LATERAL
             panelMenu = new Panel
             {
                 Dock = DockStyle.Left,
-                Width = 210,
-                BackColor = Color.FromArgb(255, 255, 204),
-                Padding = new Padding(0, 10, 0, 10)
+                Width = 220,
+                BackColor = Color.FromArgb(235, 235, 235),
+                Padding = new Padding(0, 20, 0, 20)
             };
 
-            // Logo / Titulo del menu
             var lblLogo = new Label
             {
-                Text = "Learning Kids",
+                Text = "🏫 Learning Kids",
                 Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                ForeColor = Color.Black,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Dock = DockStyle.Top,
-                Height = 50,
-                Padding = new Padding(0, 10, 0, 0)
+                Height = 60
             };
 
-            var lblVersion = new Label
+            var lblRol = new Label
             {
-                Text = "Administrador",
-                Font = new Font("Segoe UI", 8),
-                ForeColor = Color.Black,
+                Text = "⚙ Administrador",
+                Font = new Font("Segoe UI", 9),
                 TextAlign = ContentAlignment.MiddleCenter,
                 Dock = DockStyle.Top,
                 Height = 25
             };
 
-            // Botones del menu
-            btnDashboard = CrearBotonMenu("  Inicio", 0);
-            btnUsuarios = CrearBotonMenu("  Usuarios", 1);
-            btnUnidades = CrearBotonMenu("  Temas", 2);
-            btnExamenes = CrearBotonMenu("  Examenes", 3);
-            btnPreguntas = CrearBotonMenu("  Preguntas", 4);
-            btnResultados = CrearBotonMenu("  Resultados", 5);
-            btnCerrarSesion = CrearBotonMenu("  Cerrar Sesion", 7);
-            btnCerrarSesion.ForeColor = Color.Black;
+            btnDashboard = CrearBotonMenu("🏠   Inicio");
+            btnUsuarios = CrearBotonMenu("👥   Usuarios");
+            btnUnidades = CrearBotonMenu("📚   Temas");
+            btnExamenes = CrearBotonMenu("📝   Examenes");
+            btnPreguntas = CrearBotonMenu("❓   Preguntas");
+            btnResultados = CrearBotonMenu("📊   Resultados");
+            btnCerrarSesion = CrearBotonMenu("🚪   Cerrar Sesion");
 
-            // Eventos de clic del menu
-            btnDashboard.Click += (s, e) => { MostrarDashboard(); ActualizarTitulo("Learning Kids Admin"); };
-            btnUsuarios.Click += (s, e) => { MostrarUsuarios(); ActualizarTitulo("Gestion de Usuarios"); };
-            btnUnidades.Click += (s, e) => { MostrarUnidades(); ActualizarTitulo("Gestion de Unidades"); };
-            btnExamenes.Click += (s, e) => { MostrarExamenes(); ActualizarTitulo("Gestion de Examenes"); };
-            btnPreguntas.Click += (s, e) => { MostrarPreguntas(); ActualizarTitulo("Gestion de Preguntas"); };
-            btnResultados.Click += (s, e) => { MostrarResultados(); ActualizarTitulo("Resultados y Avances"); };
+            btnDashboard.Click += (s, e) =>
+            {
+                ActivarBoton(btnDashboard);
+                MostrarDashboard();
+                ActualizarTitulo("Learning Kids Admin");
+            };
+
+            btnUsuarios.Click += (s, e) =>
+            {
+                ActivarBoton(btnUsuarios);
+                MostrarUsuarios();
+                ActualizarTitulo("Gestion de Usuarios");
+            };
+
+            btnUnidades.Click += (s, e) =>
+            {
+                ActivarBoton(btnUnidades);
+                MostrarUnidades();
+                ActualizarTitulo("Gestion de Unidades");
+            };
+
+            btnExamenes.Click += (s, e) =>
+            {
+                ActivarBoton(btnExamenes);
+                MostrarExamenes();
+                ActualizarTitulo("Gestion de Examenes");
+            };
+
+            btnPreguntas.Click += (s, e) =>
+            {
+                ActivarBoton(btnPreguntas);
+                MostrarPreguntas();
+                ActualizarTitulo("Gestion de Preguntas");
+            };
+
+            btnResultados.Click += (s, e) =>
+            {
+                ActivarBoton(btnResultados);
+                MostrarResultados();
+                ActualizarTitulo("Resultados y Avances");
+            };
+
             btnCerrarSesion.Click += BtnCerrarSesion_Click;
-
-            // Agregar botones al menu (orden inverso por Dock = Top)
-            panelMenu.Controls.Add(btnCerrarSesion); 
-            btnCerrarSesion.Dock = DockStyle.Bottom;
 
             var panelBotones = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.TopDown,
                 WrapContents = false,
-                Padding = new Padding(0, 10, 0, 0),
                 AutoScroll = true
             };
+
             panelBotones.Controls.Add(btnDashboard);
             panelBotones.Controls.Add(btnUsuarios);
             panelBotones.Controls.Add(btnUnidades);
@@ -155,87 +160,108 @@ namespace MathAdminApp.Presentacion
             panelBotones.Controls.Add(btnPreguntas);
             panelBotones.Controls.Add(btnResultados);
 
+            btnCerrarSesion.Dock = DockStyle.Bottom;
+
+            panelMenu.Controls.Add(btnCerrarSesion);
             panelMenu.Controls.Add(panelBotones);
-            panelMenu.Controls.Add(lblVersion);
+            panelMenu.Controls.Add(lblRol);
             panelMenu.Controls.Add(lblLogo);
 
-            // --- Panel de contenido principal ---
             panelContenido = new Panel
             {
                 Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(240, 242, 245),
-                Padding = new Padding(20)
+                Padding = new Padding(20),
+                BackColor = Color.FromArgb(240, 242, 245)
             };
 
-            // Agregar al formulario
             this.Controls.Add(panelContenido);
             this.Controls.Add(panelSuperior);
             this.Controls.Add(panelMenu);
         }
-
-        /// <summary>
-        /// Crea un boton estilizado para el menu lateral.
-        /// </summary>
-        private Button CrearBotonMenu(string texto, int indice)
+        private Button CrearBotonMenu(string texto)
         {
             var btn = new Button
             {
                 Text = texto,
-                Font = new Font("Segoe UI", 11),
-                ForeColor = BackColor = Color.Black,
-                BackColor = Color.FromArgb(255, 235, 59),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(210, 42),
+                Font = new Font("Segoe UI Emoji", 11),
+                Size = new Size(190, 45),
                 TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(15, 0, 0, 0),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(245, 245, 245),
+                ForeColor = Color.FromArgb(60, 60, 60),
+                Margin = new Padding(10, 6, 10, 6),
+                Padding = new Padding(10, 0, 0, 0),
                 Cursor = Cursors.Hand
             };
+
             btn.FlatAppearance.BorderSize = 0;
-            btn.FlatAppearance.MouseOverBackColor = BackColor = Color.FromArgb(255, 255, 204);
+            btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(220, 220, 220);
+
+            btn.Paint += (s, e) => RedondearControl(btn, 20);
 
             return btn;
         }
 
-        /// <summary>
-        /// Actualiza el titulo de la barra superior.
-        /// </summary>
+        private void ActivarBoton(Button boton)
+        {
+            foreach (Control ctrl in panelMenu.Controls)
+            {
+                if (ctrl is FlowLayoutPanel panel)
+                {
+                    foreach (Control c in panel.Controls)
+                    {
+                        if (c is Button b)
+                        {
+                            b.BackColor = Color.Transparent;
+                            b.ForeColor = Color.FromArgb(70, 70, 70);
+                        }
+                    }
+                }
+            }
+
+            boton.BackColor = Color.FromArgb(235, 220, 190);
+            boton.ForeColor = Color.FromArgb(120, 90, 0);
+        }
+        private void RedondearControl(Control control, int radio)
+        {
+            GraphicsPath path = new GraphicsPath();
+
+            path.StartFigure();
+            path.AddArc(new Rectangle(0, 0, radio, radio), 180, 90);
+            path.AddArc(new Rectangle(control.Width - radio, 0, radio, radio), 270, 90);
+            path.AddArc(new Rectangle(control.Width - radio, control.Height - radio, radio, radio), 0, 90);
+            path.AddArc(new Rectangle(0, control.Height - radio, radio, radio), 90, 90);
+            path.CloseFigure();
+
+            control.Region = new Region(path);
+        }
+
         private void ActualizarTitulo(string titulo)
         {
             lblTituloPagina.Text = titulo;
         }
 
-        /// <summary>
-        /// Limpia el panel de contenido para cargar una nueva vista.
-        /// </summary>
         private void LimpiarContenido()
         {
             panelContenido.Controls.Clear();
         }
 
-        // ==============================================================
-        // VISTA: Dashboard con estadisticas
-        // ==============================================================
         private void MostrarDashboard()
         {
             LimpiarContenido();
-            ActualizarTitulo("Learning Kids Admin");
 
             panelEstadisticas = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 150,
-                Padding = new Padding(0, 10, 0, 10)
+                Height = 150
             };
 
-            // Tarjeta: Total Alumnos
-            var tarjetaAlumnos = CrearTarjetaEstadistica("Total Alumnos", "0",
+            var tarjetaAlumnos = CrearTarjetaEstadistica("Total Alumnos", "3",
                 Color.FromArgb(255, 179, 0), new Point(0, 0));
 
-            // Tarjeta: Total Unidades
-            var tarjetaUnidades = CrearTarjetaEstadistica("Total Unidades", "0",
+            var tarjetaUnidades = CrearTarjetaEstadistica("Total Unidades", "5",
                 Color.FromArgb(255, 202, 40), new Point(250, 0));
 
-            // Tarjeta: Examenes Creados
             var tarjetaExamenes = CrearTarjetaEstadistica("Examenes Creados", "0",
                 Color.FromArgb(255, 235, 59), new Point(500, 0));
 
@@ -243,38 +269,27 @@ namespace MathAdminApp.Presentacion
             panelEstadisticas.Controls.Add(tarjetaUnidades);
             panelEstadisticas.Controls.Add(tarjetaExamenes);
 
-            // Mensaje de bienvenida
             var lblBienvenida = new Label
             {
                 Text = $"Bienvenido(a), {_usuarioActual.Nombre}.\nDesde aqui puedes gestionar usuarios, unidades, examenes y mas.",
                 Font = new Font("Segoe UI", 12),
-                ForeColor = Color.FromArgb(80, 80, 80),
                 AutoSize = true,
-                Location = new Point(0, 170),
-                MaximumSize = new Size(700, 0)
+                Location = new Point(0, 170)
             };
 
             panelContenido.Controls.Add(lblBienvenida);
             panelContenido.Controls.Add(panelEstadisticas);
-
-            // Cargar estadisticas desde la BD
-            CargarEstadisticas(tarjetaAlumnos, tarjetaUnidades, tarjetaExamenes);
         }
 
-        /// <summary>
-        /// Crea una tarjeta visual para mostrar un dato estadistico.
-        /// </summary>
         private Panel CrearTarjetaEstadistica(string titulo, string valor, Color color, Point ubicacion)
         {
             var panel = new Panel
             {
                 Size = new Size(230, 120),
                 Location = ubicacion,
-                BackColor = Color.White,
-                Padding = new Padding(15)
+                BackColor = Color.White
             };
 
-            // Barra de color superior
             var barra = new Panel
             {
                 Dock = DockStyle.Top,
@@ -286,9 +301,9 @@ namespace MathAdminApp.Presentacion
             {
                 Text = titulo,
                 Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(120, 120, 120),
-                AutoSize = true,
-                Location = new Point(15, 20)
+                ForeColor = Color.Gray,
+                Location = new Point(15, 20),
+                AutoSize = true
             };
 
             var lblValor = new Label
@@ -296,9 +311,8 @@ namespace MathAdminApp.Presentacion
                 Text = valor,
                 Font = new Font("Segoe UI", 28, FontStyle.Bold),
                 ForeColor = color,
-                AutoSize = true,
                 Location = new Point(15, 50),
-                Tag = titulo // Para identificar la tarjeta al actualizar
+                AutoSize = true
             };
 
             panel.Controls.Add(lblValor);
@@ -308,118 +322,43 @@ namespace MathAdminApp.Presentacion
             return panel;
         }
 
-        /// <summary>
-        /// Carga las estadisticas desde la base de datos.
-        /// </summary>
-        private void CargarEstadisticas(Panel tarjetaAlumnos, Panel tarjetaUnidades, Panel tarjetaExamenes)
-        {
-            try
-            {
-                var usuarioBll = new UsuarioBLL();
-                var unidadBll = new UnidadBLL();
-                var examenBll = new ExamenBLL();
-
-                // Buscar los labels de valor dentro de cada tarjeta
-                foreach (Control ctrl in tarjetaAlumnos.Controls)
-                    if (ctrl is Label lbl && lbl.Tag?.ToString() == "Total Alumnos")
-                        lbl.Text = usuarioBll.ContarAlumnos().ToString();
-
-                foreach (Control ctrl in tarjetaUnidades.Controls)
-                    if (ctrl is Label lbl && lbl.Tag?.ToString() == "Total Unidades")
-                        lbl.Text = unidadBll.ContarUnidades().ToString();
-
-                foreach (Control ctrl in tarjetaExamenes.Controls)
-                    if (ctrl is Label lbl && lbl.Tag?.ToString() == "Examenes Creados")
-                        lbl.Text = examenBll.ContarExamenes().ToString();
-            }
-            catch
-            {
-                // Si no hay conexion, mostrar 0
-            }
-        }
-
-        // ==============================================================
-        // VISTA: Gestion de Usuarios
-        // ==============================================================
         private void MostrarUsuarios()
         {
             LimpiarContenido();
-
-            var controlUsuarios = new ControlUsuarios
-            {
-                Dock = DockStyle.Fill
-            };
-            panelContenido.Controls.Add(controlUsuarios);
+            panelContenido.Controls.Add(new ControlUsuarios { Dock = DockStyle.Fill });
         }
 
-        // ==============================================================
-        // VISTA: Gestion de Unidades
-        // ==============================================================
         private void MostrarUnidades()
         {
             LimpiarContenido();
-
-            var controlUnidades = new ControlUnidades
-            {
-                Dock = DockStyle.Fill
-            };
-            panelContenido.Controls.Add(controlUnidades);
+            panelContenido.Controls.Add(new ControlUnidades { Dock = DockStyle.Fill });
         }
 
-        // ==============================================================
-        // VISTA: Gestion de Examenes
-        // ==============================================================
         private void MostrarExamenes()
         {
             LimpiarContenido();
-
-            var controlExamenes = new ControlExamenes
-            {
-                Dock = DockStyle.Fill
-            };
-            panelContenido.Controls.Add(controlExamenes);
+            panelContenido.Controls.Add(new ControlExamenes { Dock = DockStyle.Fill });
         }
 
-        // ==============================================================
-        // VISTA: Gestion de Preguntas
-        // ==============================================================
         private void MostrarPreguntas()
         {
             LimpiarContenido();
-
-            var controlPreguntas = new ControlPreguntas
-            {
-                Dock = DockStyle.Fill
-            };
-            panelContenido.Controls.Add(controlPreguntas);
+            panelContenido.Controls.Add(new ControlPreguntas { Dock = DockStyle.Fill });
         }
 
-        // ==============================================================
-        // VISTA: Resultados y Avances
-        // ==============================================================
         private void MostrarResultados()
         {
             LimpiarContenido();
-
-            var controlResultados = new ControlResultados
-            {
-                Dock = DockStyle.Fill
-            };
-            panelContenido.Controls.Add(controlResultados);
+            panelContenido.Controls.Add(new ControlResultados { Dock = DockStyle.Fill });
         }
 
-        /// <summary>
-        /// Cierra sesion y vuelve al formulario de login.
-        /// </summary>
         private void BtnCerrarSesion_Click(object? sender, EventArgs e)
         {
             var resultado = MessageBox.Show("Desea cerrar sesion?",
                 "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (resultado == DialogResult.Yes)
-            {
                 this.Close();
-            }
         }
     }
 }
