@@ -26,6 +26,7 @@ namespace MathAdminApp.Presentacion
         private Button btnExamenes = null!;
         private Button btnPreguntas = null!;
         private Button btnResultados = null!;
+        private Button btnTutorIA = null!;
         private Button btnCerrarSesion = null!;
 
         // Contadores del dashboard
@@ -124,6 +125,7 @@ namespace MathAdminApp.Presentacion
             btnExamenes = CrearBotonMenu("  Examenes", 3);
             btnPreguntas = CrearBotonMenu("  Preguntas", 4);
             btnResultados = CrearBotonMenu("  Resultados", 5);
+            btnTutorIA = CrearBotonMenu("  Tutor IA", 6);
             btnCerrarSesion = CrearBotonMenu("  Cerrar Sesion", 7);
             btnCerrarSesion.ForeColor = Color.Black;
 
@@ -134,6 +136,7 @@ namespace MathAdminApp.Presentacion
             btnExamenes.Click += (s, e) => { MostrarExamenes(); ActualizarTitulo("Gestion de Examenes"); };
             btnPreguntas.Click += (s, e) => { MostrarPreguntas(); ActualizarTitulo("Gestion de Preguntas"); };
             btnResultados.Click += (s, e) => { MostrarResultados(); ActualizarTitulo("Resultados y Avances"); };
+            btnTutorIA.Click += (s, e) => { MostrarTutorIA(); ActualizarTitulo("Tutor IA de Matematicas"); };
             btnCerrarSesion.Click += BtnCerrarSesion_Click;
 
             // Agregar botones al menu (orden inverso por Dock = Top)
@@ -154,6 +157,7 @@ namespace MathAdminApp.Presentacion
             panelBotones.Controls.Add(btnExamenes);
             panelBotones.Controls.Add(btnPreguntas);
             panelBotones.Controls.Add(btnResultados);
+            panelBotones.Controls.Add(btnTutorIA);
 
             panelMenu.Controls.Add(panelBotones);
             panelMenu.Controls.Add(lblVersion);
@@ -406,6 +410,20 @@ namespace MathAdminApp.Presentacion
                 Dock = DockStyle.Fill
             };
             panelContenido.Controls.Add(controlResultados);
+        }
+
+        // ==============================================================
+        // VISTA: Tutor IA de Matematicas
+        // ==============================================================
+        private void MostrarTutorIA()
+        {
+            LimpiarContenido();
+
+            var controlTutor = new ControlTutorIA
+            {
+                Dock = DockStyle.Fill
+            };
+            panelContenido.Controls.Add(controlTutor);
         }
 
         /// <summary>
