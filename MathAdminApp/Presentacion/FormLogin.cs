@@ -1,202 +1,411 @@
 // ============================================================
 // Presentacion: FormLogin
-// Pantalla de inicio de sesion del administrador
+// Diseño moderno estilo Learning Kids
 // ============================================================
 
 using MathAdminApp.LogicaNegocio;
 
 namespace MathAdminApp.Presentacion
 {
-    /// <summary>
-    /// Formulario de inicio de sesion.
-    /// Valida credenciales y permite acceso al sistema.
-    /// </summary>
     public class FormLogin : Form
     {
-        // --- Controles de la interfaz ---
-        private PictureBox picLogo = null!;
+        // =========================================================
+        // CONTROLES
+        // =========================================================
+
         private Label lblTitulo = null!;
         private Label lblSubtitulo = null!;
         private Label lblUsuario = null!;
         private Label lblContrasena = null!;
+
         private TextBox txtUsuario = null!;
         private TextBox txtContrasena = null!;
+
         private Button btnIngresar = null!;
+
         private Panel panelIzquierdo = null!;
         private Panel panelDerecho = null!;
-        private Label lblBienvenida = null!;
+
+        // =========================================================
+        // CONSTRUCTOR
+        // =========================================================
 
         public FormLogin()
         {
             InicializarComponentes();
         }
 
-        /// <summary>
-        /// Configura todos los controles visuales del formulario.
-        /// </summary>
+        // =========================================================
+        // DISEÑO DEL LOGIN
+        // =========================================================
+
         private void InicializarComponentes()
         {
-            // --- Configuracion del formulario ---
-            this.Text = "LearningKids - Inicio de Sesion";
-            this.Size = new Size(800, 480);
+            // =====================================================
+            // FORMULARIO PRINCIPAL
+            // =====================================================
+
+            this.Text = "LearningKids - Inicio de Sesión";
+            this.Size = new Size(1100, 650);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.BackColor = Color.Black;
 
-            // --- Panel izquierdo decorativo (amarillo pastel) ---
+            // Fondo principal
+            this.BackColor = Color.FromArgb(240, 248, 255);
+
+            // =====================================================
+            // PANEL IZQUIERDO
+            // =====================================================
+
             panelIzquierdo = new Panel
             {
                 Dock = DockStyle.Left,
-                Width = 320,
-                BackColor = Color.FromArgb(255, 249, 196) // Amarillo pastel suave
+                Width = 450,
+                BackColor = Color.FromArgb(223, 242, 255)
             };
 
-            PictureBox picBienvenida = new PictureBox
+            // =====================================================
+            // LOGO LEARNING KIDS
+            // =====================================================
+
+            PictureBox picLogo = new PictureBox
             {
-                Image = Properties.Resources.LearningKidsLogo,
+                Image = Image.FromFile("Resources/Logo.png"),
                 SizeMode = PictureBoxSizeMode.Zoom,
-                Dock = DockStyle.Fill
+                Size = new Size(300, 120),
+                Location = new Point(70, 25),
+                BackColor = Color.Transparent
             };
-            panelIzquierdo.Controls.Add(picBienvenida);
 
-            // --- Panel derecho (formulario de login) ---
+            // =====================================================
+            // NUBE SUPERIOR
+            // =====================================================
+
+            PictureBox nube1 = new PictureBox
+            {
+                Image = Image.FromFile(@"Resources/nube1.png"),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Size = new Size(140, 80),
+                Location = new Point(10, 130),
+                BackColor = Color.Transparent
+            };
+
+            // =====================================================
+            // ROBOT PRINCIPAL
+            // =====================================================
+
+            PictureBox robot = new PictureBox
+            {
+                Image = Image.FromFile(@"Resources/Louz.png"),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Size = new Size(320, 320),
+                Location = new Point(60, 170),
+                BackColor = Color.Transparent
+            };
+
+            // =====================================================
+            // ESTRELLA
+            // =====================================================
+
+            PictureBox estrella = new PictureBox
+            {
+                Image = Image.FromFile(@"Resources/estrella.png"),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Size = new Size(70, 70),
+                Location = new Point(340, 120),
+                BackColor = Color.Transparent
+            };
+
+            // =====================================================
+            // NUMEROS Y ABC
+            // =====================================================
+
+            PictureBox numeros = new PictureBox
+            {
+                Image = Image.FromFile(@"Resources/numeros.png"),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Size = new Size(190, 70),
+                Location = new Point(120, 500),
+                BackColor = Color.Transparent
+            };
+
+            // =====================================================
+            // NUBE INFERIOR
+            // =====================================================
+
+            PictureBox nube2 = new PictureBox
+            {
+                Image = Image.FromFile(@"Resources/nube2.png"),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Size = new Size(180, 90),
+                Location = new Point(250, 540),
+                BackColor = Color.Transparent
+            };
+
+            // =====================================================
+            // AGREGAR CONTROLES PANEL IZQUIERDO
+            // =====================================================
+
+            panelIzquierdo.Controls.Add(picLogo);
+            panelIzquierdo.Controls.Add(nube1);
+            panelIzquierdo.Controls.Add(robot);
+            panelIzquierdo.Controls.Add(estrella);
+            panelIzquierdo.Controls.Add(numeros);
+            panelIzquierdo.Controls.Add(nube2);
+
+            // =====================================================
+            // PANEL DERECHO
+            // =====================================================
+
             panelDerecho = new Panel
             {
-                Dock = DockStyle.Fill,
+                Size = new Size(500, 520),
                 BackColor = Color.White,
-                Padding = new Padding(50, 60, 50, 40)
+                Location = new Point(520, 55)
             };
+
+            // =====================================================
+            // TITULO
+            // =====================================================
 
             lblTitulo = new Label
             {
-                Text = "Iniciar Sesion",
-                Font = new Font("Segoe UI", 20, FontStyle.Bold),
-                ForeColor = Color.FromArgb(50, 50, 50),
-                AutoSize = true,
-                Location = new Point(50, 60)
+                Text = "¡Bienvenido!",
+                Font = new Font("Segoe UI", 24, FontStyle.Bold),
+                ForeColor = Color.FromArgb(40, 50, 90),
+
+                Width = panelDerecho.Width,
+                Height = 50,
+
+                TextAlign = ContentAlignment.MiddleCenter,
+
+                Location = new Point(0, 50)
             };
+
+            // =====================================================
+            // SUBTITULO
+            // =====================================================
 
             lblSubtitulo = new Label
             {
-                Text = "Ingrese sus datos de administrador",
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(130, 130, 130),
-                AutoSize = true,
-                Location = new Point(50, 100)
+                Text = "Inicia sesión para continuar 💙",
+                Font = new Font("Segoe UI", 11),
+                ForeColor = Color.FromArgb(120, 120, 140),
+
+                Width = panelDerecho.Width,
+                Height = 30,
+
+                TextAlign = ContentAlignment.MiddleCenter,
+
+                Location = new Point(0, 100)
             };
+
+            // =====================================================
+            // LABEL USUARIO
+            // =====================================================
 
             lblUsuario = new Label
             {
                 Text = "Usuario",
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(80, 80, 80),
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                ForeColor = Color.FromArgb(60, 60, 80),
                 AutoSize = true,
-                Location = new Point(50, 150)
+                Location = new Point(65, 170)
             };
+
+            // =====================================================
+            // TEXTBOX USUARIO
+            // =====================================================
 
             txtUsuario = new TextBox
             {
                 Font = new Font("Segoe UI", 12),
-                Location = new Point(50, 175),
-                Size = new Size(360, 30),
-                BorderStyle = BorderStyle.FixedSingle
+                Location = new Point(65, 200),
+                Size = new Size(350, 40),
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.FromArgb(248, 250, 255),
+                ForeColor = Color.FromArgb(60, 60, 80)
             };
+
+            // =====================================================
+            // LABEL CONTRASEÑA
+            // =====================================================
 
             lblContrasena = new Label
             {
                 Text = "Contraseña",
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(80, 80, 80),
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                ForeColor = Color.FromArgb(60, 60, 80),
                 AutoSize = true,
-                Location = new Point(50, 220)
+                Location = new Point(65, 280)
             };
+
+            // =====================================================
+            // TEXTBOX CONTRASEÑA
+            // =====================================================
 
             txtContrasena = new TextBox
             {
                 Font = new Font("Segoe UI", 12),
-                Location = new Point(50, 245),
-                Size = new Size(360, 30),
+                Location = new Point(65, 310),
+                Size = new Size(350, 40),
                 BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.FromArgb(248, 250, 255),
+                ForeColor = Color.FromArgb(60, 60, 80),
                 UseSystemPasswordChar = true
             };
+
+            // =====================================================
+            // BOTON INGRESAR
+            // =====================================================
 
             btnIngresar = new Button
             {
                 Text = "Ingresar",
-                Font = new Font("Segoe UI", 12, FontStyle.Bold),
-                BackColor = Color.FromArgb(255, 235, 59), // Amarillo más intenso
-                ForeColor = Color.Black, // Negro para que contraste mejor con amarillo
+                Font = new Font("Segoe UI", 13, FontStyle.Bold),
+                Size = new Size(350, 52),
+                Location = new Point(65, 400),
+
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(360, 45),
-                Location = new Point(50, 310),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+
+                BackColor = Color.FromArgb(94, 168, 255),
+                ForeColor = Color.White
             };
+
             btnIngresar.FlatAppearance.BorderSize = 0;
+
+            // Hover moderno
+            btnIngresar.MouseEnter += (s, e) =>
+            {
+                btnIngresar.BackColor = Color.FromArgb(120, 185, 255);
+            };
+
+            btnIngresar.MouseLeave += (s, e) =>
+            {
+                btnIngresar.BackColor = Color.FromArgb(94, 168, 255);
+            };
+
             btnIngresar.Click += BtnIngresar_Click;
 
-            // Permitir Enter para ingresar
+            // =====================================================
+            // ENTER PARA INGRESAR
+            // =====================================================
+
             txtContrasena.KeyDown += (s, e) =>
             {
-                if (e.KeyCode == Keys.Enter) BtnIngresar_Click(s, e);
+                if (e.KeyCode == Keys.Enter)
+                {
+                    BtnIngresar_Click(s, e);
+                }
             };
 
-            // Agregar controles al panel derecho
+            // =====================================================
+            // AGREGAR CONTROLES PANEL DERECHO
+            // =====================================================
+
             panelDerecho.Controls.Add(lblTitulo);
             panelDerecho.Controls.Add(lblSubtitulo);
+
             panelDerecho.Controls.Add(lblUsuario);
             panelDerecho.Controls.Add(txtUsuario);
+
             panelDerecho.Controls.Add(lblContrasena);
             panelDerecho.Controls.Add(txtContrasena);
+
             panelDerecho.Controls.Add(btnIngresar);
 
-            // Agregar paneles al formulario
+            // =====================================================
+            // AGREGAR PANELES AL FORMULARIO
+            // =====================================================
+
             this.Controls.Add(panelDerecho);
             this.Controls.Add(panelIzquierdo);
 
-            // Foco inicial
+            // =====================================================
+            // FOCO INICIAL
+            // =====================================================
+
             this.ActiveControl = txtUsuario;
         }
 
-        /// <summary>
-        /// Evento del boton "Ingresar".
-        /// Valida credenciales y abre el Dashboard si son correctas.
-        /// </summary>
+        // =========================================================
+        // LOGIN
+        // =========================================================
+
         private void BtnIngresar_Click(object? sender, EventArgs e)
         {
             try
             {
                 var bll = new UsuarioBLL();
-                var usuario = bll.IniciarSesion(txtUsuario.Text, txtContrasena.Text);
+
+                var usuario = bll.IniciarSesion(
+                    txtUsuario.Text,
+                    txtContrasena.Text
+                );
+
+                // =============================================
+                // VALIDAR USUARIO
+                // =============================================
 
                 if (usuario == null)
                 {
-                    MessageBox.Show("Usuario o contrasena incorrectos.",
-                        "Error de acceso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        "Usuario o contraseña incorrectos.",
+                        "Error de acceso",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
                     return;
                 }
+
+                // =============================================
+                // VALIDAR ROL
+                // =============================================
 
                 if (usuario.Rol != "Administrador")
                 {
-                    MessageBox.Show("Solo los administradores pueden acceder a esta aplicacion.",
-                        "Acceso denegado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        "Solo los administradores pueden acceder a esta aplicación.",
+                        "Acceso denegado",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
                     return;
                 }
 
-                // Abrir el Dashboard y ocultar el login
+                // =============================================
+                // ABRIR DASHBOARD
+                // =============================================
+
                 this.Hide();
+
                 var dashboard = new FormDashboard(usuario);
+
                 dashboard.FormClosed += (s, args) => this.Close();
+
                 dashboard.Show();
             }
             catch (ArgumentException ex)
             {
-                MessageBox.Show(ex.Message, "Validacion", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    ex.Message,
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al conectar con la base de datos:\n{ex.Message}",
-                    "Error de conexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"Error al conectar con la base de datos:\n{ex.Message}",
+                    "Error de conexión",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }

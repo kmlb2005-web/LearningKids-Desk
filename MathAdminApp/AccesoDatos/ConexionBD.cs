@@ -18,7 +18,7 @@ namespace MathAdminApp.AccesoDatos
         // tu configuracion de SQL Server local.
         // =====================================================
         private static readonly string _cadenaConexion =
-            @"Server=tcp:controlcanciones-server.database.windows.net,1433;Initial Catalog=MathAdminDB;Persist Security Info=False;User ID=destro;Password=papoi23.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            @"Data Source=VIANEY; Initial Catalog=MathAdminDB; Integrated Security=True; TrustServerCertificate=True;";
 
         /// <summary>
         /// Obtiene la cadena de conexion configurada.

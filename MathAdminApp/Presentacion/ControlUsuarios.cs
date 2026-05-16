@@ -1,6 +1,5 @@
-// ============================================================
-// Presentacion: ControlUsuarios (UserControl)
-// Vista para gestionar alumnos (CRUD)
+﻿// ============================================================
+// Presentacion: ControlUsuarios (DISEÑO MODERNO RESPONSIVE)
 // ============================================================
 
 using MathAdminApp.LogicaNegocio;
@@ -8,201 +7,465 @@ using MathAdminApp.Modelos;
 
 namespace MathAdminApp.Presentacion
 {
-    /// <summary>
-    /// Control de usuario para la gestion de alumnos.
-    /// Se incrusta en el panel de contenido del Dashboard.
-    /// </summary>
     public class ControlUsuarios : UserControl
     {
+        // =====================================================
+        // CONTROLES
+        // =====================================================
+
         private DataGridView dgvUsuarios = null!;
+
         private Button btnAgregar = null!;
         private Button btnEditar = null!;
         private Button btnDesactivar = null!;
+
         private Panel panelBotones = null!;
+
+        private TextBox txtBuscar = null!;
+
         private readonly UsuarioBLL _bll = new();
+
+        // =====================================================
+        // CONSTRUCTOR
+        // =====================================================
 
         public ControlUsuarios()
         {
             InicializarComponentes();
+
             CargarDatos();
         }
 
+        // =====================================================
+        // DISEÑO MODERNO
+        // =====================================================
+
         private void InicializarComponentes()
         {
-            this.BackColor = Color.FromArgb(240, 242, 245);
+            // =================================================
+            // USERCONTROL
+            // =================================================
 
-            // --- Barra de botones ---
+            this.BackColor = Color.FromArgb(245, 250, 255);
+
+            // =================================================
+            // TITULO
+            // =================================================
+
+            Label lblTitulo = new Label
+            {
+                Text = "👥 Gestión de Usuarios",
+
+                Font = new Font("Segoe UI", 22, FontStyle.Bold),
+
+                ForeColor = Color.FromArgb(20, 35, 80),
+
+                AutoSize = true,
+
+                Location = new Point(20, 20)
+            };
+
+            // =================================================
+            // SUBTITULO
+            // =================================================
+
+            Label lblSubtitulo = new Label
+            {
+                Text = "Administra alumnos y profesores fácilmente ✨",
+
+                Font = new Font("Segoe UI", 12),
+
+                ForeColor = Color.FromArgb(100, 120, 150),
+
+                AutoSize = true,
+
+                Location = new Point(25, 65)
+            };
+
+            // =================================================
+            // PANEL BOTONES
+            // =================================================
+
             panelBotones = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 50,
-                BackColor = Color.Transparent,
-                Padding = new Padding(0, 5, 0, 5)
+
+                Height = 80,
+
+                BackColor = Color.Transparent
             };
 
-            btnAgregar = CrearBoton("Agregar Alumno", Color.FromArgb(63, 81, 181));
-            btnAgregar.Location = new Point(0, 8);
+            // =================================================
+            // BOTON AGREGAR
+            // =================================================
+
+            btnAgregar = CrearBoton(
+                "➕  Agregar",
+                Color.FromArgb(66, 133, 244)
+            );
+
+            btnAgregar.Location = new Point(20, 15);
+
             btnAgregar.Click += BtnAgregar_Click;
 
-            btnEditar = CrearBoton("Editar", Color.FromArgb(0, 150, 136));
-            btnEditar.Location = new Point(170, 8);
+            // =================================================
+            // BOTON EDITAR
+            // =================================================
+
+            btnEditar = CrearBoton(
+                "✏️  Editar",
+                Color.FromArgb(52, 199, 89)
+            );
+
+            btnEditar.Location = new Point(210, 15);
+
             btnEditar.Click += BtnEditar_Click;
 
-            btnDesactivar = CrearBoton("Desactivar", Color.FromArgb(211, 47, 47));
-            btnDesactivar.Location = new Point(310, 8);
+            // =================================================
+            // BOTON DESACTIVAR
+            // =================================================
+
+            btnDesactivar = CrearBoton(
+                "🚫  Desactivar",
+                Color.FromArgb(255, 80, 120)
+            );
+
+            btnDesactivar.Location = new Point(400, 15);
+
             btnDesactivar.Click += BtnDesactivar_Click;
 
+            // =================================================
+            // BUSCADOR
+            // =================================================
+
+            txtBuscar = new TextBox
+            {
+                Font = new Font("Segoe UI", 11),
+
+                Size = new Size(260, 40),
+
+                Location = new Point(1100, 18),
+
+                BorderStyle = BorderStyle.FixedSingle,
+
+                BackColor = Color.White,
+
+                ForeColor = Color.FromArgb(120, 120, 140),
+
+                Text = "🔍 Buscar usuario..."
+            };
+
+            txtBuscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // =================================================
+            // AGREGAR BOTONES
+            // =================================================
+
             panelBotones.Controls.Add(btnAgregar);
+
             panelBotones.Controls.Add(btnEditar);
+
             panelBotones.Controls.Add(btnDesactivar);
 
-            // --- Tabla de usuarios ---
+            panelBotones.Controls.Add(txtBuscar);
+
+            // =================================================
+            // PANEL TABLA RESPONSIVE
+            // =================================================
+
+            Panel panelTabla = new Panel
+            {
+                Dock = DockStyle.Fill,
+
+                Padding = new Padding(20, 200, 20, 20),
+
+                BackColor = Color.Transparent
+            };
+
+            // =================================================
+            // DATA GRID
+            // =================================================
+
             dgvUsuarios = new DataGridView
             {
                 Dock = DockStyle.Fill,
+
                 BackgroundColor = Color.White,
+
                 BorderStyle = BorderStyle.None,
+
                 CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
+
                 ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None,
+
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+
                 MultiSelect = false,
+
                 ReadOnly = true,
+
                 AllowUserToAddRows = false,
+
                 AllowUserToDeleteRows = false,
+
+                AllowUserToResizeRows = false,
+
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+
                 RowHeadersVisible = false,
-                Font = new Font("Segoe UI", 10),
-                GridColor = Color.FromArgb(255, 179, 0)
+
+                Font = new Font("Segoe UI", 11),
+
+                GridColor = Color.FromArgb(230, 235, 245)
             };
-            // Desactivar estilo visual del sistema
+
             dgvUsuarios.EnableHeadersVisualStyles = false;
 
-            // Encabezado fondo amarillo fuerte
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 179, 0); // Amarillo fuerte
+            // =================================================
+            // HEADER
+            // =================================================
 
-            // Texto del encabezado en negro
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.BackColor =
+                Color.FromArgb(240, 247, 255);
 
-            // Color cuando se selecciona el encabezado
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 179, 0);
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.ForeColor =
+                Color.FromArgb(50, 70, 120);
 
-            // Estilo del encabezado
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118);
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            dgvUsuarios.ColumnHeadersHeight = 40;
-            dgvUsuarios.EnableHeadersVisualStyles = false;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.Font =
+                new Font("Segoe UI", 11, FontStyle.Bold);
 
-            // Estilo de seleccion
-            dgvUsuarios.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 202, 40);
-            dgvUsuarios.DefaultCellStyle.SelectionForeColor = Color.Black;
-            dgvUsuarios.RowTemplate.Height = 35;
+            dgvUsuarios.ColumnHeadersHeight = 55;
 
-            this.Controls.Add(dgvUsuarios);
+            // =================================================
+            // FILAS
+            // =================================================
+
+            dgvUsuarios.DefaultCellStyle.BackColor = Color.White;
+
+            dgvUsuarios.DefaultCellStyle.ForeColor =
+                Color.FromArgb(60, 70, 100);
+
+            dgvUsuarios.DefaultCellStyle.SelectionBackColor =
+                Color.FromArgb(220, 235, 255);
+
+            dgvUsuarios.DefaultCellStyle.SelectionForeColor =
+                Color.FromArgb(20, 35, 80);
+
+            dgvUsuarios.RowTemplate.Height = 50;
+
+            // =================================================
+            // AGREGAR TABLA
+            // =================================================
+
+            panelTabla.Controls.Add(dgvUsuarios);
+
+            // =================================================
+            // AGREGAR CONTROLES
+            // =================================================
+
+            this.Controls.Add(panelTabla);
+
             this.Controls.Add(panelBotones);
+
+            this.Controls.Add(lblTitulo);
+
+            this.Controls.Add(lblSubtitulo);
         }
+
+        // =====================================================
+        // CREAR BOTON MODERNO
+        // =====================================================
 
         private Button CrearBoton(string texto, Color color)
         {
-            var btn = new Button
+            Button btn = new Button
             {
                 Text = texto,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = Color.FromArgb(255, 179, 0),
+
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+
+                BackColor = color,
+
                 ForeColor = Color.White,
+
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(130, 35),
+
+                Size = new Size(170, 45),
+
                 Cursor = Cursors.Hand
             };
+
             btn.FlatAppearance.BorderSize = 0;
+
+            // Hover
+            btn.MouseEnter += (s, e) =>
+            {
+                btn.BackColor = ControlPaint.Light(color);
+            };
+
+            btn.MouseLeave += (s, e) =>
+            {
+                btn.BackColor = color;
+            };
+
             return btn;
         }
 
-        /// <summary>
-        /// Carga los datos de alumnos en la tabla.
-        /// </summary>
+        // =====================================================
+        // CARGAR DATOS
+        // =====================================================
+
         private void CargarDatos()
         {
             try
             {
                 var alumnos = _bll.ObtenerAlumnos();
+
                 dgvUsuarios.DataSource = null;
+
                 dgvUsuarios.DataSource = alumnos;
 
-                // Ocultar columnas innecesarias
+                // =============================================
+                // OCULTAR COLUMNAS
+                // =============================================
+
                 if (dgvUsuarios.Columns.Contains("Contrasena"))
                     dgvUsuarios.Columns["Contrasena"].Visible = false;
+
                 if (dgvUsuarios.Columns.Contains("Rol"))
                     dgvUsuarios.Columns["Rol"].Visible = false;
 
-                // Renombrar columnas visibles
+                // =============================================
+                // RENOMBRAR COLUMNAS
+                // =============================================
+
                 if (dgvUsuarios.Columns.Contains("Id"))
-                    dgvUsuarios.Columns["Id"].HeaderText = "ID";
+                    dgvUsuarios.Columns["Id"].HeaderText = "🆔 ID";
+
+                if (dgvUsuarios.Columns.Contains("Nombre"))
+                    dgvUsuarios.Columns["Nombre"].HeaderText = "👤 Nombre";
+
+                if (dgvUsuarios.Columns.Contains("Correo"))
+                    dgvUsuarios.Columns["Correo"].HeaderText = "✉️ Correo";
+
                 if (dgvUsuarios.Columns.Contains("NombreUsuario"))
-                    dgvUsuarios.Columns["NombreUsuario"].HeaderText = "Usuario";
+                    dgvUsuarios.Columns["NombreUsuario"].HeaderText = "💻 Usuario";
+
+                if (dgvUsuarios.Columns.Contains("Grado"))
+                    dgvUsuarios.Columns["Grado"].HeaderText = "🎓 Grado";
+
+                if (dgvUsuarios.Columns.Contains("Activo"))
+                    dgvUsuarios.Columns["Activo"].HeaderText = "✅ Activo";
+
                 if (dgvUsuarios.Columns.Contains("FechaCreacion"))
-                    dgvUsuarios.Columns["FechaCreacion"].HeaderText = "Fecha Registro";
+                    dgvUsuarios.Columns["FechaCreacion"].HeaderText =
+                        "📅 Fecha Registro";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar alumnos:\n{ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"Error al cargar alumnos:\n{ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
+
+        // =====================================================
+        // AGREGAR
+        // =====================================================
 
         private void BtnAgregar_Click(object? sender, EventArgs e)
         {
             var form = new FormUsuarioDetalle();
+
             if (form.ShowDialog() == DialogResult.OK)
             {
                 CargarDatos();
             }
         }
+
+        // =====================================================
+        // EDITAR
+        // =====================================================
 
         private void BtnEditar_Click(object? sender, EventArgs e)
         {
             if (dgvUsuarios.CurrentRow == null)
             {
-                MessageBox.Show("Seleccione un alumno para editar.", "Aviso",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "Seleccione un alumno para editar.",
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
                 return;
             }
 
-            var usuario = (Usuario)dgvUsuarios.CurrentRow.DataBoundItem;
+            var usuario =
+                (Usuario)dgvUsuarios.CurrentRow.DataBoundItem;
+
             var form = new FormUsuarioDetalle(usuario);
+
             if (form.ShowDialog() == DialogResult.OK)
             {
                 CargarDatos();
             }
         }
 
+        // =====================================================
+        // DESACTIVAR
+        // =====================================================
+
         private void BtnDesactivar_Click(object? sender, EventArgs e)
         {
             if (dgvUsuarios.CurrentRow == null)
             {
-                MessageBox.Show("Seleccione un alumno para desactivar.", "Aviso",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "Seleccione un alumno para desactivar.",
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
                 return;
             }
 
-            var usuario = (Usuario)dgvUsuarios.CurrentRow.DataBoundItem;
-            var resultado = MessageBox.Show($"Desea desactivar al alumno '{usuario.Nombre}'?",
-                "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var usuario =
+                (Usuario)dgvUsuarios.CurrentRow.DataBoundItem;
+
+            var resultado = MessageBox.Show(
+                $"¿Desea desactivar al alumno '{usuario.Nombre}'?",
+                "Confirmar",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
 
             if (resultado == DialogResult.Yes)
             {
                 try
                 {
                     _bll.DesactivarAlumno(usuario.Id);
+
                     CargarDatos();
-                    MessageBox.Show("Alumno desactivado correctamente.", "Exito",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    MessageBox.Show(
+                        "Alumno desactivado correctamente.",
+                        "Éxito",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error: {ex.Message}", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        $"Error: {ex.Message}",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                 }
             }
         }

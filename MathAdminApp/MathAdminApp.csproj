@@ -11,6 +11,36 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\estrella.png" />
+    <None Remove="Resources\Logo.png" />
+    <None Remove="Resources\Louz.png" />
+    <None Remove="Resources\nube1.png" />
+    <None Remove="Resources\nube2.png" />
+    <None Remove="Resources\numeros.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\estrella.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Louz.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\nube1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\nube2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\numeros.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 

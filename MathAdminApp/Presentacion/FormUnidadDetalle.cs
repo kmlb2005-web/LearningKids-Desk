@@ -1,6 +1,5 @@
-// ============================================================
-// Presentacion: FormUnidadDetalle
-// Formulario para agregar o editar una unidad
+﻿// ============================================================
+// Presentacion: FormUnidadDetalle (MODERNO)
 // ============================================================
 
 using MathAdminApp.LogicaNegocio;
@@ -8,184 +7,541 @@ using MathAdminApp.Modelos;
 
 namespace MathAdminApp.Presentacion
 {
-    /// <summary>
-    /// Formulario modal para agregar o editar una unidad tematica.
-    /// </summary>
     public class FormUnidadDetalle : Form
     {
-        private Label lblNombre = null!;
-        private Label lblDescripcion = null!;
-        private Label lblNumero = null!;
-        private TextBox txtNombre = null!;
-        private TextBox txtDescripcion = null!;
-        private NumericUpDown nudNumero = null!;
-        private Button btnGuardar = null!;
-        private Button btnCancelar = null!;
+        // =====================================================
+        // VARIABLES
+        // =====================================================
 
         private readonly Unidad? _unidad;
+
         private readonly UnidadBLL _bll = new();
+
         private readonly bool _esEdicion;
+
+        // =====================================================
+        // CONTROLES
+        // =====================================================
+
+        private TextBox txtNombre = null!;
+
+        private TextBox txtDescripcion = null!;
+
+        private NumericUpDown nudNumero = null!;
+
+        private Button btnGuardar = null!;
+
+        private Button btnCancelar = null!;
+
+        // =====================================================
+        // CONSTRUCTORES
+        // =====================================================
 
         public FormUnidadDetalle() : this(null) { }
 
         public FormUnidadDetalle(Unidad? unidad)
         {
             _unidad = unidad;
+
             _esEdicion = unidad != null;
+
             InicializarComponentes();
-            if (_esEdicion) CargarDatos();
+
+            if (_esEdicion)
+                CargarDatos();
         }
+
+        // =====================================================
+        // DISEÑO MODERNO
+        // =====================================================
 
         private void InicializarComponentes()
         {
-            this.Text = _esEdicion ? "Editar Unidad" : "Agregar Unidad";
-            this.Size = new Size(420, 380);
-            this.StartPosition = FormStartPosition.CenterParent;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            // =================================================
+            // FORMULARIO
+            // =================================================
+
+            this.Text = _esEdicion
+                ? "Editar Unidad"
+                : "Nueva Unidad";
+
+            this.Size = new Size(950, 760);
+
+            this.StartPosition =
+                FormStartPosition.CenterParent;
+
+            this.FormBorderStyle =
+                FormBorderStyle.FixedDialog;
+
             this.MaximizeBox = false;
+
             this.MinimizeBox = false;
+
             this.BackColor = Color.White;
 
-            int y = 20;
+            this.AutoScroll = true;
 
-            lblNumero = CrearLabel("Numero de unidad:", 20, y);
-            y += 22;
-            nudNumero = new NumericUpDown
+            // =================================================
+            // PANEL PRINCIPAL
+            // =================================================
+
+            Panel panel = new Panel
             {
-                Font = new Font("Segoe UI", 11),
-                Location = new Point(20, y),
-                Size = new Size(100, 28),
-                Minimum = 1,
-                Maximum = 50,
-                Value = 1
+                Dock = DockStyle.Fill,
+
+                BackColor = Color.White,
+
+                AutoScroll = true
             };
+
+            // =================================================
+            // ROBOT
+            // =================================================
+
+            PictureBox picRobot = new PictureBox
+            {
+                Image = Image.FromFile(
+                    "Resources/Louz.png"
+                ),
+
+                SizeMode = PictureBoxSizeMode.Zoom,
+
+                Size = new Size(130, 130),
+
+                Location = new Point(45, 35),
+
+                BackColor = Color.Transparent
+            };
+
+            // =================================================
+            // TITULO
+            // =================================================
+
+            Label lblTitulo = new Label
+            {
+                Text = _esEdicion
+                    ? "✏️ Editar Unidad"
+                    : "📘 Nueva Unidad",
+
+                Font = new Font(
+                    "Segoe UI",
+                    34,
+                    FontStyle.Bold
+                ),
+
+                ForeColor =
+                    Color.FromArgb(20, 35, 90),
+
+                AutoSize = true,
+
+                Location = new Point(210, 50)
+            };
+
+            // =================================================
+            // SUBTITULO
+            // =================================================
+
+            Label lblSubtitulo = new Label
+            {
+                Text =
+                    "Configura la información de la unidad ✨",
+
+                Font = new Font("Segoe UI", 16),
+
+                ForeColor =
+                    Color.FromArgb(120, 130, 160),
+
+                AutoSize = true,
+
+                Location = new Point(220, 115)
+            };
+
+            // =================================================
+            // POSICIONES
+            // =================================================
+
+            int x = 70;
+
+            int width = 760;
+
+            int y = 220;
+
+            // =================================================
+            // NUMERO DE UNIDAD
+            // =================================================
+
+            panel.Controls.Add(
+                CrearLabel(
+                    "🔢 Número de unidad",
+                    x,
+                    y
+                )
+            );
 
             y += 45;
-            lblNombre = CrearLabel("Nombre de la unidad:", 20, y);
-            y += 22;
-            txtNombre = CrearTextBox(20, y, 360);
 
-            y += 40;
-            lblDescripcion = CrearLabel("Descripcion:", 20, y);
-            y += 22;
+            nudNumero = new NumericUpDown
+            {
+                Font = new Font("Segoe UI", 14),
+
+                Location = new Point(x, y),
+
+                Size = new Size(200, 55),
+
+                Minimum = 1,
+
+                Maximum = 50,
+
+                Value = 1,
+
+                BorderStyle = BorderStyle.FixedSingle,
+
+                BackColor = Color.White,
+
+                ForeColor =
+                    Color.FromArgb(60, 70, 110)
+            };
+
+            panel.Controls.Add(nudNumero);
+
+            // =================================================
+            // NOMBRE
+            // =================================================
+
+            y += 115;
+
+            panel.Controls.Add(
+                CrearLabel(
+                    "📚 Nombre de la unidad",
+                    x,
+                    y
+                )
+            );
+
+            y += 45;
+
+            txtNombre = CrearTextBox(
+                x,
+                y,
+                width
+            );
+
+            txtNombre.PlaceholderText =
+                "Ejemplo: Números naturales";
+
+            panel.Controls.Add(txtNombre);
+
+            // =================================================
+            // DESCRIPCION
+            // =================================================
+
+            y += 115;
+
+            panel.Controls.Add(
+                CrearLabel(
+                    "📝 Descripción",
+                    x,
+                    y
+                )
+            );
+
+            y += 45;
+
             txtDescripcion = new TextBox
             {
-                Font = new Font("Segoe UI", 11),
-                Location = new Point(20, y),
-                Size = new Size(360, 80),
+                Font = new Font("Segoe UI", 14),
+
+                Location = new Point(x, y),
+
+                Size = new Size(width, 140),
+
                 BorderStyle = BorderStyle.FixedSingle,
+
                 Multiline = true,
-                ScrollBars = ScrollBars.Vertical
+
+                ScrollBars = ScrollBars.Vertical,
+
+                BackColor = Color.White,
+
+                ForeColor =
+                    Color.FromArgb(60, 70, 110)
             };
 
-            y += 95;
+            panel.Controls.Add(txtDescripcion);
+
+            // =================================================
+            // LINEA DIVISORA
+            // =================================================
+
+            Panel linea = new Panel
+            {
+                BackColor =
+                    Color.FromArgb(230, 235, 245),
+
+                Size = new Size(760, 2),
+
+                Location = new Point(70, y + 180)
+            };
+
+            panel.Controls.Add(linea);
+
+            // =================================================
+            // BOTON GUARDAR
+            // =================================================
+
             btnGuardar = new Button
             {
-                Text = "Guardar",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                BackColor = Color.FromArgb(255, 179, 0),
+                Text = "💾  Guardar",
+
+                Font = new Font(
+                    "Segoe UI",
+                    14,
+                    FontStyle.Bold
+                ),
+
+                BackColor =
+                    Color.FromArgb(50, 120, 255),
+
                 ForeColor = Color.White,
+
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(170, 40),
-                Location = new Point(20, y),
+
+                Size = new Size(260, 65),
+
+                Location =
+                    new Point(230, y + 220),
+
                 Cursor = Cursors.Hand
             };
+
             btnGuardar.FlatAppearance.BorderSize = 0;
+
             btnGuardar.Click += BtnGuardar_Click;
+
+            // Hover
+            btnGuardar.MouseEnter += (s, e) =>
+            {
+                btnGuardar.BackColor =
+                    Color.FromArgb(70, 140, 255);
+            };
+
+            btnGuardar.MouseLeave += (s, e) =>
+            {
+                btnGuardar.BackColor =
+                    Color.FromArgb(50, 120, 255);
+            };
+
+            // =================================================
+            // BOTON CANCELAR
+            // =================================================
 
             btnCancelar = new Button
             {
-                Text = "Cancelar",
-                Font = new Font("Segoe UI", 11),
-                BackColor = Color.FromArgb(255, 179, 0),
-                ForeColor = Color.White,
+                Text = "❌  Cancelar",
+
+                Font = new Font(
+                    "Segoe UI",
+                    14,
+                    FontStyle.Bold
+                ),
+
+                BackColor = Color.White,
+
+                ForeColor =
+                    Color.FromArgb(255, 70, 120),
+
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(170, 40),
-                Location = new Point(210, y),
+
+                Size = new Size(260, 65),
+
+                Location =
+                    new Point(520, y + 220),
+
                 Cursor = Cursors.Hand
             };
-            btnCancelar.FlatAppearance.BorderSize = 0;
-            btnCancelar.Click += (s, e) => { this.DialogResult = DialogResult.Cancel; this.Close(); };
 
-            this.Controls.Add(lblNumero);
-            this.Controls.Add(nudNumero);
-            this.Controls.Add(lblNombre);
-            this.Controls.Add(txtNombre);
-            this.Controls.Add(lblDescripcion);
-            this.Controls.Add(txtDescripcion);
-            this.Controls.Add(btnGuardar);
-            this.Controls.Add(btnCancelar);
+            btnCancelar.FlatAppearance.BorderColor =
+                Color.FromArgb(255, 70, 120);
+
+            btnCancelar.FlatAppearance.BorderSize = 2;
+
+            btnCancelar.Click += (s, e) =>
+            {
+                this.DialogResult =
+                    DialogResult.Cancel;
+
+                this.Close();
+            };
+
+            // =================================================
+            // AGREGAR CONTROLES
+            // =================================================
+
+            panel.Controls.Add(picRobot);
+
+            panel.Controls.Add(lblTitulo);
+
+            panel.Controls.Add(lblSubtitulo);
+
+            panel.Controls.Add(btnGuardar);
+
+            panel.Controls.Add(btnCancelar);
+
+            this.Controls.Add(panel);
         }
 
-        private Label CrearLabel(string texto, int x, int y)
+        // =====================================================
+        // LABEL
+        // =====================================================
+
+        private Label CrearLabel(
+            string texto,
+            int x,
+            int y
+        )
         {
             return new Label
             {
                 Text = texto,
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(80, 80, 80),
+
+                Font = new Font(
+                    "Segoe UI",
+                    16,
+                    FontStyle.Bold
+                ),
+
+                ForeColor =
+                    Color.FromArgb(15, 35, 90),
+
                 AutoSize = true,
+
                 Location = new Point(x, y)
             };
         }
 
-        private TextBox CrearTextBox(int x, int y, int width)
+        // =====================================================
+        // TEXTBOX
+        // =====================================================
+
+        private TextBox CrearTextBox(
+            int x,
+            int y,
+            int width
+        )
         {
             return new TextBox
             {
-                Font = new Font("Segoe UI", 11),
+                Font = new Font("Segoe UI", 14),
+
                 Location = new Point(x, y),
-                Size = new Size(width, 28),
-                BorderStyle = BorderStyle.FixedSingle
+
+                Size = new Size(width, 55),
+
+                BorderStyle = BorderStyle.FixedSingle,
+
+                BackColor = Color.White,
+
+                ForeColor =
+                    Color.FromArgb(70, 80, 110)
             };
         }
 
+        // =====================================================
+        // CARGAR DATOS
+        // =====================================================
+
         private void CargarDatos()
         {
-            if (_unidad == null) return;
-            txtNombre.Text = _unidad.Nombre;
-            txtDescripcion.Text = _unidad.Descripcion;
-            nudNumero.Value = _unidad.NumeroUnidad;
+            if (_unidad == null)
+                return;
+
+            txtNombre.Text =
+                _unidad.Nombre;
+
+            txtDescripcion.Text =
+                _unidad.Descripcion;
+
+            nudNumero.Value =
+                _unidad.NumeroUnidad;
         }
 
-        private void BtnGuardar_Click(object? sender, EventArgs e)
+        // =====================================================
+        // GUARDAR
+        // =====================================================
+
+        private void BtnGuardar_Click(
+            object? sender,
+            EventArgs e
+        )
         {
             try
             {
                 if (_esEdicion && _unidad != null)
                 {
-                    _unidad.Nombre = txtNombre.Text.Trim();
-                    _unidad.Descripcion = txtDescripcion.Text.Trim();
-                    _unidad.NumeroUnidad = (int)nudNumero.Value;
+                    _unidad.Nombre =
+                        txtNombre.Text.Trim();
+
+                    _unidad.Descripcion =
+                        txtDescripcion.Text.Trim();
+
+                    _unidad.NumeroUnidad =
+                        (int)nudNumero.Value;
+
                     _bll.Actualizar(_unidad);
-                    MessageBox.Show("Unidad actualizada.", "Exito",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    MessageBox.Show(
+                        "Unidad actualizada.",
+                        "Éxito",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                 }
                 else
                 {
                     var nueva = new Unidad
                     {
-                        Nombre = txtNombre.Text.Trim(),
-                        Descripcion = txtDescripcion.Text.Trim(),
-                        NumeroUnidad = (int)nudNumero.Value
+                        Nombre =
+                            txtNombre.Text.Trim(),
+
+                        Descripcion =
+                            txtDescripcion.Text.Trim(),
+
+                        NumeroUnidad =
+                            (int)nudNumero.Value
                     };
+
                     _bll.Agregar(nueva);
-                    MessageBox.Show("Unidad agregada.", "Exito",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    MessageBox.Show(
+                        "Unidad agregada.",
+                        "Éxito",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                 }
 
-                this.DialogResult = DialogResult.OK;
+                this.DialogResult =
+                    DialogResult.OK;
+
                 this.Close();
             }
             catch (ArgumentException ex)
             {
-                MessageBox.Show(ex.Message, "Validacion",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    ex.Message,
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"Error: {ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }

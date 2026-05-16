@@ -1,6 +1,5 @@
-// ============================================================
-// Presentacion: FormUsuarioDetalle
-// Formulario para agregar o editar un alumno
+﻿// ============================================================
+// FORMULARIO MODERNO - NUEVO ALUMNO
 // ============================================================
 
 using MathAdminApp.LogicaNegocio;
@@ -8,212 +7,601 @@ using MathAdminApp.Modelos;
 
 namespace MathAdminApp.Presentacion
 {
-    /// <summary>
-    /// Formulario modal para agregar o editar un alumno.
-    /// </summary>
     public class FormUsuarioDetalle : Form
     {
-        private Label lblNombre = null!;
-        private Label lblCorreo = null!;
-        private Label lblUsuario = null!;
-        private Label lblContrasena = null!;
-        private Label lblGrado = null!;
+        // =====================================================
+        // VARIABLES
+        // =====================================================
+
+        private readonly UsuarioBLL _bll = new();
+
+        private readonly Usuario? _usuario;
+
+        private readonly bool _esEdicion;
+
+        // =====================================================
+        // CONTROLES
+        // =====================================================
+
         private TextBox txtNombre = null!;
         private TextBox txtCorreo = null!;
         private TextBox txtUsuario = null!;
         private TextBox txtContrasena = null!;
+
         private ComboBox cmbGrado = null!;
+
         private Button btnGuardar = null!;
         private Button btnCancelar = null!;
 
-        private readonly Usuario? _usuario;
-        private readonly UsuarioBLL _bll = new();
-        private readonly bool _esEdicion;
+        // =====================================================
+        // CONSTRUCTORES
+        // =====================================================
 
-        /// <summary>
-        /// Constructor para agregar un nuevo alumno.
-        /// </summary>
         public FormUsuarioDetalle() : this(null) { }
 
-        /// <summary>
-        /// Constructor para editar un alumno existente.
-        /// </summary>
         public FormUsuarioDetalle(Usuario? usuario)
         {
             _usuario = usuario;
+
             _esEdicion = usuario != null;
+
             InicializarComponentes();
-            if (_esEdicion) CargarDatos();
+
+            if (_esEdicion)
+                CargarDatos();
         }
+
+        // =====================================================
+        // DISEÑO
+        // =====================================================
 
         private void InicializarComponentes()
         {
-            this.Text = _esEdicion ? "Editar Alumno" : "Agregar Alumno";
-            this.Size = new Size(420, 420);
+            // =================================================
+            // FORMULARIO
+            // =================================================
+
+            this.Text = _esEdicion
+                ? "Editar Alumno"
+                : "Nuevo Alumno";
+
+            this.Size = new Size(950, 820);
+
             this.StartPosition = FormStartPosition.CenterParent;
+
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
+
             this.MaximizeBox = false;
+
             this.MinimizeBox = false;
+
             this.BackColor = Color.White;
 
-            int y = 20;
-            int labelX = 20;
-            int inputX = 20;
-            int inputWidth = 360;
+            this.AutoScroll = true;
 
-            lblNombre = CrearLabel("Nombre completo:", labelX, y);
-            y += 22;
-            txtNombre = CrearTextBox(inputX, y, inputWidth);
+            // =================================================
+            // PANEL PRINCIPAL
+            // =================================================
 
-            y += 40;
-            lblCorreo = CrearLabel("Correo electronico:", labelX, y);
-            y += 22;
-            txtCorreo = CrearTextBox(inputX, y, inputWidth);
+            Panel panel = new Panel
+            {
+                Dock = DockStyle.Fill,
 
-            y += 40;
-            lblUsuario = CrearLabel("Nombre de usuario:", labelX, y);
-            y += 22;
-            txtUsuario = CrearTextBox(inputX, y, inputWidth);
-            txtUsuario.Enabled = !_esEdicion; // No editable en modo edicion
+                BackColor = Color.White,
 
-            y += 40;
-            lblContrasena = CrearLabel("Contrasena:", labelX, y);
-            y += 22;
-            txtContrasena = CrearTextBox(inputX, y, inputWidth);
+                AutoScroll = true
+            };
+
+            // =================================================
+            // ROBOT
+            // =================================================
+
+            PictureBox picRobot = new PictureBox
+            {
+                Image = Image.FromFile("Resources/Louz.png"),
+
+                SizeMode = PictureBoxSizeMode.Zoom,
+
+                Size = new Size(130, 130),
+
+                Location = new Point(45, 35),
+
+                BackColor = Color.Transparent
+            };
+
+            // =================================================
+            // TITULO
+            // =================================================
+
+            Label lblTitulo = new Label
+            {
+                Text = _esEdicion
+                    ? "✏️ Editar Alumno"
+                    : "➕ Nuevo Alumno",
+
+                Font = new Font(
+                    "Segoe UI",
+                    34,
+                    FontStyle.Bold
+                ),
+
+                ForeColor = Color.FromArgb(20, 35, 90),
+
+                AutoSize = true,
+
+                Location = new Point(210, 50)
+            };
+
+            // =================================================
+            // SUBTITULO
+            // =================================================
+
+            Label lblSubtitulo = new Label
+            {
+                Text =
+                    "Completa la información del alumno ✨",
+
+                Font = new Font("Segoe UI", 16),
+
+                ForeColor =
+                    Color.FromArgb(120, 130, 160),
+
+                AutoSize = true,
+
+                Location = new Point(220, 115)
+            };
+
+            // =================================================
+            // POSICIONES
+            // =================================================
+
+            int x = 70;
+
+            int width = 760;
+
+            int y = 220;
+
+            // =================================================
+            // NOMBRE
+            // =================================================
+
+            panel.Controls.Add(
+                CrearLabel(
+                    "👤 Nombre completo",
+                    x,
+                    y
+                )
+            );
+
+            y += 45;
+
+            txtNombre = CrearTextBox(
+                x,
+                y,
+                width
+            );
+
+            txtNombre.PlaceholderText =
+                "Escribe el nombre completo del alumno...";
+
+            panel.Controls.Add(txtNombre);
+
+            // =================================================
+            // CORREO
+            // =================================================
+
+            y += 115;
+
+            panel.Controls.Add(
+                CrearLabel(
+                    "✉️ Correo electrónico",
+                    x,
+                    y
+                )
+            );
+
+            y += 45;
+
+            txtCorreo = CrearTextBox(
+                x,
+                y,
+                width
+            );
+
+            txtCorreo.PlaceholderText =
+                "ejemplo@correo.com";
+
+            panel.Controls.Add(txtCorreo);
+
+            // =================================================
+            // USUARIO
+            // =================================================
+
+            y += 115;
+
+            panel.Controls.Add(
+                CrearLabel(
+                    "💻 Nombre de usuario",
+                    x,
+                    y
+                )
+            );
+
+            y += 45;
+
+            txtUsuario = CrearTextBox(
+                x,
+                y,
+                width
+            );
+
+            txtUsuario.PlaceholderText =
+                "Escribe el nombre de usuario...";
+
+            txtUsuario.Enabled = !_esEdicion;
+
+            panel.Controls.Add(txtUsuario);
+
+            // =================================================
+            // CONTRASEÑA
+            // =================================================
+
+            y += 115;
+
+            Label lblPass = CrearLabel(
+                "🔒 Contraseña",
+                x,
+                y
+            );
+
+            txtContrasena = CrearTextBox(
+                x,
+                y + 45,
+                width
+            );
+
+            txtContrasena.PlaceholderText =
+                "Escribe la contraseña...";
+
             txtContrasena.UseSystemPasswordChar = true;
-            txtContrasena.Visible = !_esEdicion; // Solo al crear
-            lblContrasena.Visible = !_esEdicion;
 
-            if (_esEdicion) y -= 62; // Ajustar si no se muestra contrasena
+            if (!_esEdicion)
+            {
+                panel.Controls.Add(lblPass);
 
-            y += 40;
-            lblGrado = CrearLabel("Grado:", labelX, y);
-            y += 22;
+                panel.Controls.Add(txtContrasena);
+
+                y += 115;
+            }
+
+            // =================================================
+            // GRADO
+            // =================================================
+
+            y += 20;
+
+            panel.Controls.Add(
+                CrearLabel(
+                    "🎓 Grado",
+                    x,
+                    y
+                )
+            );
+
+            y += 45;
+
             cmbGrado = new ComboBox
             {
-                Font = new Font("Segoe UI", 11),
-                Location = new Point(inputX, y),
-                Size = new Size(inputWidth, 30),
-                DropDownStyle = ComboBoxStyle.DropDownList
-            };
-            cmbGrado.Items.AddRange(new[] { "1ro", "2do", "3ro", "4to", "5to", "6to" });
-            cmbGrado.SelectedIndex = 5; // 6to por defecto
+                Font = new Font("Segoe UI", 14),
 
-            y += 50;
+                Location = new Point(x, y),
+
+                Size = new Size(width, 55),
+
+                DropDownStyle = ComboBoxStyle.DropDownList,
+
+                FlatStyle = FlatStyle.Flat,
+
+                BackColor = Color.White,
+
+                ForeColor =
+                    Color.FromArgb(30, 50, 90)
+            };
+
+            cmbGrado.Items.AddRange(
+                new[]
+                {
+                    "1ro",
+                    "2do",
+                    "3ro",
+                    "4to",
+                    "5to",
+                    "6to"
+                }
+            );
+
+            cmbGrado.SelectedIndex = 5;
+
+            panel.Controls.Add(cmbGrado);
+
+            // =================================================
+            // LINEA
+            // =================================================
+
+            Panel linea = new Panel
+            {
+                BackColor =
+                    Color.FromArgb(230, 235, 245),
+
+                Size = new Size(760, 2),
+
+                Location = new Point(70, y + 90)
+            };
+
+            panel.Controls.Add(linea);
+
+            // =================================================
+            // BOTON GUARDAR
+            // =================================================
+
             btnGuardar = new Button
             {
-                Text = "Guardar",
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                BackColor = Color.FromArgb(255, 179, 0),
+                Text = "💾  Guardar",
+
+                Font = new Font(
+                    "Segoe UI",
+                    14,
+                    FontStyle.Bold
+                ),
+
+                BackColor =
+                    Color.FromArgb(50, 120, 255),
+
                 ForeColor = Color.White,
+
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(170, 40),
-                Location = new Point(20, y),
+
+                Size = new Size(260, 65),
+
+                Location = new Point(230, y + 125),
+
                 Cursor = Cursors.Hand
             };
+
             btnGuardar.FlatAppearance.BorderSize = 0;
+
             btnGuardar.Click += BtnGuardar_Click;
+
+            // Hover
+            btnGuardar.MouseEnter += (s, e) =>
+            {
+                btnGuardar.BackColor =
+                    Color.FromArgb(70, 140, 255);
+            };
+
+            btnGuardar.MouseLeave += (s, e) =>
+            {
+                btnGuardar.BackColor =
+                    Color.FromArgb(50, 120, 255);
+            };
+
+            // =================================================
+            // BOTON CANCELAR
+            // =================================================
 
             btnCancelar = new Button
             {
-                Text = "Cancelar",
-                Font = new Font("Segoe UI", 11),
-                BackColor = Color.FromArgb(255, 179, 0),
-                ForeColor = Color.White,
+                Text = "❌  Cancelar",
+
+                Font = new Font(
+                    "Segoe UI",
+                    14,
+                    FontStyle.Bold
+                ),
+
+                BackColor = Color.White,
+
+                ForeColor =
+                    Color.FromArgb(255, 70, 120),
+
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(170, 40),
-                Location = new Point(210, y),
+
+                Size = new Size(260, 65),
+
+                Location = new Point(520, y + 125),
+
                 Cursor = Cursors.Hand
             };
-            btnCancelar.FlatAppearance.BorderSize = 0;
-            btnCancelar.Click += (s, e) => { this.DialogResult = DialogResult.Cancel; this.Close(); };
 
-            this.Controls.Add(lblNombre);
-            this.Controls.Add(txtNombre);
-            this.Controls.Add(lblCorreo);
-            this.Controls.Add(txtCorreo);
-            this.Controls.Add(lblUsuario);
-            this.Controls.Add(txtUsuario);
-            this.Controls.Add(lblContrasena);
-            this.Controls.Add(txtContrasena);
-            this.Controls.Add(lblGrado);
-            this.Controls.Add(cmbGrado);
-            this.Controls.Add(btnGuardar);
-            this.Controls.Add(btnCancelar);
+            btnCancelar.FlatAppearance.BorderColor =
+                Color.FromArgb(255, 70, 120);
+
+            btnCancelar.FlatAppearance.BorderSize = 2;
+
+            btnCancelar.Click += (s, e) =>
+            {
+                this.DialogResult = DialogResult.Cancel;
+
+                this.Close();
+            };
+
+            // =================================================
+            // AGREGAR CONTROLES
+            // =================================================
+
+            panel.Controls.Add(picRobot);
+
+            panel.Controls.Add(lblTitulo);
+
+            panel.Controls.Add(lblSubtitulo);
+
+            panel.Controls.Add(btnGuardar);
+
+            panel.Controls.Add(btnCancelar);
+
+            this.Controls.Add(panel);
         }
 
-        private Label CrearLabel(string texto, int x, int y)
+        // =====================================================
+        // LABEL
+        // =====================================================
+
+        private Label CrearLabel(
+            string texto,
+            int x,
+            int y
+        )
         {
             return new Label
             {
                 Text = texto,
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(80, 80, 80),
+
+                Font = new Font(
+                    "Segoe UI",
+                    16,
+                    FontStyle.Bold
+                ),
+
+                ForeColor =
+                    Color.FromArgb(15, 35, 90),
+
                 AutoSize = true,
+
                 Location = new Point(x, y)
             };
         }
 
-        private TextBox CrearTextBox(int x, int y, int width)
+        // =====================================================
+        // TEXTBOX
+        // =====================================================
+
+        private TextBox CrearTextBox(
+            int x,
+            int y,
+            int width
+        )
         {
             return new TextBox
             {
-                Font = new Font("Segoe UI", 11),
+                Font = new Font("Segoe UI", 14),
+
                 Location = new Point(x, y),
-                Size = new Size(width, 28),
-                BorderStyle = BorderStyle.FixedSingle
+
+                Size = new Size(width, 55),
+
+                BorderStyle = BorderStyle.FixedSingle,
+
+                BackColor = Color.White,
+
+                ForeColor =
+                    Color.FromArgb(70, 80, 110)
             };
         }
 
+        // =====================================================
+        // CARGAR DATOS
+        // =====================================================
+
         private void CargarDatos()
         {
-            if (_usuario == null) return;
+            if (_usuario == null)
+                return;
+
             txtNombre.Text = _usuario.Nombre;
+
             txtCorreo.Text = _usuario.Correo;
-            txtUsuario.Text = _usuario.NombreUsuario;
-            cmbGrado.SelectedItem = _usuario.Grado;
+
+            txtUsuario.Text =
+                _usuario.NombreUsuario;
+
+            cmbGrado.SelectedItem =
+                _usuario.Grado;
         }
 
-        private void BtnGuardar_Click(object? sender, EventArgs e)
+        // =====================================================
+        // GUARDAR
+        // =====================================================
+
+        private void BtnGuardar_Click(
+            object? sender,
+            EventArgs e
+        )
         {
             try
             {
                 if (_esEdicion && _usuario != null)
                 {
-                    _usuario.Nombre = txtNombre.Text.Trim();
-                    _usuario.Correo = txtCorreo.Text.Trim();
-                    _usuario.Grado = cmbGrado.SelectedItem?.ToString() ?? "6to";
+                    _usuario.Nombre =
+                        txtNombre.Text.Trim();
+
+                    _usuario.Correo =
+                        txtCorreo.Text.Trim();
+
+                    _usuario.Grado =
+                        cmbGrado.SelectedItem?.ToString()
+                        ?? "6to";
+
                     _bll.ActualizarAlumno(_usuario);
-                    MessageBox.Show("Alumno actualizado correctamente.", "Exito",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    MessageBox.Show(
+                        "Alumno actualizado correctamente.",
+                        "Éxito",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                 }
                 else
                 {
                     var nuevo = new Usuario
                     {
-                        Nombre = txtNombre.Text.Trim(),
-                        Correo = txtCorreo.Text.Trim(),
-                        NombreUsuario = txtUsuario.Text.Trim(),
-                        Contrasena = txtContrasena.Text,
-                        Grado = cmbGrado.SelectedItem?.ToString() ?? "6to"
+                        Nombre =
+                            txtNombre.Text.Trim(),
+
+                        Correo =
+                            txtCorreo.Text.Trim(),
+
+                        NombreUsuario =
+                            txtUsuario.Text.Trim(),
+
+                        Contrasena =
+                            txtContrasena.Text,
+
+                        Grado =
+                            cmbGrado.SelectedItem?.ToString()
+                            ?? "6to"
                     };
+
                     _bll.AgregarAlumno(nuevo);
-                    MessageBox.Show("Alumno agregado correctamente.", "Exito",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    MessageBox.Show(
+                        "Alumno agregado correctamente.",
+                        "Éxito",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
                 }
 
                 this.DialogResult = DialogResult.OK;
+
                 this.Close();
             }
             catch (ArgumentException ex)
             {
-                MessageBox.Show(ex.Message, "Validacion",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    ex.Message,
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"Error: {ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }
