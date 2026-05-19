@@ -196,3 +196,13 @@ C:\Escritorio\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminA
 C:\Escritorio\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.genruntimeconfig.cache
 C:\Escritorio\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\ref\MathAdminApp.dll
 C:\Escritorio\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Presentacion.ControlResultados.resources
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\bin\Debug\net8.0-windows\Resources\estrella.png
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\bin\Debug\net8.0-windows\Resources\Logo.png
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\bin\Debug\net8.0-windows\Resources\Louz.png
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\bin\Debug\net8.0-windows\Resources\nube1.png
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\bin\Debug\net8.0-windows\Resources\nube2.png
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\bin\Debug\net8.0-windows\Resources\numeros.png
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Presentacion.ControlResultados.resources
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Presentacion.FormPreguntaDetalle.resources
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Presentacion.FormUnidadDetalle.resources
+C:\Users\tsssb\source\repos\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Presentacion.FormUsuarioDetalle.resources

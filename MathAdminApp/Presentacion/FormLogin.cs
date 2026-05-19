@@ -360,22 +360,7 @@ namespace MathAdminApp.Presentacion
 
                     return;
                 }
-
-                // =============================================
-                // VALIDAR ROL
-                // =============================================
-
-                if (usuario.Rol != "Administrador")
-                {
-                    MessageBox.Show(
-                        "Solo los administradores pueden acceder a esta aplicación.",
-                        "Acceso denegado",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    );
-
-                    return;
-                }
+                
 
                 // =============================================
                 // ABRIR DASHBOARD

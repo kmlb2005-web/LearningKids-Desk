@@ -36,6 +36,32 @@ namespace MathAdminApp.LogicaNegocio
         public List<Usuario> ObtenerAlumnos() => _dal.ObtenerAlumnos();
 
         /// <summary>
+        /// Devuelve los usuarios visibles para el usuario actual según su rol.
+        /// - Administrador: todos los usuarios.
+        /// - Docente: solo los alumnos relacionados con el docente.
+        /// </summary>
+        public List<Usuario> ObtenerUsuariosVisibles(Usuario usuarioActual)
+        {
+            if (usuarioActual == null) return new List<Usuario>();
+
+            // Preferir RolNombre (viene de la API: ADMIN, DOCENTE, ALUMNO)
+            var rolApi = usuarioActual.RolNombre?.Trim().ToUpperInvariant() ?? string.Empty;
+
+            if (rolApi == "ADMIN" || string.Equals(usuarioActual.Rol, "Administrador", StringComparison.OrdinalIgnoreCase))
+            {
+                return _dal.ObtenerUsuarios();
+            }
+
+            if (rolApi == "DOCENTE" || string.Equals(usuarioActual.Rol, "Docente", StringComparison.OrdinalIgnoreCase))
+            {
+                return _dal.ObtenerAlumnosPorDocente(usuarioActual.Id);
+            }
+
+            // Por defecto devolver solo alumnos
+            return _dal.ObtenerAlumnos();
+        }
+
+        /// <summary>
         /// Agrega un nuevo alumno con validaciones.
         /// </summary>
         public bool AgregarAlumno(Usuario usuario)

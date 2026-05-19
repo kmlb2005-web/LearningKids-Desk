@@ -24,13 +24,16 @@ namespace MathAdminApp.Presentacion
         private TextBox txtBuscar = null!;
 
         private readonly UsuarioBLL _bll = new();
+        private readonly Usuario _usuarioActual;
 
         // =====================================================
         // CONSTRUCTOR
         // =====================================================
 
-        public ControlUsuarios()
+        public ControlUsuarios(Usuario usuarioActual)
         {
+            _usuarioActual = usuarioActual ?? new Usuario();
+
             InicializarComponentes();
 
             CargarDatos();
@@ -319,7 +322,7 @@ namespace MathAdminApp.Presentacion
         {
             try
             {
-                var alumnos = _bll.ObtenerAlumnos();
+                var alumnos = _bll.ObtenerUsuariosVisibles(_usuarioActual);
 
                 dgvUsuarios.DataSource = null;
 
@@ -329,11 +332,38 @@ namespace MathAdminApp.Presentacion
                 // OCULTAR COLUMNAS
                 // =============================================
 
+                // Ocultar campos sensibles por defecto
                 if (dgvUsuarios.Columns.Contains("Contrasena"))
                     dgvUsuarios.Columns["Contrasena"].Visible = false;
 
-                if (dgvUsuarios.Columns.Contains("Rol"))
-                    dgvUsuarios.Columns["Rol"].Visible = false;
+                // Mostrar/ocultar columnas según rol del usuario actual
+                var rolApi = _usuarioActual?.RolNombre?.Trim().ToUpperInvariant() ?? string.Empty;
+
+                if (rolApi == "ADMIN" || string.Equals(_usuarioActual.Rol, "Administrador", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Administrador: ver todos los usuarios, pero mostrar solo campos compartidos
+                    // Ocultamos campos no compartidos
+                    if (dgvUsuarios.Columns.Contains("Correo")) dgvUsuarios.Columns["Correo"].Visible = false;
+                    if (dgvUsuarios.Columns.Contains("Activo")) dgvUsuarios.Columns["Activo"].Visible = false;
+                    if (dgvUsuarios.Columns.Contains("FechaCreacion")) dgvUsuarios.Columns["FechaCreacion"].Visible = false;
+                    if (dgvUsuarios.Columns.Contains("Rol")) dgvUsuarios.Columns["Rol"].Visible = false;
+                }
+                else if (rolApi == "DOCENTE" || string.Equals(_usuarioActual.Rol, "Docente", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Docente: sólo alumnos relacionados, mostrar campos relevantes
+                    if (dgvUsuarios.Columns.Contains("Correo")) dgvUsuarios.Columns["Correo"].Visible = true;
+                    if (dgvUsuarios.Columns.Contains("Activo")) dgvUsuarios.Columns["Activo"].Visible = false;
+                    if (dgvUsuarios.Columns.Contains("FechaCreacion")) dgvUsuarios.Columns["FechaCreacion"].Visible = false;
+                    if (dgvUsuarios.Columns.Contains("Rol")) dgvUsuarios.Columns["Rol"].Visible = false;
+                }
+                else
+                {
+                    // Otros roles: ocultar información sensible
+                    if (dgvUsuarios.Columns.Contains("Correo")) dgvUsuarios.Columns["Correo"].Visible = false;
+                    if (dgvUsuarios.Columns.Contains("Activo")) dgvUsuarios.Columns["Activo"].Visible = false;
+                    if (dgvUsuarios.Columns.Contains("FechaCreacion")) dgvUsuarios.Columns["FechaCreacion"].Visible = false;
+                    if (dgvUsuarios.Columns.Contains("Rol")) dgvUsuarios.Columns["Rol"].Visible = false;
+                }
 
                 // =============================================
                 // RENOMBRAR COLUMNAS
@@ -353,6 +383,12 @@ namespace MathAdminApp.Presentacion
 
                 if (dgvUsuarios.Columns.Contains("Grado"))
                     dgvUsuarios.Columns["Grado"].HeaderText = "🎓 Grado";
+
+                if (dgvUsuarios.Columns.Contains("IdRol"))
+                    dgvUsuarios.Columns["IdRol"].HeaderText = "🔐 ID Rol";
+
+                if (dgvUsuarios.Columns.Contains("RolNombre"))
+                    dgvUsuarios.Columns["RolNombre"].HeaderText = "🏷️ Rol (API)";
 
                 if (dgvUsuarios.Columns.Contains("Activo"))
                     dgvUsuarios.Columns["Activo"].HeaderText = "✅ Activo";

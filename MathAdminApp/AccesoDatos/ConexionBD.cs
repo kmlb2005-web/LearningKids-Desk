@@ -18,12 +18,18 @@ namespace MathAdminApp.AccesoDatos
         // tu configuracion de SQL Server local.
         // =====================================================
         private static readonly string _cadenaConexion =
-            @"Data Source=FRIDUKI; Initial Catalog=MathAdminDB; Integrated Security=True; TrustServerCertificate=True;";
+            @"Data Source=kmlb; Initial Catalog=LearningKidsDB; Integrated Security=True; TrustServerCertificate=True;";
 
         /// <summary>
         /// Obtiene la cadena de conexion configurada.
         /// </summary>
         public static string CadenaConexion => _cadenaConexion;
+
+        /// <summary>
+        /// URL base de la API remota (si se desea usar la API en lugar de SQL Server).
+        /// Modifica este valor segun la direccion de tu API local.
+        /// </summary>
+        public static string ApiBaseUrl => "http://192.168.1.72:5125";
 
         /// <summary>
         /// Crea y retorna una nueva conexion a SQL Server.

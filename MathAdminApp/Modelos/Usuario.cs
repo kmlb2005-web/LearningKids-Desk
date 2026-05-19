@@ -26,6 +26,12 @@ namespace MathAdminApp.Modelos
         /// <summary>Contrasena del usuario</summary>
         public string Contrasena { get; set; } = string.Empty;
 
+        /// <summary>Identificador del rol segun la API</summary>
+        public int IdRol { get; set; }
+
+        /// <summary>Nombre del rol tal como lo devuelve la API (ej: "ADMIN", "DOCENTE", "ALUMNO")</summary>
+        public string RolNombre { get; set; } = string.Empty;
+
         /// <summary>Grado escolar del alumno (ej: "6to")</summary>
         public string Grado { get; set; } = string.Empty;
 
