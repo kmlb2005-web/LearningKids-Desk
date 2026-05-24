@@ -155,3 +155,6 @@ C:\Users\Viane\LearningKids-Desk\MathAdminApp\bin\Debug\net8.0-windows\Resources
 C:\Users\Viane\LearningKids-Desk\MathAdminApp\bin\Debug\net8.0-windows\Resources\nube1.png
 C:\Users\Viane\LearningKids-Desk\MathAdminApp\bin\Debug\net8.0-windows\Resources\nube2.png
 C:\Users\Viane\LearningKids-Desk\MathAdminApp\bin\Debug\net8.0-windows\Resources\numeros.png
+C:\Users\Viane\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Presentacion.ControlCampos.resources
+C:\Users\Viane\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Presentacion.ControlProyectos.resources
+C:\Users\Viane\LearningKids-Desk\MathAdminApp\obj\Debug\net8.0-windows\MathAdminApp.Presentacion.ControlTemas.resources

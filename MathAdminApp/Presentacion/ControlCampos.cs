@@ -1,0 +1,615 @@
+﻿using MathAdminApp.LogicaNegocio;
+using MathAdminApp.Modelos;
+
+namespace MathAdminApp.Presentacion
+{
+    public partial class ControlCampos : UserControl
+    {
+        // =====================================================
+        // CONTROLES
+        // =====================================================
+
+        private DataGridView dgvCampos = null!;
+
+        private TextBox txtNombre = null!;
+
+        private TextBox txtBuscar = null!;
+
+        private Button btnAgregar = null!;
+
+        private Button btnEditar = null!;
+
+        private Button btnEliminar = null!;
+
+        // =====================================================
+        // BLL
+        // =====================================================
+
+        private readonly CampoBLL _campoBLL = new();
+
+        // =====================================================
+        // CONSTRUCTOR
+        // =====================================================
+
+        public ControlCampos()
+        {
+            InicializarComponentes();
+
+            CargarCampos();
+        }
+
+        // =====================================================
+        // INTERFAZ
+        // =====================================================
+
+        private void InicializarComponentes()
+        {
+            this.BackColor =
+                Color.FromArgb(245, 248, 255);
+
+            // =================================================
+            // PANEL SUPERIOR
+            // =================================================
+
+            Panel panelSuperior = new Panel
+            {
+                Dock = DockStyle.Top,
+
+                Height = 220,
+
+                BackColor = Color.Transparent
+            };
+
+            // =================================================
+            // TITULO
+            // =================================================
+
+            Label lblTitulo = new Label
+            {
+                Text = "📖 Gestión de Campos",
+
+                Font = new Font(
+                    "Segoe UI",
+                    28,
+                    FontStyle.Bold
+                ),
+
+                ForeColor =
+                    Color.FromArgb(15, 35, 90),
+
+                AutoSize = true,
+
+                Location = new Point(25, 15)
+            };
+
+            // =================================================
+            // SUBTITULO
+            // =================================================
+
+            Label lblSubtitulo = new Label
+            {
+                Text =
+                    "Administra los campos formativos fácilmente ✨",
+
+                Font = new Font(
+                    "Segoe UI",
+                    13
+                ),
+
+                ForeColor =
+                    Color.FromArgb(110, 120, 150),
+
+                AutoSize = true,
+
+                Location = new Point(30, 65)
+            };
+
+            // =================================================
+            // TEXTBOX NOMBRE
+            // =================================================
+
+            txtNombre = new TextBox
+            {
+                PlaceholderText =
+                    "✏️ Nombre del campo formativo...",
+
+                Font = new Font(
+                    "Segoe UI",
+                    12
+                ),
+
+                Location = new Point(30, 130),
+
+                Size = new Size(350, 45),
+
+                BorderStyle =
+                    BorderStyle.FixedSingle,
+
+                BackColor = Color.White,
+
+                ForeColor =
+                    Color.FromArgb(50, 70, 120)
+            };
+
+            // =================================================
+            // BOTON AGREGAR
+            // =================================================
+
+            btnAgregar = CrearBoton(
+                "➕ Agregar",
+                Color.FromArgb(50, 120, 255)
+            );
+
+            btnAgregar.Location =
+                new Point(420, 123);
+
+            btnAgregar.Click += BtnAgregar_Click;
+
+            // =================================================
+            // BOTON EDITAR
+            // =================================================
+
+            btnEditar = CrearBoton(
+                "✏ Editar",
+                Color.FromArgb(255, 179, 0)
+            );
+
+            btnEditar.Location =
+                new Point(620, 123);
+
+            btnEditar.Click += BtnEditar_Click;
+
+            // =================================================
+            // BOTON ELIMINAR
+            // =================================================
+
+            btnEliminar = CrearBoton(
+                "🗑 Eliminar",
+                Color.FromArgb(255, 70, 120)
+            );
+
+            btnEliminar.Location =
+                new Point(820, 123);
+
+            btnEliminar.Click += BtnEliminar_Click;
+
+            // =================================================
+            // BUSCADOR
+            // =================================================
+
+            txtBuscar = new TextBox
+            {
+                PlaceholderText =
+                    "🔍 Buscar campo...",
+
+                Font = new Font(
+                    "Segoe UI",
+                    12
+                ),
+
+                Size = new Size(250, 45),
+
+                Location = new Point(1120, 130),
+
+                BorderStyle =
+                    BorderStyle.FixedSingle,
+
+                BackColor = Color.White,
+
+                ForeColor =
+                    Color.FromArgb(60, 70, 100)
+            };
+
+            txtBuscar.TextChanged +=
+                TxtBuscar_TextChanged;
+
+            // =================================================
+            // AGREGAR CONTROLES
+            // =================================================
+
+            panelSuperior.Controls.Add(lblTitulo);
+
+            panelSuperior.Controls.Add(lblSubtitulo);
+
+            panelSuperior.Controls.Add(txtNombre);
+
+            panelSuperior.Controls.Add(btnAgregar);
+
+            panelSuperior.Controls.Add(btnEditar);
+
+            panelSuperior.Controls.Add(btnEliminar);
+
+            panelSuperior.Controls.Add(txtBuscar);
+
+            // =================================================
+            // TABLA
+            // =================================================
+
+            dgvCampos = new DataGridView
+            {
+                Dock = DockStyle.Fill,
+
+                BackgroundColor = Color.White,
+
+                BorderStyle = BorderStyle.None,
+
+                CellBorderStyle =
+                    DataGridViewCellBorderStyle.SingleHorizontal,
+
+                ColumnHeadersBorderStyle =
+                    DataGridViewHeaderBorderStyle.None,
+
+                SelectionMode =
+                    DataGridViewSelectionMode.FullRowSelect,
+
+                MultiSelect = false,
+
+                ReadOnly = true,
+
+                AllowUserToAddRows = false,
+
+                AllowUserToDeleteRows = false,
+
+                AllowUserToResizeRows = false,
+
+                AutoSizeColumnsMode =
+                    DataGridViewAutoSizeColumnsMode.Fill,
+
+                RowHeadersVisible = false,
+
+                Font = new Font(
+                    "Segoe UI",
+                    11
+                ),
+
+                GridColor =
+                    Color.FromArgb(235, 240, 250),
+
+                RowTemplate =
+                {
+                    Height = 55
+                }
+            };
+
+            dgvCampos.EnableHeadersVisualStyles = false;
+            dgvCampos.CellClick += DgvCampos_CellClick;
+
+            dgvCampos.ColumnHeadersDefaultCellStyle.BackColor =
+                Color.FromArgb(245, 248, 255);
+
+            dgvCampos.ColumnHeadersDefaultCellStyle.ForeColor =
+                Color.FromArgb(20, 35, 90);
+
+            dgvCampos.ColumnHeadersDefaultCellStyle.Font =
+                new Font(
+                    "Segoe UI",
+                    12,
+                    FontStyle.Bold
+                );
+
+            dgvCampos.ColumnHeadersHeight = 60;
+
+            dgvCampos.DefaultCellStyle.BackColor =
+                Color.White;
+
+            dgvCampos.DefaultCellStyle.ForeColor =
+                Color.FromArgb(40, 50, 80);
+
+            dgvCampos.DefaultCellStyle.SelectionBackColor =
+                Color.FromArgb(230, 240, 255);
+
+            dgvCampos.DefaultCellStyle.SelectionForeColor =
+                Color.FromArgb(20, 35, 90);
+
+            dgvCampos.DefaultCellStyle.Padding =
+                new Padding(8);
+
+            // =================================================
+            // PANEL TABLA
+            // =================================================
+
+            Panel panelTabla = new Panel
+            {
+                Dock = DockStyle.Fill,
+
+                Padding =
+                    new Padding(25, 0, 25, 25),
+
+                BackColor =
+                    Color.Transparent
+            };
+
+            panelTabla.Controls.Add(dgvCampos);
+
+            // =================================================
+            // AGREGAR
+            // =================================================
+
+            this.Controls.Add(panelTabla);
+
+            this.Controls.Add(panelSuperior);
+        }
+
+        // =====================================================
+        // CREAR BOTON
+        // =====================================================
+
+        private Button CrearBoton(
+            string texto,
+            Color color
+        )
+        {
+            Button btn = new Button
+            {
+                Text = texto,
+
+                Font = new Font(
+                    "Segoe UI",
+                    12,
+                    FontStyle.Bold
+                ),
+
+                BackColor = color,
+
+                ForeColor = Color.White,
+
+                FlatStyle =
+                    FlatStyle.Flat,
+
+                Size =
+                    new Size(180, 55),
+
+                Cursor =
+                    Cursors.Hand
+            };
+
+            btn.FlatAppearance.BorderSize = 0;
+
+            return btn;
+        }
+
+        // =====================================================
+        // CARGAR CAMPOS
+        // =====================================================
+
+        private void CargarCampos()
+        {
+            try
+            {
+                dgvCampos.DataSource = null;
+
+                dgvCampos.DataSource =
+                    _campoBLL.ObtenerTodos();
+
+                if (dgvCampos.Columns.Contains("IdCampo"))
+                    dgvCampos.Columns["IdCampo"]
+                        .HeaderText = "ID";
+
+                if (dgvCampos.Columns.Contains("Nombre"))
+                    dgvCampos.Columns["Nombre"]
+                        .HeaderText =
+                            "Campo Formativo";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message
+                );
+            }
+        }
+
+        // =====================================================
+        // AGREGAR
+        // =====================================================
+
+        private void BtnAgregar_Click(
+            object? sender,
+            EventArgs e
+        )
+        {
+            try
+            {
+                CampoFormativo campo =
+                    new CampoFormativo
+                    {
+                        Nombre =
+                            txtNombre.Text.Trim()
+                    };
+
+                _campoBLL.Agregar(campo);
+
+                txtNombre.Clear();
+
+                CargarCampos();
+
+                MessageBox.Show(
+                    "Campo agregado correctamente."
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message
+                );
+            }
+        }
+
+        private void BtnEditar_Click(
+            object? sender,
+            EventArgs e
+        )
+        {
+            // =====================================================
+            // VALIDAR FILA
+            // =====================================================
+
+            if (dgvCampos.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Seleccione un campo para editar.",
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            // =====================================================
+            // VALIDAR TEXTO
+            // =====================================================
+
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show(
+                    "Ingrese un nombre.",
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            try
+            {
+                CampoFormativo campo =
+                    (CampoFormativo)
+                    dgvCampos.SelectedRows[0].DataBoundItem;
+
+                campo.Nombre =
+                    txtNombre.Text.Trim();
+
+                _campoBLL.Editar(campo);
+
+                CargarCampos();
+
+                txtNombre.Clear();
+
+                MessageBox.Show(
+                    "Campo actualizado correctamente.",
+                    "Éxito",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+        }
+
+        // =====================================================
+        // ELIMINAR
+        // =====================================================
+
+        private void BtnEliminar_Click(
+            object? sender,
+            EventArgs e
+        )
+        {
+            if (dgvCampos.CurrentRow == null)
+            {
+                MessageBox.Show(
+                    "Seleccione un campo."
+                );
+
+                return;
+            }
+
+            try
+            {
+                CampoFormativo campo =
+                    (CampoFormativo)
+                    dgvCampos.CurrentRow.DataBoundItem;
+
+                DialogResult resultado =
+                    MessageBox.Show(
+                        $"¿Eliminar '{campo.Nombre}'?",
+                        "Confirmar",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+
+                if (resultado == DialogResult.Yes)
+                {
+                    _campoBLL.Eliminar(
+                        campo.IdCampo
+                    );
+
+                    CargarCampos();
+
+                    MessageBox.Show(
+                        "Campo eliminado."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message
+                );
+            }
+        }
+        private void DgvCampos_CellClick(
+        object? sender,
+        DataGridViewCellEventArgs e
+)
+        {
+            if (e.RowIndex >= 0)
+            {
+                CampoFormativo campo =
+                    (CampoFormativo)
+                    dgvCampos.Rows[e.RowIndex].DataBoundItem;
+
+                txtNombre.Text =
+                    campo.Nombre;
+            }
+        }
+
+        // =====================================================
+        // BUSCAR
+        // =====================================================
+
+        private void TxtBuscar_TextChanged(
+            object? sender,
+            EventArgs e
+        )
+        {
+            try
+            {
+                string texto =
+                    txtBuscar.Text
+                        .Trim()
+                        .ToLower();
+
+                var lista =
+                    _campoBLL.ObtenerTodos();
+
+                if (!string.IsNullOrWhiteSpace(texto))
+                {
+                    lista = lista
+                        .Where(x =>
+                            x.Nombre
+                                .ToLower()
+                                .Contains(texto)
+                        )
+                        .ToList();
+                }
+
+                dgvCampos.DataSource = null;
+
+                dgvCampos.DataSource = lista;
+            }
+            catch
+            {
+            }
+        }
+    }
+
+}
