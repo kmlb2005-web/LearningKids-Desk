@@ -1,6 +1,6 @@
 // ============================================================
 // Capa de Logica de Negocio: PreguntaBLL
-// Logica de negocio para operaciones de preguntas
+// Logica para preguntas
 // ============================================================
 
 using MathAdminApp.AccesoDatos;
@@ -8,31 +8,107 @@ using MathAdminApp.Modelos;
 
 namespace MathAdminApp.LogicaNegocio
 {
-    /// <summary>
-    /// Clase de logica de negocio para la entidad Pregunta.
-    /// </summary>
     public class PreguntaBLL
     {
-        private readonly PreguntaDAL _dal = new();
+        private readonly PreguntaDAO _dao = new();
 
-        public List<Pregunta> ObtenerPorExamen(int examenId) => _dal.ObtenerPorExamen(examenId);
+        // =====================================================
+        // OBTENER POR PRUEBA
+        // =====================================================
 
-        public bool Agregar(Pregunta pregunta)
+        public List<Pregunta> ObtenerPorPrueba(
+            int idPrueba)
         {
-            if (string.IsNullOrWhiteSpace(pregunta.Texto))
-                throw new ArgumentException("El texto de la pregunta es obligatorio.");
-            if (string.IsNullOrWhiteSpace(pregunta.RespuestaCorrecta))
-                throw new ArgumentException("La respuesta correcta es obligatoria.");
-            if (pregunta.Tipo == "Multiple")
+            if (idPrueba <= 0)
             {
-                if (string.IsNullOrWhiteSpace(pregunta.OpcionA) ||
-                    string.IsNullOrWhiteSpace(pregunta.OpcionB))
-                    throw new ArgumentException("Las opciones A y B son obligatorias para opcion multiple.");
+                throw new Exception(
+                    "ID de prueba invalido."
+                );
             }
 
-            return _dal.Agregar(pregunta);
+            return _dao.ObtenerPorPrueba(
+                idPrueba
+            );
         }
 
-        public bool Eliminar(int id) => _dal.Eliminar(id);
+        // =====================================================
+        // AGREGAR
+        // =====================================================
+
+        public bool Agregar(
+            Pregunta pregunta)
+        {
+            if (string.IsNullOrWhiteSpace(
+                pregunta.Texto))
+            {
+                throw new Exception(
+                    "Ingrese una pregunta."
+                );
+            }
+
+            if (pregunta.IdPrueba <= 0)
+            {
+                throw new Exception(
+                    "Seleccione una prueba."
+                );
+            }
+
+            return _dao.Agregar(
+                pregunta
+            );
+        }
+
+        // =====================================================
+        // EDITAR
+        // =====================================================
+
+        public bool Editar(
+            Pregunta pregunta)
+        {
+            if (pregunta.IdPregunta <= 0)
+            {
+                throw new Exception(
+                    "ID invalido."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                pregunta.Texto))
+            {
+                throw new Exception(
+                    "Ingrese una pregunta."
+                );
+            }
+
+            if (pregunta.IdPrueba <= 0)
+            {
+                throw new Exception(
+                    "Seleccione una prueba."
+                );
+            }
+
+            return _dao.Actualizar(
+                pregunta
+            );
+        }
+
+        // =====================================================
+        // ELIMINAR
+        // =====================================================
+
+        public bool Eliminar(
+            int idPregunta)
+        {
+            if (idPregunta <= 0)
+            {
+                throw new Exception(
+                    "ID invalido."
+                );
+            }
+
+            return _dao.Eliminar(
+                idPregunta
+            );
+        }
     }
 }

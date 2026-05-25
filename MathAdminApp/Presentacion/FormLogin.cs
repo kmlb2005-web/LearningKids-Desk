@@ -4,6 +4,7 @@
 // ============================================================
 
 using MathAdminApp.LogicaNegocio;
+using MathAdminApp.Modelos;
 
 namespace MathAdminApp.Presentacion
 {
@@ -334,13 +335,17 @@ namespace MathAdminApp.Presentacion
         // LOGIN
         // =========================================================
 
+        // =========================================================
+        // LOGIN
+        // =========================================================
+
         private void BtnIngresar_Click(object? sender, EventArgs e)
         {
             try
             {
-                var bll = new UsuarioBLL();
+                UsuarioBLL bll = new UsuarioBLL();
 
-                var usuario = bll.IniciarSesion(
+                Usuario? usuario = bll.IniciarSesion(
                     txtUsuario.Text,
                     txtContrasena.Text
                 );
@@ -358,17 +363,24 @@ namespace MathAdminApp.Presentacion
                         MessageBoxIcon.Warning
                     );
 
+                    txtContrasena.Clear();
+                    txtUsuario.Focus();
+
                     return;
                 }
 
                 // =============================================
                 // VALIDAR ROL
                 // =============================================
+                // Ajusta los IDs según tu BD:
+                // 1 = Administrador
+                // 2 = Docente
+                // 3 = Alumno
 
-                if (usuario.Rol != "Administrador")
+                if (usuario.IdRol == 3)
                 {
                     MessageBox.Show(
-                        "Solo los administradores pueden acceder a esta aplicación.",
+                        "Solo Administradores y Docentes pueden acceder.",
                         "Acceso denegado",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
@@ -383,9 +395,11 @@ namespace MathAdminApp.Presentacion
 
                 this.Hide();
 
-                var dashboard = new FormDashboard(usuario);
+                FormDashboard dashboard =
+                    new FormDashboard(usuario);
 
-                dashboard.FormClosed += (s, args) => this.Close();
+                dashboard.FormClosed +=
+                    (s, args) => this.Close();
 
                 dashboard.Show();
             }
@@ -401,8 +415,8 @@ namespace MathAdminApp.Presentacion
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Error al conectar con la base de datos:\n{ex.Message}",
-                    "Error de conexión",
+                    $"Error:\n{ex.Message}",
+                    "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );

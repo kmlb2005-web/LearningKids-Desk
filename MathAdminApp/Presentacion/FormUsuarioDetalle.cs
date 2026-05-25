@@ -16,6 +16,7 @@ namespace MathAdminApp.Presentacion
         private readonly UsuarioBLL _bll = new();
 
         private readonly Usuario? _usuario;
+        private readonly Usuario? _usuarioActual;
 
         private readonly bool _esEdicion;
 
@@ -37,11 +38,14 @@ namespace MathAdminApp.Presentacion
         // CONSTRUCTORES
         // =====================================================
 
-        public FormUsuarioDetalle() : this(null) { }
+        public FormUsuarioDetalle() : this(null, null) { }
 
-        public FormUsuarioDetalle(Usuario? usuario)
+        public FormUsuarioDetalle(Usuario? usuario) : this(usuario, null) { }
+
+        public FormUsuarioDetalle(Usuario? usuario, Usuario? usuarioActual)
         {
             _usuario = usuario;
+            _usuarioActual = usuarioActual;
 
             _esEdicion = usuario != null;
 
@@ -509,13 +513,16 @@ namespace MathAdminApp.Presentacion
 
             txtNombre.Text = _usuario.Nombre;
 
-            txtCorreo.Text = _usuario.Correo;
+            txtCorreo.Text = string.Empty;
 
             txtUsuario.Text =
-                _usuario.NombreUsuario;
+                _usuario.Username;
 
-            cmbGrado.SelectedItem =
-                _usuario.Grado;
+            txtContrasena.Text =
+                _usuario.Password;
+
+            if (cmbGrado.Items.Count > 0)
+                cmbGrado.SelectedIndex = 0;
         }
 
         // =====================================================
@@ -534,14 +541,16 @@ namespace MathAdminApp.Presentacion
                     _usuario.Nombre =
                         txtNombre.Text.Trim();
 
-                    _usuario.Correo =
-                        txtCorreo.Text.Trim();
+                    _usuario.Username =
+                        txtUsuario.Text.Trim();
 
-                    _usuario.Grado =
-                        cmbGrado.SelectedItem?.ToString()
-                        ?? "6to";
+                    _usuario.Password =
+                        txtContrasena.Text;
 
-                    _bll.ActualizarAlumno(_usuario);
+                    if (_usuario.IdRol <= 0)
+                        _usuario.IdRol = 3;
+
+                    _bll.ActualizarUsuario(_usuario);
 
                     MessageBox.Show(
                         "Alumno actualizado correctamente.",
@@ -557,21 +566,26 @@ namespace MathAdminApp.Presentacion
                         Nombre =
                             txtNombre.Text.Trim(),
 
-                        Correo =
-                            txtCorreo.Text.Trim(),
-
-                        NombreUsuario =
+                        Username =
                             txtUsuario.Text.Trim(),
 
-                        Contrasena =
+                        Password =
                             txtContrasena.Text,
 
-                        Grado =
-                            cmbGrado.SelectedItem?.ToString()
-                            ?? "6to"
+                        IdRol = 3
                     };
 
-                    _bll.AgregarAlumno(nuevo);
+                    if (_usuarioActual != null && _usuarioActual.IdRol == 2)
+                    {
+                        _bll.AgregarAlumnoParaDocente(
+                            nuevo,
+                            _usuarioActual.IdUsuario
+                        );
+                    }
+                    else
+                    {
+                        _bll.AgregarUsuario(nuevo);
+                    }
 
                     MessageBox.Show(
                         "Alumno agregado correctamente.",

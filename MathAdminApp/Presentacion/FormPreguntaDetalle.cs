@@ -1,8 +1,3 @@
-﻿// ============================================================
-// Presentacion: FormPreguntaDetalle (MODERNO)
-// SOLO CAMBIO VISUAL
-// ============================================================
-
 using MathAdminApp.LogicaNegocio;
 using MathAdminApp.Modelos;
 
@@ -10,606 +5,232 @@ namespace MathAdminApp.Presentacion
 {
     public class FormPreguntaDetalle : Form
     {
-        // =====================================================
-        // CONTROLES
-        // =====================================================
-
-        private Label lblTexto = null!;
-        private Label lblTipo = null!;
-        private Label lblOpcionA = null!;
-        private Label lblOpcionB = null!;
-        private Label lblOpcionC = null!;
-        private Label lblOpcionD = null!;
-        private Label lblRespuesta = null!;
-
         private TextBox txtTexto = null!;
-        private ComboBox cmbTipo = null!;
-        private TextBox txtOpcionA = null!;
-        private TextBox txtOpcionB = null!;
-        private TextBox txtOpcionC = null!;
-        private TextBox txtOpcionD = null!;
-        private TextBox txtRespuesta = null!;
-
+        private DataGridView dgvRespuestas = null!;
+        private Button btnAgregarRespuesta = null!;
+        private Button btnQuitarRespuesta = null!;
         private Button btnGuardar = null!;
         private Button btnCancelar = null!;
 
-        // Mostrar/Ocultar controles
-        private readonly List<Control> _controlesOpciones = new();
+        private readonly int _idPrueba;
+        private readonly PreguntaBLL _preguntaBll = new();
+        private readonly RespuestaBLL _respuestaBll = new();
+        private readonly Pregunta? _pregunta;
+        private readonly bool _esEdicion;
 
-        // =====================================================
-        // LOGICA (NO CAMBIADA)
-        // =====================================================
-
-        private readonly int _examenId;
-
-        private readonly PreguntaBLL _bll = new();
-
-        // =====================================================
-        // CONSTRUCTOR
-        // =====================================================
-
-        public FormPreguntaDetalle(int examenId)
+        public FormPreguntaDetalle(int idPrueba, Pregunta? pregunta = null)
         {
-            _examenId = examenId;
+            _idPrueba = idPrueba;
+            _pregunta = pregunta;
+            _esEdicion = pregunta != null;
 
             InicializarComponentes();
-        }
 
-        // =====================================================
-        // DISEÑO MODERNO
-        // =====================================================
+            if (_esEdicion)
+                CargarDatos();
+            else
+                AgregarRespuestasIniciales();
+        }
 
         private void InicializarComponentes()
         {
-            // =================================================
-            // FORMULARIO
-            // =================================================
+            Text = _esEdicion ? "Editar Pregunta" : "Nueva Pregunta";
+            Size = new Size(900, 660);
+            StartPosition = FormStartPosition.CenterParent;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            BackColor = Color.FromArgb(245, 248, 255);
 
-            this.Text = "Nueva Pregunta";
-
-            this.Size = new Size(760, 760);
-
-            this.StartPosition = FormStartPosition.CenterParent;
-
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-
-            this.MaximizeBox = false;
-
-            this.MinimizeBox = false;
-
-            this.BackColor =
-                Color.FromArgb(245, 248, 255);
-
-            this.AutoScroll = true;
-
-            // =================================================
-            // PANEL CONTENEDOR
-            // =================================================
-
-            Panel panelContenido = new Panel
+            Label lblTitulo = new()
             {
-                Dock = DockStyle.Fill,
-
-                AutoScroll = true,
-
-                Padding = new Padding(40),
-
-                BackColor = Color.Transparent
-            };
-
-            // =================================================
-            // IMAGEN SUPERIOR
-            // =================================================
-
-            PictureBox picRobot = new PictureBox
-            {
-                Image = Image.FromFile("Resources/Louz.png"),
-
-                SizeMode = PictureBoxSizeMode.Zoom,
-
-                Size = new Size(90, 90),
-
-                Location = new Point(20, 10),
-
-                BackColor = Color.Transparent
-            };
-
-            // =================================================
-            // TITULO
-            // =================================================
-
-            Label lblTitulo = new Label
-            {
-                Text = "📝 Nueva Pregunta",
-
-                Font = new Font(
-                    "Segoe UI",
-                    26,
-                    FontStyle.Bold
-                ),
-
-                ForeColor =
-                    Color.FromArgb(15, 35, 90),
-
+                Text = Text,
+                Font = new Font("Segoe UI", 26, FontStyle.Bold),
+                ForeColor = Color.FromArgb(15, 35, 90),
                 AutoSize = true,
-
-                Location = new Point(130, 20)
+                Location = new Point(40, 30)
             };
 
-            // =================================================
-            // SUBTITULO
-            // =================================================
-
-            Label lblSubtitulo = new Label
-            {
-                Text =
-                    "Crea preguntas para el examen fácilmente ✨",
-
-                Font = new Font("Segoe UI", 12),
-
-                ForeColor =
-                    Color.FromArgb(110, 120, 150),
-
-                AutoSize = true,
-
-                Location = new Point(135, 70)
-            };
-
-            // =================================================
-            // POSICIONES
-            // =================================================
-
-            int y = 140;
-
-            int x = 20;
-
-            int w = 620;
-
-            // =================================================
-            // TIPO
-            // =================================================
-
-            lblTipo = CrearLabel(
-                "🧩 Tipo de pregunta",
-                x,
-                y
-            );
-
-            y += 35;
-
-            cmbTipo = new ComboBox
-            {
-                Font = new Font("Segoe UI", 12),
-
-                Location = new Point(x, y),
-
-                Size = new Size(300, 45),
-
-                DropDownStyle =
-                    ComboBoxStyle.DropDownList,
-
-                BackColor = Color.White,
-
-                FlatStyle = FlatStyle.Flat
-            };
-
-            cmbTipo.Items.AddRange(
-                new[] { "Multiple", "Abierta" });
-
-            cmbTipo.SelectedIndex = 0;
-
-            cmbTipo.SelectedIndexChanged +=
-                CmbTipo_SelectedIndexChanged;
-
-            // =================================================
-            // TEXTO PREGUNTA
-            // =================================================
-
-            y += 70;
-
-            lblTexto = CrearLabel(
-                "📝 Texto de la pregunta",
-                x,
-                y
-            );
-
-            y += 35;
+            Label lblTexto = CrearLabel("Texto de la pregunta", 40, 110);
 
             txtTexto = new TextBox
             {
                 Font = new Font("Segoe UI", 12),
-
-                Location = new Point(x, y),
-
-                Size = new Size(w, 90),
-
+                Location = new Point(40, 140),
+                Size = new Size(760, 95),
                 Multiline = true,
-
                 BorderStyle = BorderStyle.FixedSingle,
-
                 ScrollBars = ScrollBars.Vertical
             };
 
-            // =================================================
-            // OPCION A
-            // =================================================
+            Label lblRespuestas = CrearLabel("Respuestas", 40, 260);
 
-            y += 110;
-
-            lblOpcionA = CrearLabel(
-                "🔤 Opción A",
-                x,
-                y
-            );
-
-            y += 35;
-
-            txtOpcionA = CrearTextBox(x, y, w);
-
-            // =================================================
-            // OPCION B
-            // =================================================
-
-            y += 65;
-
-            lblOpcionB = CrearLabel(
-                "🔤 Opción B",
-                x,
-                y
-            );
-
-            y += 35;
-
-            txtOpcionB = CrearTextBox(x, y, w);
-
-            // =================================================
-            // OPCION C
-            // =================================================
-
-            y += 65;
-
-            lblOpcionC = CrearLabel(
-                "🔤 Opción C",
-                x,
-                y
-            );
-
-            y += 35;
-
-            txtOpcionC = CrearTextBox(x, y, w);
-
-            // =================================================
-            // OPCION D
-            // =================================================
-
-            y += 65;
-
-            lblOpcionD = CrearLabel(
-                "🔤 Opción D",
-                x,
-                y
-            );
-
-            y += 35;
-
-            txtOpcionD = CrearTextBox(x, y, w);
-
-            // =================================================
-            // CONTROLES MULTIPLE
-            // =================================================
-
-            _controlesOpciones.AddRange(
-                new Control[]
-                {
-                    lblOpcionA, txtOpcionA,
-                    lblOpcionB, txtOpcionB,
-                    lblOpcionC, txtOpcionC,
-                    lblOpcionD, txtOpcionD
-                });
-
-            // =================================================
-            // RESPUESTA
-            // =================================================
-
-            y += 75;
-
-            lblRespuesta = CrearLabel(
-                "✅ Respuesta correcta",
-                x,
-                y
-            );
-
-            y += 35;
-
-            txtRespuesta = CrearTextBox(x, y, w);
-
-            // =================================================
-            // BOTONES
-            // =================================================
-
-            y += 90;
-
-            btnGuardar = new Button
+            dgvRespuestas = new DataGridView
             {
-                Text = "💾 Guardar",
-
-                Font = new Font(
-                    "Segoe UI",
-                    12,
-                    FontStyle.Bold
-                ),
-
-                BackColor =
-                    Color.FromArgb(50, 120, 255),
-
-                ForeColor = Color.White,
-
-                FlatStyle = FlatStyle.Flat,
-
-                Size = new Size(260, 55),
-
-                Location = new Point(40, y),
-
-                Cursor = Cursors.Hand
+                Location = new Point(40, 290),
+                Size = new Size(800, 230),
+                BackgroundColor = Color.White,
+                BorderStyle = BorderStyle.None,
+                RowHeadersVisible = false,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                MultiSelect = false,
+                Font = new Font("Segoe UI", 11)
             };
 
-            btnGuardar.FlatAppearance.BorderSize = 0;
+            dgvRespuestas.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "Texto",
+                HeaderText = "Respuesta",
+                FillWeight = 78
+            });
 
+            dgvRespuestas.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                Name = "EsCorrecta",
+                HeaderText = "Correcta",
+                FillWeight = 22
+            });
+
+            btnAgregarRespuesta = CrearBoton("Agregar respuesta", Color.FromArgb(66, 133, 244), 40, 545, 210);
+            btnAgregarRespuesta.Click += (s, e) => dgvRespuestas.Rows.Add(string.Empty, false);
+
+            btnQuitarRespuesta = CrearBoton("Quitar respuesta", Color.FromArgb(255, 120, 70), 265, 545, 210);
+            btnQuitarRespuesta.Click += BtnQuitarRespuesta_Click;
+
+            btnGuardar = CrearBoton("Guardar", Color.FromArgb(50, 120, 255), 510, 545, 150);
             btnGuardar.Click += BtnGuardar_Click;
 
-            // Hover
-            btnGuardar.MouseEnter += (s, e) =>
-            {
-                btnGuardar.BackColor =
-                    Color.FromArgb(70, 140, 255);
-            };
-
-            btnGuardar.MouseLeave += (s, e) =>
-            {
-                btnGuardar.BackColor =
-                    Color.FromArgb(50, 120, 255);
-            };
-
-            // =================================================
-            // CANCELAR
-            // =================================================
-
-            btnCancelar = new Button
-            {
-                Text = "❌ Cancelar",
-
-                Font = new Font(
-                    "Segoe UI",
-                    12,
-                    FontStyle.Bold
-                ),
-
-                BackColor =
-                    Color.FromArgb(255, 80, 120),
-
-                ForeColor = Color.White,
-
-                FlatStyle = FlatStyle.Flat,
-
-                Size = new Size(260, 55),
-
-                Location = new Point(330, y),
-
-                Cursor = Cursors.Hand
-            };
-
-            btnCancelar.FlatAppearance.BorderSize = 0;
-
+            btnCancelar = CrearBoton("Cancelar", Color.FromArgb(255, 80, 120), 690, 545, 150);
             btnCancelar.Click += (s, e) =>
             {
-                this.DialogResult = DialogResult.Cancel;
-
-                this.Close();
+                DialogResult = DialogResult.Cancel;
+                Close();
             };
 
-            // Hover
-            btnCancelar.MouseEnter += (s, e) =>
-            {
-                btnCancelar.BackColor =
-                    Color.FromArgb(255, 110, 145);
-            };
-
-            btnCancelar.MouseLeave += (s, e) =>
-            {
-                btnCancelar.BackColor =
-                    Color.FromArgb(255, 80, 120);
-            };
-
-            // =================================================
-            // AGREGAR CONTROLES
-            // =================================================
-
-            panelContenido.Controls.Add(picRobot);
-
-            panelContenido.Controls.Add(lblTitulo);
-
-            panelContenido.Controls.Add(lblSubtitulo);
-
-            panelContenido.Controls.Add(lblTipo);
-
-            panelContenido.Controls.Add(cmbTipo);
-
-            panelContenido.Controls.Add(lblTexto);
-
-            panelContenido.Controls.Add(txtTexto);
-
-            panelContenido.Controls.Add(lblOpcionA);
-
-            panelContenido.Controls.Add(txtOpcionA);
-
-            panelContenido.Controls.Add(lblOpcionB);
-
-            panelContenido.Controls.Add(txtOpcionB);
-
-            panelContenido.Controls.Add(lblOpcionC);
-
-            panelContenido.Controls.Add(txtOpcionC);
-
-            panelContenido.Controls.Add(lblOpcionD);
-
-            panelContenido.Controls.Add(txtOpcionD);
-
-            panelContenido.Controls.Add(lblRespuesta);
-
-            panelContenido.Controls.Add(txtRespuesta);
-
-            panelContenido.Controls.Add(btnGuardar);
-
-            panelContenido.Controls.Add(btnCancelar);
-
-            this.Controls.Add(panelContenido);
+            Controls.Add(lblTitulo);
+            Controls.Add(lblTexto);
+            Controls.Add(txtTexto);
+            Controls.Add(lblRespuestas);
+            Controls.Add(dgvRespuestas);
+            Controls.Add(btnAgregarRespuesta);
+            Controls.Add(btnQuitarRespuesta);
+            Controls.Add(btnGuardar);
+            Controls.Add(btnCancelar);
         }
 
-        // =====================================================
-        // LABEL MODERNO
-        // =====================================================
-
-        private Label CrearLabel(
-            string texto,
-            int x,
-            int y
-        )
+        private static Label CrearLabel(string texto, int x, int y)
         {
             return new Label
             {
                 Text = texto,
-
-                Font = new Font(
-                    "Segoe UI",
-                    12,
-                    FontStyle.Bold
-                ),
-
-                ForeColor =
-                    Color.FromArgb(20, 35, 90),
-
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                ForeColor = Color.FromArgb(20, 35, 90),
                 AutoSize = true,
-
                 Location = new Point(x, y)
             };
         }
 
-        // =====================================================
-        // TEXTBOX MODERNO
-        // =====================================================
-
-        private TextBox CrearTextBox(
-            int x,
-            int y,
-            int width
-        )
+        private static Button CrearBoton(string texto, Color color, int x, int y, int width)
         {
-            return new TextBox
+            Button btn = new()
             {
-                Font = new Font("Segoe UI", 12),
-
+                Text = texto,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                BackColor = color,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(width, 45),
                 Location = new Point(x, y),
-
-                Size = new Size(width, 42),
-
-                BorderStyle = BorderStyle.FixedSingle,
-
-                BackColor = Color.White,
-
-                ForeColor =
-                    Color.FromArgb(50, 70, 120)
+                Cursor = Cursors.Hand
             };
+
+            btn.FlatAppearance.BorderSize = 0;
+            return btn;
         }
 
-        // =====================================================
-        // MOSTRAR/OCULTAR OPCIONES
-        // =====================================================
-
-        private void CmbTipo_SelectedIndexChanged(
-            object? sender,
-            EventArgs e
-        )
+        private void AgregarRespuestasIniciales()
         {
-            bool esMultiple =
-                cmbTipo.SelectedItem?.ToString()
-                == "Multiple";
-
-            foreach (var ctrl in _controlesOpciones)
-                ctrl.Visible = esMultiple;
-
-            lblRespuesta.Text = esMultiple
-                ? "✅ Respuesta correcta (A, B, C o D)"
-                : "✅ Respuesta correcta";
+            dgvRespuestas.Rows.Add(string.Empty, false);
+            dgvRespuestas.Rows.Add(string.Empty, false);
         }
 
-        // =====================================================
-        // GUARDAR (LOGICA ORIGINAL)
-        // =====================================================
+        private void CargarDatos()
+        {
+            if (_pregunta == null)
+                return;
 
-        private void BtnGuardar_Click(
-            object? sender,
-            EventArgs e
-        )
+            txtTexto.Text = _pregunta.Texto;
+
+            var respuestas = _respuestaBll.ObtenerPorPregunta(_pregunta.IdPregunta);
+            dgvRespuestas.Rows.Clear();
+
+            foreach (var respuesta in respuestas)
+                dgvRespuestas.Rows.Add(respuesta.Texto, respuesta.EsCorrecta);
+
+            if (dgvRespuestas.Rows.Count == 0)
+                AgregarRespuestasIniciales();
+        }
+
+        private void BtnQuitarRespuesta_Click(object? sender, EventArgs e)
+        {
+            if (dgvRespuestas.CurrentRow == null)
+                return;
+
+            dgvRespuestas.Rows.Remove(dgvRespuestas.CurrentRow);
+        }
+
+        private void BtnGuardar_Click(object? sender, EventArgs e)
         {
             try
             {
-                var pregunta = new Pregunta
-                {
-                    ExamenId = _examenId,
+                Pregunta pregunta = _pregunta ?? new Pregunta();
+                pregunta.Texto = txtTexto.Text.Trim();
+                pregunta.IdPrueba = _idPrueba;
 
-                    Texto = txtTexto.Text.Trim(),
+                if (_esEdicion)
+                    _preguntaBll.Editar(pregunta);
+                else
+                    _preguntaBll.Agregar(pregunta);
 
-                    Tipo =
-                        cmbTipo.SelectedItem?.ToString()
-                        ?? "Multiple",
+                _respuestaBll.ReemplazarPorPregunta(
+                    pregunta.IdPregunta,
+                    ObtenerRespuestasDesdeGrid(pregunta.IdPregunta));
 
-                    OpcionA =
-                        txtOpcionA.Text.Trim(),
-
-                    OpcionB =
-                        txtOpcionB.Text.Trim(),
-
-                    OpcionC =
-                        txtOpcionC.Text.Trim(),
-
-                    OpcionD =
-                        txtOpcionD.Text.Trim(),
-
-                    RespuestaCorrecta =
-                        txtRespuesta.Text.Trim()
-                };
-
-                _bll.Agregar(pregunta);
-
-                MessageBox.Show(
-                    "Pregunta agregada.",
-                    "Éxito",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-
-                this.DialogResult = DialogResult.OK;
-
-                this.Close();
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Validación",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
+                DialogResult = DialogResult.OK;
+                Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Error: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                MessageBox.Show(ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private List<Respuesta> ObtenerRespuestasDesdeGrid(int idPregunta)
+        {
+            List<Respuesta> respuestas = new();
+
+            foreach (DataGridViewRow row in dgvRespuestas.Rows)
+            {
+                string texto = row.Cells["Texto"].Value?.ToString()?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(texto))
+                    continue;
+
+                bool esCorrecta = row.Cells["EsCorrecta"].Value is bool valor && valor;
+
+                respuestas.Add(new Respuesta
+                {
+                    Texto = texto,
+                    EsCorrecta = esCorrecta,
+                    IdPregunta = idPregunta
+                });
+            }
+
+            return respuestas;
         }
     }
 }
