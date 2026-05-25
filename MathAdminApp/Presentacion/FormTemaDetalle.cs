@@ -1,5 +1,6 @@
 ﻿// ============================================================
-// Presentacion: FormUnidadDetalle (MODERNO)
+// FORMULARIO MODERNO — NUEVO / EDITAR TEMA
+// (misma temática que FormUsuarioDetalle)
 // ============================================================
 
 using MathAdminApp.LogicaNegocio;
@@ -7,15 +8,16 @@ using MathAdminApp.Modelos;
 
 namespace MathAdminApp.Presentacion
 {
-    public class FormUnidadDetalle : Form
+    public class FormTemaDetalle : Form
     {
         // =====================================================
         // VARIABLES
         // =====================================================
 
-        private readonly Unidad? _unidad;
+        private readonly TemaBLL _temaBLL = new();
+        private readonly ProyectoBLL _proyectoBLL = new();
 
-        private readonly UnidadBLL _bll = new();
+        private readonly Tema? _tema;
 
         private readonly bool _esEdicion;
 
@@ -24,26 +26,24 @@ namespace MathAdminApp.Presentacion
         // =====================================================
 
         private TextBox txtNombre = null!;
-
         private TextBox txtDescripcion = null!;
 
-        private NumericUpDown nudNumero = null!;
+        private ComboBox cmbProyecto = null!;
 
         private Button btnGuardar = null!;
-
         private Button btnCancelar = null!;
 
         // =====================================================
         // CONSTRUCTORES
         // =====================================================
 
-        public FormUnidadDetalle() : this(null) { }
+        public FormTemaDetalle() : this(null) { }
 
-        public FormUnidadDetalle(Unidad? unidad)
+        public FormTemaDetalle(Tema? tema)
         {
-            _unidad = unidad;
+            _tema = tema;
 
-            _esEdicion = unidad != null;
+            _esEdicion = tema != null;
 
             InicializarComponentes();
 
@@ -52,7 +52,7 @@ namespace MathAdminApp.Presentacion
         }
 
         // =====================================================
-        // DISEÑO MODERNO
+        // DISEÑO
         // =====================================================
 
         private void InicializarComponentes()
@@ -62,16 +62,14 @@ namespace MathAdminApp.Presentacion
             // =================================================
 
             this.Text = _esEdicion
-                ? "Editar Unidad"
-                : "Nueva Unidad";
+                ? "Editar Tema"
+                : "Nuevo Tema";
 
-            this.Size = new Size(950, 760);
+            this.Size = new Size(950, 780);
 
-            this.StartPosition =
-                FormStartPosition.CenterParent;
+            this.StartPosition = FormStartPosition.CenterParent;
 
-            this.FormBorderStyle =
-                FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
 
             this.MaximizeBox = false;
 
@@ -100,9 +98,7 @@ namespace MathAdminApp.Presentacion
 
             PictureBox picRobot = new PictureBox
             {
-                Image = Image.FromFile(
-                    "Resources/Louz.png"
-                ),
+                Image = Image.FromFile("Resources/Louz.png"),
 
                 SizeMode = PictureBoxSizeMode.Zoom,
 
@@ -120,8 +116,8 @@ namespace MathAdminApp.Presentacion
             Label lblTitulo = new Label
             {
                 Text = _esEdicion
-                    ? "✏️ Editar Unidad"
-                    : "📘 Nueva Unidad",
+                    ? "✏️ Editar Tema"
+                    : "➕ Nuevo Tema",
 
                 Font = new Font(
                     "Segoe UI",
@@ -129,8 +125,7 @@ namespace MathAdminApp.Presentacion
                     FontStyle.Bold
                 ),
 
-                ForeColor =
-                    Color.FromArgb(20, 35, 90),
+                ForeColor = Color.FromArgb(20, 35, 90),
 
                 AutoSize = true,
 
@@ -143,13 +138,11 @@ namespace MathAdminApp.Presentacion
 
             Label lblSubtitulo = new Label
             {
-                Text =
-                    "Configura la información de la unidad ✨",
+                Text = "Completa la información del tema ✨",
 
                 Font = new Font("Segoe UI", 16),
 
-                ForeColor =
-                    Color.FromArgb(120, 130, 160),
+                ForeColor = Color.FromArgb(120, 130, 160),
 
                 AutoSize = true,
 
@@ -167,67 +160,19 @@ namespace MathAdminApp.Presentacion
             int y = 220;
 
             // =================================================
-            // NUMERO DE UNIDAD
-            // =================================================
-
-            panel.Controls.Add(
-                CrearLabel(
-                    "🔢 Número de unidad",
-                    x,
-                    y
-                )
-            );
-
-            y += 45;
-
-            nudNumero = new NumericUpDown
-            {
-                Font = new Font("Segoe UI", 14),
-
-                Location = new Point(x, y),
-
-                Size = new Size(200, 55),
-
-                Minimum = 1,
-
-                Maximum = 50,
-
-                Value = 1,
-
-                BorderStyle = BorderStyle.FixedSingle,
-
-                BackColor = Color.White,
-
-                ForeColor =
-                    Color.FromArgb(60, 70, 110)
-            };
-
-            panel.Controls.Add(nudNumero);
-
-            // =================================================
             // NOMBRE
             // =================================================
 
-            y += 115;
-
             panel.Controls.Add(
-                CrearLabel(
-                    "📚 Nombre de la unidad",
-                    x,
-                    y
-                )
+                CrearLabel("📌 Nombre del tema", x, y)
             );
 
             y += 45;
 
-            txtNombre = CrearTextBox(
-                x,
-                y,
-                width
-            );
+            txtNombre = CrearTextBox(x, y, width);
 
             txtNombre.PlaceholderText =
-                "Ejemplo: Números naturales";
+                "Escribe el nombre del tema...";
 
             panel.Controls.Add(txtNombre);
 
@@ -238,11 +183,7 @@ namespace MathAdminApp.Presentacion
             y += 115;
 
             panel.Controls.Add(
-                CrearLabel(
-                    "📝 Descripción",
-                    x,
-                    y
-                )
+                CrearLabel("📝 Descripción", x, y)
             );
 
             y += 45;
@@ -253,34 +194,85 @@ namespace MathAdminApp.Presentacion
 
                 Location = new Point(x, y),
 
-                Size = new Size(width, 140),
-
-                BorderStyle = BorderStyle.FixedSingle,
+                Size = new Size(width, 110),
 
                 Multiline = true,
 
-                ScrollBars = ScrollBars.Vertical,
+                BorderStyle = BorderStyle.FixedSingle,
 
                 BackColor = Color.White,
 
-                ForeColor =
-                    Color.FromArgb(60, 70, 110)
+                ForeColor = Color.FromArgb(70, 80, 110),
+
+                PlaceholderText =
+                    "Describe brevemente el tema..."
             };
 
             panel.Controls.Add(txtDescripcion);
 
             // =================================================
-            // LINEA DIVISORA
+            // PROYECTO
+            // =================================================
+
+            y += 175;
+
+            panel.Controls.Add(
+                CrearLabel("📋 Proyecto", x, y)
+            );
+
+            y += 45;
+
+            cmbProyecto = new ComboBox
+            {
+                Font = new Font("Segoe UI", 14),
+
+                Location = new Point(x, y),
+
+                Size = new Size(width, 55),
+
+                DropDownStyle = ComboBoxStyle.DropDownList,
+
+                FlatStyle = FlatStyle.Flat,
+
+                BackColor = Color.White,
+
+                ForeColor = Color.FromArgb(30, 50, 90)
+            };
+
+            try
+            {
+                var proyectos = _proyectoBLL.ObtenerTodos();
+
+                foreach (var p in proyectos)
+                    cmbProyecto.Items.Add(
+                        new ProyectoItem(p.idProyecto, p.nombre)
+                    );
+
+                if (cmbProyecto.Items.Count > 0)
+                    cmbProyecto.SelectedIndex = 0;
+            }
+            catch
+            {
+                cmbProyecto.Items.Add(
+                    new ProyectoItem(0, "Sin proyectos disponibles")
+                );
+
+                cmbProyecto.SelectedIndex = 0;
+            }
+
+            panel.Controls.Add(cmbProyecto);
+
+            // =================================================
+            // LINEA
             // =================================================
 
             Panel linea = new Panel
             {
-                BackColor =
-                    Color.FromArgb(230, 235, 245),
+                BackColor = Color.FromArgb(230, 235, 245),
 
                 Size = new Size(760, 2),
 
-                Location = new Point(70, y + 180)
+                Location = new Point(70, y + 90)
             };
 
             panel.Controls.Add(linea);
@@ -299,8 +291,7 @@ namespace MathAdminApp.Presentacion
                     FontStyle.Bold
                 ),
 
-                BackColor =
-                    Color.FromArgb(50, 120, 255),
+                BackColor = Color.FromArgb(50, 120, 255),
 
                 ForeColor = Color.White,
 
@@ -308,8 +299,7 @@ namespace MathAdminApp.Presentacion
 
                 Size = new Size(260, 65),
 
-                Location =
-                    new Point(230, y + 220),
+                Location = new Point(230, y + 125),
 
                 Cursor = Cursors.Hand
             };
@@ -318,7 +308,6 @@ namespace MathAdminApp.Presentacion
 
             btnGuardar.Click += BtnGuardar_Click;
 
-            // Hover
             btnGuardar.MouseEnter += (s, e) =>
             {
                 btnGuardar.BackColor =
@@ -347,15 +336,13 @@ namespace MathAdminApp.Presentacion
 
                 BackColor = Color.White,
 
-                ForeColor =
-                    Color.FromArgb(255, 70, 120),
+                ForeColor = Color.FromArgb(255, 70, 120),
 
                 FlatStyle = FlatStyle.Flat,
 
                 Size = new Size(260, 65),
 
-                Location =
-                    new Point(520, y + 220),
+                Location = new Point(520, y + 125),
 
                 Cursor = Cursors.Hand
             };
@@ -367,8 +354,7 @@ namespace MathAdminApp.Presentacion
 
             btnCancelar.Click += (s, e) =>
             {
-                this.DialogResult =
-                    DialogResult.Cancel;
+                this.DialogResult = DialogResult.Cancel;
 
                 this.Close();
             };
@@ -391,14 +377,34 @@ namespace MathAdminApp.Presentacion
         }
 
         // =====================================================
+        // CARGAR DATOS (modo edición)
+        // =====================================================
+
+        private void CargarDatos()
+        {
+            if (_tema == null)
+                return;
+
+            txtNombre.Text = _tema.Nombre;
+
+            txtDescripcion.Text = _tema.Descripcion;
+
+            // Seleccionar el proyecto que corresponde en el combo
+            foreach (ProyectoItem item in cmbProyecto.Items)
+            {
+                if (item.Id == _tema.IdProyecto)
+                {
+                    cmbProyecto.SelectedItem = item;
+                    break;
+                }
+            }
+        }
+
+        // =====================================================
         // LABEL
         // =====================================================
 
-        private Label CrearLabel(
-            string texto,
-            int x,
-            int y
-        )
+        private Label CrearLabel(string texto, int x, int y)
         {
             return new Label
             {
@@ -410,8 +416,7 @@ namespace MathAdminApp.Presentacion
                     FontStyle.Bold
                 ),
 
-                ForeColor =
-                    Color.FromArgb(15, 35, 90),
+                ForeColor = Color.FromArgb(15, 35, 90),
 
                 AutoSize = true,
 
@@ -423,11 +428,7 @@ namespace MathAdminApp.Presentacion
         // TEXTBOX
         // =====================================================
 
-        private TextBox CrearTextBox(
-            int x,
-            int y,
-            int width
-        )
+        private TextBox CrearTextBox(int x, int y, int width)
         {
             return new TextBox
             {
@@ -441,28 +442,8 @@ namespace MathAdminApp.Presentacion
 
                 BackColor = Color.White,
 
-                ForeColor =
-                    Color.FromArgb(70, 80, 110)
+                ForeColor = Color.FromArgb(70, 80, 110)
             };
-        }
-
-        // =====================================================
-        // CARGAR DATOS
-        // =====================================================
-
-        private void CargarDatos()
-        {
-            if (_unidad == null)
-                return;
-
-            txtNombre.Text =
-                _unidad.Nombre;
-
-            txtDescripcion.Text =
-                _unidad.Descripcion;
-
-            nudNumero.Value =
-                _unidad.NumeroUnidad;
         }
 
         // =====================================================
@@ -474,23 +455,46 @@ namespace MathAdminApp.Presentacion
             EventArgs e
         )
         {
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show(
+                    "El nombre del tema es obligatorio.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            if (cmbProyecto.SelectedItem == null ||
+                ((ProyectoItem)cmbProyecto.SelectedItem).Id == 0)
+            {
+                MessageBox.Show(
+                    "Selecciona un proyecto válido.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
             try
             {
-                if (_esEdicion && _unidad != null)
+                if (_esEdicion && _tema != null)
                 {
-                    _unidad.Nombre =
-                        txtNombre.Text.Trim();
+                    _tema.Nombre = txtNombre.Text.Trim();
 
-                    _unidad.Descripcion =
-                        txtDescripcion.Text.Trim();
+                    _tema.Descripcion = txtDescripcion.Text.Trim();
 
-                    _unidad.NumeroUnidad =
-                        (int)nudNumero.Value;
+                    _tema.IdProyecto =
+                        ((ProyectoItem)cmbProyecto.SelectedItem!).Id;
 
-                    _bll.Actualizar(_unidad);
+                    _temaBLL.ActualizarTema(_tema);
 
                     MessageBox.Show(
-                        "Unidad actualizada.",
+                        "Tema actualizado correctamente.",
                         "Éxito",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
@@ -498,51 +502,59 @@ namespace MathAdminApp.Presentacion
                 }
                 else
                 {
-                    var nueva = new Unidad
+                    Tema nuevo = new()
                     {
-                        Nombre =
-                            txtNombre.Text.Trim(),
+                        Nombre = txtNombre.Text.Trim(),
 
-                        Descripcion =
-                            txtDescripcion.Text.Trim(),
+                        Descripcion = txtDescripcion.Text.Trim(),
 
-                        NumeroUnidad =
-                            (int)nudNumero.Value
+                        IdProyecto =
+                            ((ProyectoItem)cmbProyecto.SelectedItem!).Id
                     };
 
-                    _bll.Agregar(nueva);
+                    _temaBLL.AgregarTema(nuevo);
 
                     MessageBox.Show(
-                        "Unidad agregada.",
+                        "Tema guardado correctamente.",
                         "Éxito",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
                     );
                 }
 
-                this.DialogResult =
-                    DialogResult.OK;
+                this.DialogResult = DialogResult.OK;
 
                 this.Close();
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Validación",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Error: {ex.Message}",
+                    $"Error al guardar: {ex.Message}",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
             }
         }
+    }
+
+    // =========================================================
+    // CLASES AUXILIARES
+    // =========================================================
+
+    public class ProyectoItem
+    {
+        public int Id { get; }
+
+        public string Nombre { get; }
+
+        public ProyectoItem(int id, string nombre)
+        {
+            Id = id;
+
+            Nombre = nombre;
+        }
+
+        public override string ToString() => Nombre;
     }
 }

@@ -5,26 +5,26 @@
     <Compile Update="Presentacion\ControlCampos.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Presentacion\ControlExamenes.cs">
+    <Compile Update="Presentacion\ControlPruebas.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Presentacion\ControlPreguntas.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Presentacion\ControlProyectos.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Presentacion\ControlResultados.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Presentacion\ControlTemas.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Presentacion\ControlUnidades.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Presentacion\ControlUsuarios.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormCampos.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="Presentacion\FormDashboard.cs">
       <SubType>Form</SubType>
@@ -35,7 +35,13 @@
     <Compile Update="Presentacion\FormPreguntaDetalle.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Presentacion\FormUnidadDetalle.cs">
+    <Compile Update="Presentacion\FormProyectoDetalle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormResultadoDetalle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormTemaDetalle.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Presentacion\FormUsuarioDetalle.cs">

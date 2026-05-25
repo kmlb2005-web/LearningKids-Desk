@@ -9,71 +9,116 @@ using MathAdminApp.Modelos;
 namespace MathAdminApp.LogicaNegocio
 {
     /// <summary>
-    /// Clase de logica de negocio para la entidad Usuario.
-    /// Contiene validaciones y reglas de negocio.
+    /// Clase de logica de negocio para usuarios
     /// </summary>
     public class UsuarioBLL
     {
-        private readonly UsuarioDAL _dal = new();
+        private readonly UsuarioDAO _dao = new();
 
         /// <summary>
-        /// Valida credenciales y retorna el usuario si es correcto.
+        /// Validar inicio de sesion
         /// </summary>
-        public Usuario? IniciarSesion(string nombreUsuario, string contrasena)
+        public Usuario? IniciarSesion(
+            string username,
+            string password)
         {
-            if (string.IsNullOrWhiteSpace(nombreUsuario))
-                throw new ArgumentException("El nombre de usuario es obligatorio.");
+            if (string.IsNullOrWhiteSpace(username))
+                throw new ArgumentException(
+                    "El usuario es obligatorio.");
 
-            if (string.IsNullOrWhiteSpace(contrasena))
-                throw new ArgumentException("La contrasena es obligatoria.");
+            if (string.IsNullOrWhiteSpace(password))
+                throw new ArgumentException(
+                    "La contraseña es obligatoria.");
 
-            return _dal.ValidarLogin(nombreUsuario.Trim(), contrasena);
+            return _dao.ValidarLogin(
+                username.Trim(),
+                password.Trim());
         }
 
         /// <summary>
-        /// Obtiene la lista de todos los alumnos.
+        /// Obtener todos los usuarios
         /// </summary>
-        public List<Usuario> ObtenerAlumnos() => _dal.ObtenerAlumnos();
+        public List<Usuario> ObtenerUsuarios()
+        {
+            return _dao.ObtenerUsuarios();
+        }
 
         /// <summary>
-        /// Agrega un nuevo alumno con validaciones.
+        /// Obtener solo alumnos
         /// </summary>
-        public bool AgregarAlumno(Usuario usuario)
+        public List<Usuario> ObtenerAlumnos()
+        {
+            return _dao.ObtenerAlumnos();
+        }
+
+        /// <summary>
+        /// Agregar usuario
+        /// </summary>
+        public bool AgregarUsuario(Usuario usuario)
         {
             if (string.IsNullOrWhiteSpace(usuario.Nombre))
-                throw new ArgumentException("El nombre es obligatorio.");
-            if (string.IsNullOrWhiteSpace(usuario.Correo))
-                throw new ArgumentException("El correo es obligatorio.");
-            if (string.IsNullOrWhiteSpace(usuario.NombreUsuario))
-                throw new ArgumentException("El nombre de usuario es obligatorio.");
-            if (string.IsNullOrWhiteSpace(usuario.Contrasena))
-                throw new ArgumentException("La contrasena es obligatoria.");
+                throw new ArgumentException(
+                    "El nombre es obligatorio.");
 
-            usuario.Rol = "Alumno";
-            return _dal.Agregar(usuario);
+            if (string.IsNullOrWhiteSpace(usuario.Username))
+                throw new ArgumentException(
+                    "El usuario es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(usuario.Password))
+                throw new ArgumentException(
+                    "La contraseña es obligatoria.");
+
+            if (usuario.IdRol <= 0)
+                throw new ArgumentException(
+                    "Debe seleccionar un rol.");
+
+            return _dao.Agregar(usuario);
         }
 
         /// <summary>
-        /// Actualiza los datos de un alumno.
+        /// Actualizar usuario
         /// </summary>
-        public bool ActualizarAlumno(Usuario usuario)
+        public bool ActualizarUsuario(
+            Usuario usuario)
         {
-            if (string.IsNullOrWhiteSpace(usuario.Nombre))
-                throw new ArgumentException("El nombre es obligatorio.");
-            if (string.IsNullOrWhiteSpace(usuario.Correo))
-                throw new ArgumentException("El correo es obligatorio.");
+            if (usuario.IdUsuario <= 0)
+                throw new ArgumentException(
+                    "Usuario inválido.");
 
-            return _dal.Actualizar(usuario);
+            if (string.IsNullOrWhiteSpace(usuario.Nombre))
+                throw new ArgumentException(
+                    "El nombre es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(usuario.Username))
+                throw new ArgumentException(
+                    "El usuario es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(usuario.Password))
+                throw new ArgumentException(
+                    "La contraseña es obligatoria.");
+
+            return _dao.Actualizar(usuario);
         }
 
         /// <summary>
-        /// Desactiva un alumno.
+        /// Eliminar usuario
         /// </summary>
-        public bool DesactivarAlumno(int id) => _dal.Desactivar(id);
+        public bool EliminarUsuario(
+            int idUsuario)
+        {
+            if (idUsuario <= 0)
+                throw new ArgumentException(
+                    "ID inválido.");
+
+            return _dao.Eliminar(idUsuario);
+        }
 
         /// <summary>
-        /// Cuenta el total de alumnos activos.
+        /// Total alumnos
         /// </summary>
-        public int ContarAlumnos() => _dal.ContarAlumnos();
+        public int ContarAlumnos()
+        {
+            return _dao.ContarAlumnos();
+        }
     }
 }

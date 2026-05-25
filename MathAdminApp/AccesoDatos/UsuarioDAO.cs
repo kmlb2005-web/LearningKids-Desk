@@ -1,0 +1,300 @@
+// ============================================================
+// Capa de Acceso a Datos: UsuarioDAL
+// Adaptado al modelo Usuario actual
+// ============================================================
+
+using System.Data.SqlClient;
+using MathAdminApp.Modelos;
+
+namespace MathAdminApp.AccesoDatos
+{
+    public class UsuarioDAO
+    {
+        /// <summary>
+        /// Validar login
+        /// </summary>
+        public Usuario? ValidarLogin(string username, string password)
+        {
+            using var conexion = ConexionBD.ObtenerConexion();
+            conexion.Open();
+
+            string query = @"
+                SELECT 
+                    idUsuario,
+                    nombre,
+                    username,
+                    password,
+                    idRol
+                FROM Usuarios
+                WHERE username = @Username
+                  AND password = @Password";
+
+            using var comando = new SqlCommand(query, conexion);
+
+            comando.Parameters.AddWithValue("@Username", username);
+            comando.Parameters.AddWithValue("@Password", password);
+
+            using var lector = comando.ExecuteReader();
+
+            if (lector.Read())
+            {
+                return new Usuario
+                {
+                    IdUsuario = lector.GetInt32(0),
+                    Nombre = lector.GetString(1),
+                    Username = lector.GetString(2),
+                    Password = lector.GetString(3),
+                    IdRol = lector.GetInt32(4)
+                };
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Obtener todos los usuarios
+        /// </summary>
+        public List<Usuario> ObtenerUsuarios()
+        {
+            List<Usuario> lista = new List<Usuario>();
+
+            using var conexion = ConexionBD.ObtenerConexion();
+            conexion.Open();
+
+            string query = @"
+                SELECT 
+                    idUsuario,
+                    nombre,
+                    username,
+                    password,
+                    idRol
+                FROM Usuarios
+                ORDER BY nombre";
+
+            using var comando = new SqlCommand(query, conexion);
+            using var lector = comando.ExecuteReader();
+
+            while (lector.Read())
+            {
+                lista.Add(new Usuario
+                {
+                    IdUsuario = lector.GetInt32(0),
+                    Nombre = lector.GetString(1),
+                    Username = lector.GetString(2),
+                    Password = lector.GetString(3),
+                    IdRol = lector.GetInt32(4)
+                });
+            }
+
+            return lista;
+        }
+
+        /// <summary>
+        /// Obtener solo alumnos
+        /// </summary>
+        public List<Usuario> ObtenerAlumnos()
+        {
+            List<Usuario> lista = new List<Usuario>();
+
+            using var conexion = ConexionBD.ObtenerConexion();
+            conexion.Open();
+
+            string query = @"
+                SELECT 
+                    u.idUsuario,
+                    u.nombre,
+                    u.username,
+                    u.password,
+                    u.idRol
+                FROM Usuarios u
+                INNER JOIN Roles r 
+                    ON r.idRol = u.idRol
+                WHERE UPPER(r.nombre) = 'ALUMNO'
+                ORDER BY u.nombre";
+
+            using var comando = new SqlCommand(query, conexion);
+            using var lector = comando.ExecuteReader();
+
+            while (lector.Read())
+            {
+                lista.Add(new Usuario
+                {
+                    IdUsuario = lector.GetInt32(0),
+                    Nombre = lector.GetString(1),
+                    Username = lector.GetString(2),
+                    Password = lector.GetString(3),
+                    IdRol = lector.GetInt32(4)
+                });
+            }
+
+            return lista;
+        }
+
+        /// <summary>
+        /// Agregar usuario
+        /// </summary>
+        public bool Agregar(Usuario usuario)
+        {
+            using var conexion = ConexionBD.ObtenerConexion();
+            conexion.Open();
+
+            SqlTransaction transaccion = conexion.BeginTransaction();
+
+            try
+            {
+                string query = @"
+                    INSERT INTO Usuarios
+                    (
+                        nombre,
+                        username,
+                        password,
+                        idRol
+                    )
+                    VALUES
+                    (
+                        @Nombre,
+                        @Username,
+                        @Password,
+                        @IdRol
+                    );
+
+                    SELECT SCOPE_IDENTITY();";
+
+                using var comando = new SqlCommand(query, conexion, transaccion);
+
+                comando.Parameters.AddWithValue("@Nombre", usuario.Nombre);
+                comando.Parameters.AddWithValue("@Username", usuario.Username);
+                comando.Parameters.AddWithValue("@Password", usuario.Password);
+                comando.Parameters.AddWithValue("@IdRol", usuario.IdRol);
+
+                int idUsuario = Convert.ToInt32(comando.ExecuteScalar());
+
+                // Si es alumno (rol 3)
+                if (usuario.IdRol == 3)
+                {
+                    string queryAlumno = @"
+                        INSERT INTO Alumnos
+                        (
+                            idAlumno,
+                            idTutor,
+                            grado
+                        )
+                        VALUES
+                        (
+                            @IdAlumno,
+                            NULL,
+                            NULL
+                        )";
+
+                    using var comandoAlumno =
+                        new SqlCommand(queryAlumno, conexion, transaccion);
+
+                    comandoAlumno.Parameters.AddWithValue("@IdAlumno", idUsuario);
+
+                    comandoAlumno.ExecuteNonQuery();
+                }
+
+                transaccion.Commit();
+                return true;
+            }
+            catch
+            {
+                transaccion.Rollback();
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Actualizar usuario
+        /// </summary>
+        public bool Actualizar(Usuario usuario)
+        {
+            using var conexion = ConexionBD.ObtenerConexion();
+            conexion.Open();
+
+            string query = @"
+                UPDATE Usuarios
+                SET
+                    nombre = @Nombre,
+                    username = @Username,
+                    password = @Password,
+                    idRol = @IdRol
+                WHERE idUsuario = @IdUsuario";
+
+            using var comando = new SqlCommand(query, conexion);
+
+            comando.Parameters.AddWithValue("@Nombre", usuario.Nombre);
+            comando.Parameters.AddWithValue("@Username", usuario.Username);
+            comando.Parameters.AddWithValue("@Password", usuario.Password);
+            comando.Parameters.AddWithValue("@IdRol", usuario.IdRol);
+            comando.Parameters.AddWithValue("@IdUsuario", usuario.IdUsuario);
+
+            return comando.ExecuteNonQuery() > 0;
+        }
+
+        /// <summary>
+        /// Eliminar usuario
+        /// </summary>
+        public bool Eliminar(int idUsuario)
+        {
+            using var conexion = ConexionBD.ObtenerConexion();
+            conexion.Open();
+
+            SqlTransaction transaccion = conexion.BeginTransaction();
+
+            try
+            {
+                // Eliminar de Alumnos si existe
+                string queryAlumno =
+                    "DELETE FROM Alumnos WHERE idAlumno = @IdUsuario";
+
+                using var comandoAlumno =
+                    new SqlCommand(queryAlumno, conexion, transaccion);
+
+                comandoAlumno.Parameters.AddWithValue("@IdUsuario", idUsuario);
+
+                comandoAlumno.ExecuteNonQuery();
+
+                // Eliminar usuario
+                string queryUsuario =
+                    "DELETE FROM Usuarios WHERE idUsuario = @IdUsuario";
+
+                using var comandoUsuario =
+                    new SqlCommand(queryUsuario, conexion, transaccion);
+
+                comandoUsuario.Parameters.AddWithValue("@IdUsuario", idUsuario);
+
+                int filas = comandoUsuario.ExecuteNonQuery();
+
+                transaccion.Commit();
+
+                return filas > 0;
+            }
+            catch
+            {
+                transaccion.Rollback();
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Contar alumnos
+        /// </summary>
+        public int ContarAlumnos()
+        {
+            using var conexion = ConexionBD.ObtenerConexion();
+            conexion.Open();
+
+            string query = @"
+                SELECT COUNT(*)
+                FROM Usuarios u
+                INNER JOIN Roles r
+                    ON r.idRol = u.idRol
+                WHERE UPPER(r.nombre) = 'ALUMNO'";
+
+            using var comando = new SqlCommand(query, conexion);
+
+            return (int)comando.ExecuteScalar();
+        }
+    }
+}

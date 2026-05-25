@@ -509,13 +509,16 @@ namespace MathAdminApp.Presentacion
 
             txtNombre.Text = _usuario.Nombre;
 
-            txtCorreo.Text = _usuario.Correo;
+            txtCorreo.Text = string.Empty;
 
             txtUsuario.Text =
-                _usuario.NombreUsuario;
+                _usuario.Username;
 
-            cmbGrado.SelectedItem =
-                _usuario.Grado;
+            txtContrasena.Text =
+                _usuario.Password;
+
+            if (cmbGrado.Items.Count > 0)
+                cmbGrado.SelectedIndex = 0;
         }
 
         // =====================================================
@@ -534,14 +537,16 @@ namespace MathAdminApp.Presentacion
                     _usuario.Nombre =
                         txtNombre.Text.Trim();
 
-                    _usuario.Correo =
-                        txtCorreo.Text.Trim();
+                    _usuario.Username =
+                        txtUsuario.Text.Trim();
 
-                    _usuario.Grado =
-                        cmbGrado.SelectedItem?.ToString()
-                        ?? "6to";
+                    _usuario.Password =
+                        txtContrasena.Text;
 
-                    _bll.ActualizarAlumno(_usuario);
+                    if (_usuario.IdRol <= 0)
+                        _usuario.IdRol = 3;
+
+                    _bll.ActualizarUsuario(_usuario);
 
                     MessageBox.Show(
                         "Alumno actualizado correctamente.",
@@ -557,21 +562,16 @@ namespace MathAdminApp.Presentacion
                         Nombre =
                             txtNombre.Text.Trim(),
 
-                        Correo =
-                            txtCorreo.Text.Trim(),
-
-                        NombreUsuario =
+                        Username =
                             txtUsuario.Text.Trim(),
 
-                        Contrasena =
+                        Password =
                             txtContrasena.Text,
 
-                        Grado =
-                            cmbGrado.SelectedItem?.ToString()
-                            ?? "6to"
+                        IdRol = 3
                     };
 
-                    _bll.AgregarAlumno(nuevo);
+                    _bll.AgregarUsuario(nuevo);
 
                     MessageBox.Show(
                         "Alumno agregado correctamente.",

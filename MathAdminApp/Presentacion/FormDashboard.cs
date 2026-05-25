@@ -102,12 +102,14 @@ namespace MathAdminApp.Presentacion
             };
 
             // =================================================
-            // LABEL ADMIN
+            // LABEL ADMIN/DOCENTE
             // =================================================
+
+            string rolTexto =_usuarioActual.IdRol == 1? "🛡️ Administrador": "👨‍🏫 Docente";
 
             Label lblAdmin = new Label
             {
-                Text = "🛡️ Administrador",
+                Text = rolTexto,
 
                 Font =
                     new Font("Segoe UI", 11),
@@ -630,8 +632,8 @@ namespace MathAdminApp.Presentacion
         {
             panelContenido.Controls.Clear();
 
-            ControlExamenes control =
-                new ControlExamenes
+            ControlPruebas control =
+                new ControlPruebas
                 {
                     Dock = DockStyle.Fill
                 };
