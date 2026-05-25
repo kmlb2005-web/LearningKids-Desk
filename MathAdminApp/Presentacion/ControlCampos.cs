@@ -150,8 +150,8 @@ namespace MathAdminApp.Presentacion
             // =================================================
 
             btnEditar = CrearBoton(
-                "✏ Editar",
-                Color.FromArgb(255, 179, 0)
+                "✏️ Editar",
+                Color.FromArgb(52, 199, 89)
             );
 
             btnEditar.Location =
@@ -164,7 +164,7 @@ namespace MathAdminApp.Presentacion
             // =================================================
 
             btnEliminar = CrearBoton(
-                "🗑 Eliminar",
+                "🗑️ Eliminar",
                 Color.FromArgb(255, 70, 120)
             );
 
@@ -240,7 +240,7 @@ namespace MathAdminApp.Presentacion
                     DataGridViewHeaderBorderStyle.None,
 
                 SelectionMode =
-                    DataGridViewSelectionMode.FullRowSelect,
+                    DataGridViewSelectionMode.RowHeaderSelect,
 
                 MultiSelect = false,
 
@@ -272,7 +272,9 @@ namespace MathAdminApp.Presentacion
             };
 
             dgvCampos.EnableHeadersVisualStyles = false;
-            dgvCampos.CellClick += DgvCampos_CellClick;
+
+            dgvCampos.CellClick +=
+                DgvCampos_CellClick;
 
             dgvCampos.ColumnHeadersDefaultCellStyle.BackColor =
                 Color.FromArgb(245, 248, 255);
@@ -376,24 +378,41 @@ namespace MathAdminApp.Presentacion
         {
             try
             {
+                dgvCampos.CellClick -=
+                    DgvCampos_CellClick;
+
                 dgvCampos.DataSource = null;
 
-                dgvCampos.DataSource =
+                var lista =
                     _campoBLL.ObtenerTodos();
 
+                dgvCampos.DataSource = lista;
+
                 if (dgvCampos.Columns.Contains("IdCampo"))
+                {
                     dgvCampos.Columns["IdCampo"]
                         .HeaderText = "ID";
+                }
 
                 if (dgvCampos.Columns.Contains("Nombre"))
+                {
                     dgvCampos.Columns["Nombre"]
                         .HeaderText =
                             "Campo Formativo";
+                }
+
+                dgvCampos.ClearSelection();
+
+                dgvCampos.CellClick +=
+                    DgvCampos_CellClick;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    ex.Message
+                    ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
                 );
             }
         }
@@ -434,16 +453,22 @@ namespace MathAdminApp.Presentacion
             }
         }
 
+        // =====================================================
+        // EDITAR
+        // =====================================================
+
         private void BtnEditar_Click(
             object? sender,
             EventArgs e
         )
         {
-            // =====================================================
-            // VALIDAR FILA
-            // =====================================================
-
-            if (dgvCampos.SelectedRows.Count == 0)
+            if (
+                dgvCampos.CurrentRow == null
+                ||
+                dgvCampos.CurrentRow.Index < 0
+                ||
+                dgvCampos.Rows.Count == 0
+            )
             {
                 MessageBox.Show(
                     "Seleccione un campo para editar.",
@@ -454,10 +479,6 @@ namespace MathAdminApp.Presentacion
 
                 return;
             }
-
-            // =====================================================
-            // VALIDAR TEXTO
-            // =====================================================
 
             if (string.IsNullOrWhiteSpace(txtNombre.Text))
             {
@@ -473,9 +494,20 @@ namespace MathAdminApp.Presentacion
 
             try
             {
-                CampoFormativo campo =
-                    (CampoFormativo)
-                    dgvCampos.SelectedRows[0].DataBoundItem;
+                if (
+                    dgvCampos.CurrentRow.DataBoundItem
+                    is not CampoFormativo campo
+                )
+                {
+                    MessageBox.Show(
+                        "No se pudo obtener el campo seleccionado.",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+
+                    return;
+                }
 
                 campo.Nombre =
                     txtNombre.Text.Trim();
@@ -513,7 +545,11 @@ namespace MathAdminApp.Presentacion
             EventArgs e
         )
         {
-            if (dgvCampos.CurrentRow == null)
+            if (
+                dgvCampos.CurrentRow == null
+                ||
+                dgvCampos.CurrentRow.Index < 0
+            )
             {
                 MessageBox.Show(
                     "Seleccione un campo."
@@ -524,9 +560,17 @@ namespace MathAdminApp.Presentacion
 
             try
             {
-                CampoFormativo campo =
-                    (CampoFormativo)
-                    dgvCampos.CurrentRow.DataBoundItem;
+                if (
+                    dgvCampos.CurrentRow.DataBoundItem
+                    is not CampoFormativo campo
+                )
+                {
+                    MessageBox.Show(
+                        "No se pudo obtener el campo."
+                    );
+
+                    return;
+                }
 
                 DialogResult resultado =
                     MessageBox.Show(
@@ -544,6 +588,8 @@ namespace MathAdminApp.Presentacion
 
                     CargarCampos();
 
+                    txtNombre.Clear();
+
                     MessageBox.Show(
                         "Campo eliminado."
                     );
@@ -556,19 +602,43 @@ namespace MathAdminApp.Presentacion
                 );
             }
         }
+
+        // =====================================================
+        // CELL CLICK
+        // =====================================================
+
         private void DgvCampos_CellClick(
-        object? sender,
-        DataGridViewCellEventArgs e
-)
+            object? sender,
+            DataGridViewCellEventArgs e
+        )
         {
-            if (e.RowIndex >= 0)
+            try
             {
-                CampoFormativo campo =
-                    (CampoFormativo)
-                    dgvCampos.Rows[e.RowIndex].DataBoundItem;
+                if (
+                    e.RowIndex < 0
+                    ||
+                    e.RowIndex >= dgvCampos.Rows.Count
+                    ||
+                    dgvCampos.Rows.Count == 0
+                )
+                {
+                    return;
+                }
+
+                if (
+                    dgvCampos.Rows[e.RowIndex]
+                        .DataBoundItem
+                    is not CampoFormativo campo
+                )
+                {
+                    return;
+                }
 
                 txtNombre.Text =
                     campo.Nombre;
+            }
+            catch
+            {
             }
         }
 
@@ -605,11 +675,12 @@ namespace MathAdminApp.Presentacion
                 dgvCampos.DataSource = null;
 
                 dgvCampos.DataSource = lista;
+
+                dgvCampos.ClearSelection();
             }
             catch
             {
             }
         }
     }
-
 }

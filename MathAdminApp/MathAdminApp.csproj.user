@@ -12,13 +12,13 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Presentacion\ControlProyectos.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Presentacion\ControlResultados.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Presentacion\ControlTemas.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Presentacion\ControlUnidades.cs">
       <SubType>UserControl</SubType>
@@ -33,6 +33,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Presentacion\FormPreguntaDetalle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormProyectoDetalle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormTemaDetalle.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Presentacion\FormUnidadDetalle.cs">

@@ -1,195 +1,358 @@
-// ============================================================
-// Presentacion: ControlPreguntas (UserControl)
-// Vista para gestionar preguntas de examenes
-// ============================================================
-
 using MathAdminApp.LogicaNegocio;
 using MathAdminApp.Modelos;
 
 namespace MathAdminApp.Presentacion
 {
-    /// <summary>
-    /// Control de usuario para la gestion de preguntas.
-    /// Permite seleccionar un examen y agregar preguntas de tipo
-    /// opcion multiple o abierta.
-    /// </summary>
     public class ControlPreguntas : UserControl
     {
         private ComboBox cmbExamen = null!;
-        private Label lblSeleccionar = null!;
         private DataGridView dgvPreguntas = null!;
+
         private Button btnAgregar = null!;
+        private Button btnEditar = null!;
         private Button btnEliminar = null!;
-        private Panel panelSuperior = null!;
-        private Panel panelBotones = null!;
 
         private readonly PreguntaBLL _preguntaBll = new();
         private readonly ExamenBLL _examenBll = new();
+
         private List<Examen> _examenes = new();
 
         public ControlPreguntas()
         {
             InicializarComponentes();
+
             CargarExamenes();
         }
 
         private void InicializarComponentes()
         {
-            this.BackColor = Color.FromArgb(240, 242, 245);
+            this.BackColor =
+                Color.FromArgb(245, 250, 255);
 
-            // --- Panel superior: selector de examen ---
-            panelSuperior = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 50,
-                BackColor = Color.Transparent
-            };
+            // =====================================================
+            // TITULO
+            // =====================================================
 
-            lblSeleccionar = new Label
+            Label lblTitulo = new Label
             {
-                Text = "Seleccionar examen:",
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(80, 80, 80),
+                Text = "❓ Gestión de Preguntas",
+
+                Font = new Font(
+                    "Segoe UI",
+                    22,
+                    FontStyle.Bold
+                ),
+
+                ForeColor =
+                    Color.FromArgb(20, 35, 80),
+
                 AutoSize = true,
-                Location = new Point(0, 15)
+
+                Location = new Point(20, 20)
             };
+
+            // =====================================================
+            // SUBTITULO
+            // =====================================================
+
+            Label lblSubtitulo = new Label
+            {
+                Text =
+                    "Administra preguntas de exámenes fácilmente ✨",
+
+                Font = new Font("Segoe UI", 12),
+
+                ForeColor =
+                    Color.FromArgb(100, 120, 150),
+
+                AutoSize = true,
+
+                Location = new Point(25, 65)
+            };
+
+            // =====================================================
+            // LABEL EXAMEN
+            // =====================================================
+
+            Label lblExamen = new Label
+            {
+                Text = "📚 Seleccionar examen:",
+
+                Font = new Font(
+                    "Segoe UI",
+                    11,
+                    FontStyle.Bold
+                ),
+
+                ForeColor =
+                    Color.FromArgb(20, 35, 90),
+
+                AutoSize = true,
+
+                Location = new Point(25, 125)
+            };
+
+            // =====================================================
+            // COMBO EXAMEN
+            // =====================================================
 
             cmbExamen = new ComboBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(155, 10),
-                Size = new Size(400, 28),
-                DropDownStyle = ComboBoxStyle.DropDownList
-            };
-            cmbExamen.SelectedIndexChanged += CmbExamen_SelectedIndexChanged;
+                Font = new Font("Segoe UI", 11),
 
-            panelSuperior.Controls.Add(lblSeleccionar);
-            panelSuperior.Controls.Add(cmbExamen);
+                Location = new Point(250, 118),
 
-            // --- Barra de botones ---
-            panelBotones = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 50,
-                BackColor = Color.Transparent
-            };
+                Size = new Size(420, 40),
 
-            btnAgregar = new Button
-            {
-                Text = "Agregar Pregunta",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = Color.FromArgb(255, 179, 0), // Amarillo base
-                ForeColor = Color.Black,
+                DropDownStyle =
+                    ComboBoxStyle.DropDownList,
+
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(155, 35),
-                Location = new Point(0, 8),
-                Cursor = Cursors.Hand
+
+                BackColor = Color.White,
+
+                ForeColor =
+                    Color.FromArgb(50, 70, 120)
             };
-            btnAgregar.FlatAppearance.BorderSize = 0;
-            btnAgregar.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 202, 40);
-            btnAgregar.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 160, 0);
+
+            cmbExamen.SelectedIndexChanged +=
+                CmbExamen_SelectedIndexChanged;
+
+            // =====================================================
+            // BOTON AGREGAR
+            // =====================================================
+
+            btnAgregar = CrearBoton(
+                "➕ Agregar",
+                Color.FromArgb(66, 133, 244)
+            );
+
+            btnAgregar.Location =
+                new Point(20, 190);
+
             btnAgregar.Click += BtnAgregar_Click;
 
+            // =====================================================
+            // BOTON EDITAR
+            // =====================================================
 
-            btnEliminar = new Button
-            {
-                Text = "Eliminar",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = Color.FromArgb(255, 179, 0), // Amarillo base
-                ForeColor = Color.Black,
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(100, 35),
-                Location = new Point(170, 8),
-                Cursor = Cursors.Hand
-            };
-            btnEliminar.FlatAppearance.BorderSize = 0;
-            btnEliminar.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 202, 40);
-            btnEliminar.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 160, 0);
+            btnEditar = CrearBoton(
+                "✏️ Editar",
+                Color.FromArgb(52, 199, 89)
+            );
+
+            btnEditar.Location =
+                new Point(210, 190);
+
+            btnEditar.Click += BtnEditar_Click;
+
+            // =====================================================
+            // BOTON ELIMINAR
+            // =====================================================
+
+            btnEliminar = CrearBoton(
+                "🗑️ Eliminar",
+                Color.FromArgb(255, 80, 120)
+            );
+
+            btnEliminar.Location =
+                new Point(400, 190);
+
             btnEliminar.Click += BtnEliminar_Click;
 
-            panelBotones.Controls.Add(btnAgregar);
-            panelBotones.Controls.Add(btnEliminar);
+            // =====================================================
+            // DATA GRID
+            // =====================================================
 
-            // --- Tabla de preguntas ---
             dgvPreguntas = new DataGridView
             {
-                Dock = DockStyle.Fill,
+                Location = new Point(20, 280),
+
+                Size = new Size(1320, 520),
+
                 BackgroundColor = Color.White,
+
                 BorderStyle = BorderStyle.None,
-                CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
-                ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+
+                CellBorderStyle =
+                    DataGridViewCellBorderStyle
+                    .SingleHorizontal,
+
+                ColumnHeadersBorderStyle =
+                    DataGridViewHeaderBorderStyle
+                    .None,
+
+                SelectionMode =
+                    DataGridViewSelectionMode
+                    .FullRowSelect,
+
                 MultiSelect = false,
+
                 ReadOnly = true,
+
                 AllowUserToAddRows = false,
+
                 AllowUserToDeleteRows = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+
+                AllowUserToResizeRows = false,
+
+                AutoSizeColumnsMode =
+                    DataGridViewAutoSizeColumnsMode
+                    .Fill,
+
                 RowHeadersVisible = false,
-                Font = new Font("Segoe UI", 10),
-                GridColor = Color.FromArgb(255, 179, 0) // Amarillo fuerte
+
+                Font = new Font("Segoe UI", 11),
+
+                GridColor =
+                    Color.FromArgb(230, 235, 245)
             };
 
-            // Desactivar estilos del sistema
-            dgvPreguntas.EnableHeadersVisualStyles = false;
+            dgvPreguntas.EnableHeadersVisualStyles =
+                false;
 
-            // ----- ENCABEZADO -----
-            dgvPreguntas.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118);
-            dgvPreguntas.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
-            dgvPreguntas.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 241, 118);
-            dgvPreguntas.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
-            dgvPreguntas.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            dgvPreguntas.ColumnHeadersHeight = 40;
+            // =====================================================
+            // HEADER
+            // =====================================================
 
-            // ----- SELECCIÓN -----
-            dgvPreguntas.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 202, 40);
-            dgvPreguntas.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvPreguntas.ColumnHeadersDefaultCellStyle
+                .BackColor =
+                Color.FromArgb(240, 247, 255);
 
-            dgvPreguntas.RowTemplate.Height = 35;
+            dgvPreguntas.ColumnHeadersDefaultCellStyle
+                .ForeColor =
+                Color.FromArgb(50, 70, 120);
+
+            dgvPreguntas.ColumnHeadersDefaultCellStyle
+                .Font =
+                new Font(
+                    "Segoe UI",
+                    11,
+                    FontStyle.Bold
+                );
+
+            dgvPreguntas.ColumnHeadersHeight = 55;
+
+            // =====================================================
+            // FILAS
+            // =====================================================
+
+            dgvPreguntas.DefaultCellStyle.BackColor =
+                Color.White;
+
+            dgvPreguntas.DefaultCellStyle.ForeColor =
+                Color.FromArgb(60, 70, 100);
+
+            dgvPreguntas.DefaultCellStyle
+                .SelectionBackColor =
+                Color.FromArgb(220, 235, 255);
+
+            dgvPreguntas.DefaultCellStyle
+                .SelectionForeColor =
+                Color.FromArgb(20, 35, 80);
+
+            dgvPreguntas.RowTemplate.Height = 50;
+
+            // =====================================================
+            // CONTROLES
+            // =====================================================
+
+            this.Controls.Add(lblTitulo);
+
+            this.Controls.Add(lblSubtitulo);
+
+            this.Controls.Add(lblExamen);
+
+            this.Controls.Add(cmbExamen);
+
+            this.Controls.Add(btnAgregar);
+
+            this.Controls.Add(btnEditar);
+
+            this.Controls.Add(btnEliminar);
 
             this.Controls.Add(dgvPreguntas);
-            this.Controls.Add(panelBotones);
-            this.Controls.Add(panelSuperior);
+        }
+
+        private Button CrearBoton(
+            string texto,
+            Color color
+        )
+        {
+            Button btn = new Button
+            {
+                Text = texto,
+
+                Font = new Font(
+                    "Segoe UI",
+                    11,
+                    FontStyle.Bold
+                ),
+
+                BackColor = color,
+
+                ForeColor = Color.White,
+
+                FlatStyle = FlatStyle.Flat,
+
+                Size = new Size(170, 45),
+
+                Cursor = Cursors.Hand
+            };
+
+            btn.FlatAppearance.BorderSize = 0;
+
+            btn.MouseEnter += (s, e) =>
+            {
+                btn.BackColor =
+                    ControlPaint.Light(color);
+            };
+
+            btn.MouseLeave += (s, e) =>
+            {
+                btn.BackColor = color;
+            };
+
+            return btn;
         }
 
         private void CargarExamenes()
         {
-            try
+            _examenes =
+                _examenBll.ObtenerPorUnidad(null);
+
+            cmbExamen.Items.Clear();
+
+            cmbExamen.Items.Add(
+                "-- Seleccione un examen --"
+            );
+
+            foreach (var ex in _examenes)
             {
-                _examenes = _examenBll.ObtenerPorUnidad(null);
-                cmbExamen.Items.Clear();
-                cmbExamen.Items.Add("-- Seleccione un examen --");
-                foreach (var ex in _examenes)
-                    cmbExamen.Items.Add($"[{ex.NombreUnidad}] {ex.Nombre}");
-                cmbExamen.SelectedIndex = 0;
+                cmbExamen.Items.Add(
+                    $"[{ex.NombreUnidad}] {ex.Nombre}"
+                );
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar examenes:\n{ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
+            cmbExamen.SelectedIndex = 0;
         }
 
         private void CargarPreguntas(int examenId)
         {
-            try
-            {
-                var preguntas = _preguntaBll.ObtenerPorExamen(examenId);
-                dgvPreguntas.DataSource = null;
-                dgvPreguntas.DataSource = preguntas;
+            var preguntas =
+                _preguntaBll.ObtenerPorExamen(
+                    examenId
+                );
 
-                if (dgvPreguntas.Columns.Contains("ExamenId"))
-                    dgvPreguntas.Columns["ExamenId"].Visible = false;
-                if (dgvPreguntas.Columns.Contains("RespuestaCorrecta"))
-                    dgvPreguntas.Columns["RespuestaCorrecta"].HeaderText = "Respuesta";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar preguntas:\n{ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            dgvPreguntas.DataSource = null;
+
+            dgvPreguntas.DataSource = preguntas;
         }
 
-        private void CmbExamen_SelectedIndexChanged(object? sender, EventArgs e)
+        private void CmbExamen_SelectedIndexChanged(
+            object? sender,
+            EventArgs e
+        )
         {
             if (cmbExamen.SelectedIndex <= 0)
             {
@@ -197,54 +360,87 @@ namespace MathAdminApp.Presentacion
                 return;
             }
 
-            var examen = _examenes[cmbExamen.SelectedIndex - 1];
+            var examen =
+                _examenes[
+                    cmbExamen.SelectedIndex - 1
+                ];
+
             CargarPreguntas(examen.Id);
         }
 
-        private void BtnAgregar_Click(object? sender, EventArgs e)
+        private void BtnAgregar_Click(
+            object? sender,
+            EventArgs e
+        )
         {
             if (cmbExamen.SelectedIndex <= 0)
             {
-                MessageBox.Show("Seleccione un examen primero.", "Aviso",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "Seleccione un examen."
+                );
+
                 return;
             }
 
-            var examen = _examenes[cmbExamen.SelectedIndex - 1];
-            var form = new FormPreguntaDetalle(examen.Id);
-            if (form.ShowDialog() == DialogResult.OK)
+            var examen =
+                _examenes[
+                    cmbExamen.SelectedIndex - 1
+                ];
+
+            var form =
+                new FormPreguntaDetalle(
+                    examen.Id
+                );
+
+            if (form.ShowDialog() ==
+                DialogResult.OK)
             {
                 CargarPreguntas(examen.Id);
             }
         }
 
-        private void BtnEliminar_Click(object? sender, EventArgs e)
+        private void BtnEditar_Click(
+            object? sender,
+            EventArgs e
+        )
         {
             if (dgvPreguntas.CurrentRow == null)
             {
-                MessageBox.Show("Seleccione una pregunta.", "Aviso",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "Seleccione una pregunta."
+                );
+
                 return;
             }
 
-            var pregunta = (Pregunta)dgvPreguntas.CurrentRow.DataBoundItem;
-            var resultado = MessageBox.Show("Desea eliminar esta pregunta?",
-                "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var pregunta =
+                (Pregunta)dgvPreguntas
+                .CurrentRow
+                .DataBoundItem;
 
-            if (resultado == DialogResult.Yes)
+            var form =
+                new FormPreguntaDetalle(
+                    pregunta.ExamenId,
+                    pregunta
+                );
+
+            if (form.ShowDialog() ==
+                DialogResult.OK)
             {
-                try
-                {
-                    _preguntaBll.Eliminar(pregunta.Id);
-                    var examen = _examenes[cmbExamen.SelectedIndex - 1];
-                    CargarPreguntas(examen.Id);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error: {ex.Message}", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                CargarPreguntas(
+                    pregunta.ExamenId
+                );
             }
+        }
+
+        private void BtnEliminar_Click(
+            object? sender,
+            EventArgs e
+        )
+        {
+            MessageBox.Show(
+                "Aquí puedes agregar la lógica para eliminar."
+            );
         }
     }
 }

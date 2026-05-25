@@ -1,6 +1,6 @@
 ﻿// ============================================================
-// Presentacion: FormPreguntaDetalle (MODERNO)
-// SOLO CAMBIO VISUAL
+// Presentacion: FormPreguntaDetalle
+// FORMULARIO MODERNO CON EDITAR
 // ============================================================
 
 using MathAdminApp.LogicaNegocio;
@@ -33,45 +33,61 @@ namespace MathAdminApp.Presentacion
         private Button btnGuardar = null!;
         private Button btnCancelar = null!;
 
-        // Mostrar/Ocultar controles
-        private readonly List<Control> _controlesOpciones = new();
+        private readonly List<Control>
+            _controlesOpciones = new();
 
         // =====================================================
-        // LOGICA (NO CAMBIADA)
+        // LOGICA
         // =====================================================
 
         private readonly int _examenId;
 
         private readonly PreguntaBLL _bll = new();
 
+        private readonly Pregunta? _pregunta;
+
+        private readonly bool _esEdicion;
+
         // =====================================================
         // CONSTRUCTOR
         // =====================================================
 
-        public FormPreguntaDetalle(int examenId)
+        public FormPreguntaDetalle(
+            int examenId,
+            Pregunta? pregunta = null
+        )
         {
             _examenId = examenId;
 
+            _pregunta = pregunta;
+
+            _esEdicion = pregunta != null;
+
             InicializarComponentes();
+
+            if (_esEdicion)
+            {
+                CargarDatos();
+            }
         }
 
         // =====================================================
-        // DISEÑO MODERNO
+        // DISEÑO
         // =====================================================
 
         private void InicializarComponentes()
         {
-            // =================================================
-            // FORMULARIO
-            // =================================================
-
-            this.Text = "Nueva Pregunta";
+            this.Text = _esEdicion
+                ? "Editar Pregunta"
+                : "Nueva Pregunta";
 
             this.Size = new Size(760, 760);
 
-            this.StartPosition = FormStartPosition.CenterParent;
+            this.StartPosition =
+                FormStartPosition.CenterParent;
 
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.FormBorderStyle =
+                FormBorderStyle.FixedDialog;
 
             this.MaximizeBox = false;
 
@@ -81,10 +97,6 @@ namespace MathAdminApp.Presentacion
                 Color.FromArgb(245, 248, 255);
 
             this.AutoScroll = true;
-
-            // =================================================
-            // PANEL CONTENEDOR
-            // =================================================
 
             Panel panelContenido = new Panel
             {
@@ -97,30 +109,28 @@ namespace MathAdminApp.Presentacion
                 BackColor = Color.Transparent
             };
 
-            // =================================================
-            // IMAGEN SUPERIOR
-            // =================================================
+            PictureBox picRobot =
+                new PictureBox
+                {
+                    Image = Image.FromFile(
+                        "Resources/Louz.png"
+                    ),
 
-            PictureBox picRobot = new PictureBox
-            {
-                Image = Image.FromFile("Resources/Louz.png"),
+                    SizeMode =
+                        PictureBoxSizeMode.Zoom,
 
-                SizeMode = PictureBoxSizeMode.Zoom,
+                    Size = new Size(90, 90),
 
-                Size = new Size(90, 90),
+                    Location = new Point(20, 10),
 
-                Location = new Point(20, 10),
-
-                BackColor = Color.Transparent
-            };
-
-            // =================================================
-            // TITULO
-            // =================================================
+                    BackColor = Color.Transparent
+                };
 
             Label lblTitulo = new Label
             {
-                Text = "📝 Nueva Pregunta",
+                Text = _esEdicion
+                    ? "✏️ Editar Pregunta"
+                    : "📝 Nueva Pregunta",
 
                 Font = new Font(
                     "Segoe UI",
@@ -136,28 +146,28 @@ namespace MathAdminApp.Presentacion
                 Location = new Point(130, 20)
             };
 
-            // =================================================
-            // SUBTITULO
-            // =================================================
+            Label lblSubtitulo =
+                new Label
+                {
+                    Text =
+                        "Crea y edita preguntas fácilmente ✨",
 
-            Label lblSubtitulo = new Label
-            {
-                Text =
-                    "Crea preguntas para el examen fácilmente ✨",
+                    Font = new Font(
+                        "Segoe UI",
+                        12
+                    ),
 
-                Font = new Font("Segoe UI", 12),
+                    ForeColor =
+                        Color.FromArgb(
+                            110,
+                            120,
+                            150
+                        ),
 
-                ForeColor =
-                    Color.FromArgb(110, 120, 150),
+                    AutoSize = true,
 
-                AutoSize = true,
-
-                Location = new Point(135, 70)
-            };
-
-            // =================================================
-            // POSICIONES
-            // =================================================
+                    Location = new Point(135, 70)
+                };
 
             int y = 140;
 
@@ -179,7 +189,10 @@ namespace MathAdminApp.Presentacion
 
             cmbTipo = new ComboBox
             {
-                Font = new Font("Segoe UI", 12),
+                Font = new Font(
+                    "Segoe UI",
+                    12
+                ),
 
                 Location = new Point(x, y),
 
@@ -194,7 +207,8 @@ namespace MathAdminApp.Presentacion
             };
 
             cmbTipo.Items.AddRange(
-                new[] { "Multiple", "Abierta" });
+                new[] { "Multiple", "Abierta" }
+            );
 
             cmbTipo.SelectedIndex = 0;
 
@@ -202,7 +216,7 @@ namespace MathAdminApp.Presentacion
                 CmbTipo_SelectedIndexChanged;
 
             // =================================================
-            // TEXTO PREGUNTA
+            // TEXTO
             // =================================================
 
             y += 70;
@@ -217,7 +231,10 @@ namespace MathAdminApp.Presentacion
 
             txtTexto = new TextBox
             {
-                Font = new Font("Segoe UI", 12),
+                Font = new Font(
+                    "Segoe UI",
+                    12
+                ),
 
                 Location = new Point(x, y),
 
@@ -225,9 +242,11 @@ namespace MathAdminApp.Presentacion
 
                 Multiline = true,
 
-                BorderStyle = BorderStyle.FixedSingle,
+                BorderStyle =
+                    BorderStyle.FixedSingle,
 
-                ScrollBars = ScrollBars.Vertical
+                ScrollBars =
+                    ScrollBars.Vertical
             };
 
             // =================================================
@@ -244,7 +263,8 @@ namespace MathAdminApp.Presentacion
 
             y += 35;
 
-            txtOpcionA = CrearTextBox(x, y, w);
+            txtOpcionA =
+                CrearTextBox(x, y, w);
 
             // =================================================
             // OPCION B
@@ -260,7 +280,8 @@ namespace MathAdminApp.Presentacion
 
             y += 35;
 
-            txtOpcionB = CrearTextBox(x, y, w);
+            txtOpcionB =
+                CrearTextBox(x, y, w);
 
             // =================================================
             // OPCION C
@@ -276,7 +297,8 @@ namespace MathAdminApp.Presentacion
 
             y += 35;
 
-            txtOpcionC = CrearTextBox(x, y, w);
+            txtOpcionC =
+                CrearTextBox(x, y, w);
 
             // =================================================
             // OPCION D
@@ -292,20 +314,25 @@ namespace MathAdminApp.Presentacion
 
             y += 35;
 
-            txtOpcionD = CrearTextBox(x, y, w);
-
-            // =================================================
-            // CONTROLES MULTIPLE
-            // =================================================
+            txtOpcionD =
+                CrearTextBox(x, y, w);
 
             _controlesOpciones.AddRange(
                 new Control[]
                 {
-                    lblOpcionA, txtOpcionA,
-                    lblOpcionB, txtOpcionB,
-                    lblOpcionC, txtOpcionC,
-                    lblOpcionD, txtOpcionD
-                });
+                    lblOpcionA,
+                    txtOpcionA,
+
+                    lblOpcionB,
+                    txtOpcionB,
+
+                    lblOpcionC,
+                    txtOpcionC,
+
+                    lblOpcionD,
+                    txtOpcionD
+                }
+            );
 
             // =================================================
             // RESPUESTA
@@ -321,10 +348,11 @@ namespace MathAdminApp.Presentacion
 
             y += 35;
 
-            txtRespuesta = CrearTextBox(x, y, w);
+            txtRespuesta =
+                CrearTextBox(x, y, w);
 
             // =================================================
-            // BOTONES
+            // BOTON GUARDAR
             // =================================================
 
             y += 90;
@@ -340,7 +368,11 @@ namespace MathAdminApp.Presentacion
                 ),
 
                 BackColor =
-                    Color.FromArgb(50, 120, 255),
+                    Color.FromArgb(
+                        50,
+                        120,
+                        255
+                    ),
 
                 ForeColor = Color.White,
 
@@ -353,25 +385,36 @@ namespace MathAdminApp.Presentacion
                 Cursor = Cursors.Hand
             };
 
-            btnGuardar.FlatAppearance.BorderSize = 0;
+            btnGuardar.FlatAppearance
+                .BorderSize = 0;
 
-            btnGuardar.Click += BtnGuardar_Click;
+            btnGuardar.Click +=
+                BtnGuardar_Click;
 
-            // Hover
-            btnGuardar.MouseEnter += (s, e) =>
-            {
-                btnGuardar.BackColor =
-                    Color.FromArgb(70, 140, 255);
-            };
+            btnGuardar.MouseEnter +=
+                (s, e) =>
+                {
+                    btnGuardar.BackColor =
+                        Color.FromArgb(
+                            70,
+                            140,
+                            255
+                        );
+                };
 
-            btnGuardar.MouseLeave += (s, e) =>
-            {
-                btnGuardar.BackColor =
-                    Color.FromArgb(50, 120, 255);
-            };
+            btnGuardar.MouseLeave +=
+                (s, e) =>
+                {
+                    btnGuardar.BackColor =
+                        Color.FromArgb(
+                            50,
+                            120,
+                            255
+                        );
+                };
 
             // =================================================
-            // CANCELAR
+            // BOTON CANCELAR
             // =================================================
 
             btnCancelar = new Button
@@ -385,7 +428,11 @@ namespace MathAdminApp.Presentacion
                 ),
 
                 BackColor =
-                    Color.FromArgb(255, 80, 120),
+                    Color.FromArgb(
+                        255,
+                        80,
+                        120
+                    ),
 
                 ForeColor = Color.White,
 
@@ -398,75 +445,101 @@ namespace MathAdminApp.Presentacion
                 Cursor = Cursors.Hand
             };
 
-            btnCancelar.FlatAppearance.BorderSize = 0;
+            btnCancelar.FlatAppearance
+                .BorderSize = 0;
 
-            btnCancelar.Click += (s, e) =>
-            {
-                this.DialogResult = DialogResult.Cancel;
+            btnCancelar.Click +=
+                (s, e) =>
+                {
+                    this.DialogResult =
+                        DialogResult.Cancel;
 
-                this.Close();
-            };
+                    this.Close();
+                };
 
-            // Hover
-            btnCancelar.MouseEnter += (s, e) =>
-            {
-                btnCancelar.BackColor =
-                    Color.FromArgb(255, 110, 145);
-            };
+            panelContenido.Controls.Add(
+                picRobot
+            );
 
-            btnCancelar.MouseLeave += (s, e) =>
-            {
-                btnCancelar.BackColor =
-                    Color.FromArgb(255, 80, 120);
-            };
+            panelContenido.Controls.Add(
+                lblTitulo
+            );
 
-            // =================================================
-            // AGREGAR CONTROLES
-            // =================================================
+            panelContenido.Controls.Add(
+                lblSubtitulo
+            );
 
-            panelContenido.Controls.Add(picRobot);
+            panelContenido.Controls.Add(
+                lblTipo
+            );
 
-            panelContenido.Controls.Add(lblTitulo);
+            panelContenido.Controls.Add(
+                cmbTipo
+            );
 
-            panelContenido.Controls.Add(lblSubtitulo);
+            panelContenido.Controls.Add(
+                lblTexto
+            );
 
-            panelContenido.Controls.Add(lblTipo);
+            panelContenido.Controls.Add(
+                txtTexto
+            );
 
-            panelContenido.Controls.Add(cmbTipo);
+            panelContenido.Controls.Add(
+                lblOpcionA
+            );
 
-            panelContenido.Controls.Add(lblTexto);
+            panelContenido.Controls.Add(
+                txtOpcionA
+            );
 
-            panelContenido.Controls.Add(txtTexto);
+            panelContenido.Controls.Add(
+                lblOpcionB
+            );
 
-            panelContenido.Controls.Add(lblOpcionA);
+            panelContenido.Controls.Add(
+                txtOpcionB
+            );
 
-            panelContenido.Controls.Add(txtOpcionA);
+            panelContenido.Controls.Add(
+                lblOpcionC
+            );
 
-            panelContenido.Controls.Add(lblOpcionB);
+            panelContenido.Controls.Add(
+                txtOpcionC
+            );
 
-            panelContenido.Controls.Add(txtOpcionB);
+            panelContenido.Controls.Add(
+                lblOpcionD
+            );
 
-            panelContenido.Controls.Add(lblOpcionC);
+            panelContenido.Controls.Add(
+                txtOpcionD
+            );
 
-            panelContenido.Controls.Add(txtOpcionC);
+            panelContenido.Controls.Add(
+                lblRespuesta
+            );
 
-            panelContenido.Controls.Add(lblOpcionD);
+            panelContenido.Controls.Add(
+                txtRespuesta
+            );
 
-            panelContenido.Controls.Add(txtOpcionD);
+            panelContenido.Controls.Add(
+                btnGuardar
+            );
 
-            panelContenido.Controls.Add(lblRespuesta);
+            panelContenido.Controls.Add(
+                btnCancelar
+            );
 
-            panelContenido.Controls.Add(txtRespuesta);
-
-            panelContenido.Controls.Add(btnGuardar);
-
-            panelContenido.Controls.Add(btnCancelar);
-
-            this.Controls.Add(panelContenido);
+            this.Controls.Add(
+                panelContenido
+            );
         }
 
         // =====================================================
-        // LABEL MODERNO
+        // LABEL
         // =====================================================
 
         private Label CrearLabel(
@@ -486,16 +559,21 @@ namespace MathAdminApp.Presentacion
                 ),
 
                 ForeColor =
-                    Color.FromArgb(20, 35, 90),
+                    Color.FromArgb(
+                        20,
+                        35,
+                        90
+                    ),
 
                 AutoSize = true,
 
-                Location = new Point(x, y)
+                Location =
+                    new Point(x, y)
             };
         }
 
         // =====================================================
-        // TEXTBOX MODERNO
+        // TEXTBOX
         // =====================================================
 
         private TextBox CrearTextBox(
@@ -506,23 +584,62 @@ namespace MathAdminApp.Presentacion
         {
             return new TextBox
             {
-                Font = new Font("Segoe UI", 12),
+                Font = new Font(
+                    "Segoe UI",
+                    12
+                ),
 
                 Location = new Point(x, y),
 
                 Size = new Size(width, 42),
 
-                BorderStyle = BorderStyle.FixedSingle,
+                BorderStyle =
+                    BorderStyle.FixedSingle,
 
                 BackColor = Color.White,
 
                 ForeColor =
-                    Color.FromArgb(50, 70, 120)
+                    Color.FromArgb(
+                        50,
+                        70,
+                        120
+                    )
             };
         }
 
         // =====================================================
-        // MOSTRAR/OCULTAR OPCIONES
+        // CARGAR DATOS
+        // =====================================================
+
+        private void CargarDatos()
+        {
+            if (_pregunta == null)
+                return;
+
+            txtTexto.Text =
+                _pregunta.Texto;
+
+            cmbTipo.SelectedItem =
+                _pregunta.Tipo;
+
+            txtOpcionA.Text =
+                _pregunta.OpcionA;
+
+            txtOpcionB.Text =
+                _pregunta.OpcionB;
+
+            txtOpcionC.Text =
+                _pregunta.OpcionC;
+
+            txtOpcionD.Text =
+                _pregunta.OpcionD;
+
+            txtRespuesta.Text =
+                _pregunta.RespuestaCorrecta;
+        }
+
+        // =====================================================
+        // MOSTRAR / OCULTAR
         // =====================================================
 
         private void CmbTipo_SelectedIndexChanged(
@@ -534,16 +651,23 @@ namespace MathAdminApp.Presentacion
                 cmbTipo.SelectedItem?.ToString()
                 == "Multiple";
 
-            foreach (var ctrl in _controlesOpciones)
-                ctrl.Visible = esMultiple;
+            foreach (
+                var ctrl
+                in _controlesOpciones
+            )
+            {
+                ctrl.Visible =
+                    esMultiple;
+            }
 
-            lblRespuesta.Text = esMultiple
+            lblRespuesta.Text =
+                esMultiple
                 ? "✅ Respuesta correcta (A, B, C o D)"
                 : "✅ Respuesta correcta";
         }
 
         // =====================================================
-        // GUARDAR (LOGICA ORIGINAL)
+        // GUARDAR
         // =====================================================
 
         private void BtnGuardar_Click(
@@ -553,42 +677,99 @@ namespace MathAdminApp.Presentacion
         {
             try
             {
-                var pregunta = new Pregunta
+                if (
+                    _esEdicion
+                    &&
+                    _pregunta != null
+                )
                 {
-                    ExamenId = _examenId,
+                    _pregunta.Texto =
+                        txtTexto.Text.Trim();
 
-                    Texto = txtTexto.Text.Trim(),
+                    _pregunta.Tipo =
+                        cmbTipo.SelectedItem
+                        ?.ToString()
+                        ?? "Multiple";
 
-                    Tipo =
-                        cmbTipo.SelectedItem?.ToString()
-                        ?? "Multiple",
+                    _pregunta.OpcionA =
+                        txtOpcionA.Text.Trim();
 
-                    OpcionA =
-                        txtOpcionA.Text.Trim(),
+                    _pregunta.OpcionB =
+                        txtOpcionB.Text.Trim();
 
-                    OpcionB =
-                        txtOpcionB.Text.Trim(),
+                    _pregunta.OpcionC =
+                        txtOpcionC.Text.Trim();
 
-                    OpcionC =
-                        txtOpcionC.Text.Trim(),
+                    _pregunta.OpcionD =
+                        txtOpcionD.Text.Trim();
 
-                    OpcionD =
-                        txtOpcionD.Text.Trim(),
+                    _pregunta.RespuestaCorrecta =
+                        txtRespuesta.Text.Trim();
 
-                    RespuestaCorrecta =
-                        txtRespuesta.Text.Trim()
-                };
+                    _bll.Actualizar(
+                        _pregunta
+                    );
 
-                _bll.Agregar(pregunta);
+                    MessageBox.Show(
+                        "Pregunta actualizada.",
+                        "Éxito",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                else
+                {
+                    var pregunta =
+                        new Pregunta
+                        {
+                            ExamenId =
+                                _examenId,
 
-                MessageBox.Show(
-                    "Pregunta agregada.",
-                    "Éxito",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                            Texto =
+                                txtTexto.Text
+                                .Trim(),
 
-                this.DialogResult = DialogResult.OK;
+                            Tipo =
+                                cmbTipo
+                                .SelectedItem
+                                ?.ToString()
+                                ?? "Multiple",
+
+                            OpcionA =
+                                txtOpcionA.Text
+                                .Trim(),
+
+                            OpcionB =
+                                txtOpcionB.Text
+                                .Trim(),
+
+                            OpcionC =
+                                txtOpcionC.Text
+                                .Trim(),
+
+                            OpcionD =
+                                txtOpcionD.Text
+                                .Trim(),
+
+                            RespuestaCorrecta =
+                                txtRespuesta.Text
+                                .Trim()
+                        };
+
+                    _bll.Agregar(
+                        pregunta
+                    );
+
+                    MessageBox.Show(
+                        "Pregunta agregada.",
+                        "Éxito",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+
+                this.DialogResult =
+                    DialogResult.OK;
 
                 this.Close();
             }
