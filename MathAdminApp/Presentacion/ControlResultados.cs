@@ -1,24 +1,15 @@
-// ============================================================
-// Presentacion: ControlResultados (UserControl)
-// Vista de solo lectura para consultar resultados de alumnos
-// ============================================================
-
 using MathAdminApp.LogicaNegocio;
 using MathAdminApp.Modelos;
 
 namespace MathAdminApp.Presentacion
 {
-    /// <summary>
-    /// Control de usuario para visualizar resultados de examenes.
-    /// Solo lectura - el administrador no modifica resultados.
-    /// </summary>
     public class ControlResultados : UserControl
     {
         private ComboBox cmbAlumno = null!;
-        private Label lblSeleccionar = null!;
         private DataGridView dgvResultados = null!;
-        private Panel panelSuperior = null!;
-        private Label lblResumen = null!;
+        private Button btnAgregar = null!;
+        private Button btnEditar = null!;
+        private Button btnEliminar = null!;
 
         private readonly ResultadoBLL _resultadoBll = new();
         private readonly UsuarioBLL _usuarioBll = new();
@@ -32,51 +23,64 @@ namespace MathAdminApp.Presentacion
 
         private void InicializarComponentes()
         {
-            this.BackColor = Color.FromArgb(240, 242, 245);
+            BackColor = Color.FromArgb(245, 250, 255);
 
-            // --- Panel superior: selector de alumno ---
-            panelSuperior = new Panel
+            Label lblTitulo = new()
             {
-                Dock = DockStyle.Top,
-                Height = 80,
-                BackColor = Color.Transparent
+                Text = "Gestion de Resultados",
+                Font = new Font("Segoe UI", 22, FontStyle.Bold),
+                ForeColor = Color.FromArgb(20, 35, 80),
+                AutoSize = true,
+                Location = new Point(20, 20)
             };
 
-            lblSeleccionar = new Label
+            Label lblSubtitulo = new()
+            {
+                Text = "Consulta y administra resultados",
+                Font = new Font("Segoe UI", 12),
+                ForeColor = Color.FromArgb(100, 120, 150),
+                AutoSize = true,
+                Location = new Point(25, 65)
+            };
+
+            Label lblAlumno = new()
             {
                 Text = "Seleccionar alumno:",
-                Font = new Font("Segoe UI", 10),
-                ForeColor = Color.FromArgb(80, 80, 80),
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                ForeColor = Color.FromArgb(20, 35, 90),
                 AutoSize = true,
-                Location = new Point(0, 15)
+                Location = new Point(25, 125)
             };
 
             cmbAlumno = new ComboBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(155, 10),
-                Size = new Size(350, 28),
-                DropDownStyle = ComboBoxStyle.DropDownList
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(250, 118),
+                Size = new Size(420, 40),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.White,
+                ForeColor = Color.FromArgb(50, 70, 120)
             };
             cmbAlumno.SelectedIndexChanged += CmbAlumno_SelectedIndexChanged;
 
-            lblResumen = new Label
-            {
-                Text = "",
-                Font = new Font("Segoe UI", 10, FontStyle.Italic),
-                ForeColor = Color.FromArgb(63, 81, 181),
-                AutoSize = true,
-                Location = new Point(0, 50)
-            };
+            btnAgregar = CrearBoton("Agregar", Color.FromArgb(66, 133, 244));
+            btnAgregar.Location = new Point(20, 190);
+            btnAgregar.Click += BtnAgregar_Click;
 
-            panelSuperior.Controls.Add(lblSeleccionar);
-            panelSuperior.Controls.Add(cmbAlumno);
-            panelSuperior.Controls.Add(lblResumen);
+            btnEditar = CrearBoton("Editar", Color.FromArgb(52, 199, 89));
+            btnEditar.Location = new Point(210, 190);
+            btnEditar.Click += BtnEditar_Click;
 
-            // --- Tabla de resultados ---
+            btnEliminar = CrearBoton("Eliminar", Color.FromArgb(255, 80, 120));
+            btnEliminar.Location = new Point(400, 190);
+            btnEliminar.Click += BtnEliminar_Click;
+
             dgvResultados = new DataGridView
             {
-                Dock = DockStyle.Fill,
+                Location = new Point(20, 280),
+                Size = new Size(1320, 520),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackgroundColor = Color.White,
                 BorderStyle = BorderStyle.None,
                 CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
@@ -86,31 +90,47 @@ namespace MathAdminApp.Presentacion
                 ReadOnly = true,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
+                AllowUserToResizeRows = false,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 RowHeadersVisible = false,
-                Font = new Font("Segoe UI", 10),
-                GridColor = Color.FromArgb(255, 179, 0) // ✅ Igual que las otras
+                Font = new Font("Segoe UI", 11),
+                GridColor = Color.FromArgb(230, 235, 245)
             };
 
-            // Desactivar estilos del sistema
             dgvResultados.EnableHeadersVisualStyles = false;
+            dgvResultados.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(240, 247, 255);
+            dgvResultados.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(50, 70, 120);
+            dgvResultados.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            dgvResultados.ColumnHeadersHeight = 55;
+            dgvResultados.DefaultCellStyle.SelectionBackColor = Color.FromArgb(220, 235, 255);
+            dgvResultados.DefaultCellStyle.SelectionForeColor = Color.FromArgb(20, 35, 80);
+            dgvResultados.RowTemplate.Height = 50;
 
-            // ----- ENCABEZADO -----
-            dgvResultados.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 241, 118);
-            dgvResultados.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
-            dgvResultados.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 241, 118);
-            dgvResultados.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.Black;
-            dgvResultados.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            dgvResultados.ColumnHeadersHeight = 40;
+            Controls.Add(lblTitulo);
+            Controls.Add(lblSubtitulo);
+            Controls.Add(lblAlumno);
+            Controls.Add(cmbAlumno);
+            Controls.Add(btnAgregar);
+            Controls.Add(btnEditar);
+            Controls.Add(btnEliminar);
+            Controls.Add(dgvResultados);
+        }
 
-            // ----- SELECCIÓN -----
-            dgvResultados.DefaultCellStyle.SelectionBackColor = Color.FromArgb(255, 202, 40);
-            dgvResultados.DefaultCellStyle.SelectionForeColor = Color.Black;
+        private Button CrearBoton(string texto, Color color)
+        {
+            Button btn = new()
+            {
+                Text = texto,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                BackColor = color,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(170, 45),
+                Cursor = Cursors.Hand
+            };
 
-            dgvResultados.RowTemplate.Height = 35;
-
-            this.Controls.Add(dgvResultados);
-            this.Controls.Add(panelSuperior);
+            btn.FlatAppearance.BorderSize = 0;
+            return btn;
         }
 
         private void CargarAlumnos()
@@ -120,71 +140,103 @@ namespace MathAdminApp.Presentacion
                 _alumnos = _usuarioBll.ObtenerAlumnos();
                 cmbAlumno.Items.Clear();
                 cmbAlumno.Items.Add("-- Todos los alumnos --");
-                foreach (var a in _alumnos)
-                    cmbAlumno.Items.Add($"{a.Nombre} ({a.Grado})");
+
+                foreach (var alumno in _alumnos)
+                    cmbAlumno.Items.Add(alumno.Nombre);
+
                 cmbAlumno.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar alumnos:\n{ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al cargar alumnos:\n{ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CargarResultados()
+        {
+            try
+            {
+                List<Resultado> resultados = cmbAlumno.SelectedIndex > 0
+                    ? _resultadoBll.ObtenerPorAlumno(_alumnos[cmbAlumno.SelectedIndex - 1].IdUsuario)
+                    : _resultadoBll.ObtenerResultados();
+
+                dgvResultados.DataSource = null;
+                dgvResultados.DataSource = resultados;
+
+                if (dgvResultados.Columns.Contains("IdResultado"))
+                    dgvResultados.Columns["IdResultado"].Visible = false;
+                if (dgvResultados.Columns.Contains("IdAlumno"))
+                    dgvResultados.Columns["IdAlumno"].HeaderText = "Alumno";
+                if (dgvResultados.Columns.Contains("IdPrueba"))
+                    dgvResultados.Columns["IdPrueba"].HeaderText = "Prueba";
+                if (dgvResultados.Columns.Contains("Calificacion"))
+                    dgvResultados.Columns["Calificacion"].HeaderText = "Calificacion";
+                if (dgvResultados.Columns.Contains("Fecha"))
+                    dgvResultados.Columns["Fecha"].HeaderText = "Fecha";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar resultados:\n{ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void CmbAlumno_SelectedIndexChanged(object? sender, EventArgs e)
         {
+            CargarResultados();
+        }
+
+        private void BtnAgregar_Click(object? sender, EventArgs e)
+        {
+            using var form = new FormResultadoDetalle();
+
+            if (form.ShowDialog() == DialogResult.OK)
+                CargarResultados();
+        }
+
+        private void BtnEditar_Click(object? sender, EventArgs e)
+        {
+            if (dgvResultados.CurrentRow?.DataBoundItem is not Resultado resultado)
+            {
+                MessageBox.Show("Seleccione un resultado.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using var form = new FormResultadoDetalle(resultado);
+
+            if (form.ShowDialog() == DialogResult.OK)
+                CargarResultados();
+        }
+
+        private void BtnEliminar_Click(object? sender, EventArgs e)
+        {
+            if (dgvResultados.CurrentRow?.DataBoundItem is not Resultado resultado)
+            {
+                MessageBox.Show("Seleccione un resultado.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var confirmacion = MessageBox.Show(
+                "Desea eliminar el resultado seleccionado?",
+                "Confirmar",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirmacion != DialogResult.Yes)
+                return;
+
             try
             {
-                List<ResultadoExamen> resultados;
-
-                if (cmbAlumno.SelectedIndex <= 0)
-                {
-                    resultados = _resultadoBll.ObtenerTodos();
-                    lblResumen.Text = "";
-                }
-                else
-                {
-                    var alumno = _alumnos[cmbAlumno.SelectedIndex - 1];
-                    resultados = _resultadoBll.ObtenerPorAlumno(alumno.Id);
-
-                    // Calcular promedio
-                    if (resultados.Count > 0)
-                    {
-                        var promedio = resultados.Average(r => (double)r.Calificacion);
-                        lblResumen.Text = $"Examenes presentados: {resultados.Count}  |  " +
-                                         $"Promedio general: {promedio:F1}";
-                    }
-                    else
-                    {
-                        lblResumen.Text = "Este alumno no tiene resultados registrados.";
-                    }
-                }
-
-                dgvResultados.DataSource = null;
-                dgvResultados.DataSource = resultados;
-
-                // Configurar columnas visibles
-                if (dgvResultados.Columns.Contains("Id"))
-                    dgvResultados.Columns["Id"].Visible = false;
-                if (dgvResultados.Columns.Contains("UsuarioId"))
-                    dgvResultados.Columns["UsuarioId"].Visible = false;
-                if (dgvResultados.Columns.Contains("ExamenId"))
-                    dgvResultados.Columns["ExamenId"].Visible = false;
-                if (dgvResultados.Columns.Contains("NombreAlumno"))
-                    dgvResultados.Columns["NombreAlumno"].HeaderText = "Alumno";
-                if (dgvResultados.Columns.Contains("NombreExamen"))
-                    dgvResultados.Columns["NombreExamen"].HeaderText = "Examen";
-                if (dgvResultados.Columns.Contains("NombreUnidad"))
-                    dgvResultados.Columns["NombreUnidad"].HeaderText = "Unidad";
-                if (dgvResultados.Columns.Contains("Calificacion"))
-                    dgvResultados.Columns["Calificacion"].HeaderText = "Calificacion";
-                if (dgvResultados.Columns.Contains("FechaPresentacion"))
-                    dgvResultados.Columns["FechaPresentacion"].HeaderText = "Fecha";
+                _resultadoBll.EliminarResultado(resultado.IdResultado);
+                CargarResultados();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar resultados:\n{ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
