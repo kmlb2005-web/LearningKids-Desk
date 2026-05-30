@@ -1,7 +1,4 @@
-﻿// ============================================================
-// FORM DASHBOARD MODERNO - LEARNING KIDS
-// ============================================================
-
+﻿
 using LiveChartsCore;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
