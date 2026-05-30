@@ -8,5 +8,6 @@
         public int grado { get; set; }
         public int idCampo { get; set; }
         public int creadoPor { get; set; }
+        public bool activo { get; set; } = true;
     }
 }

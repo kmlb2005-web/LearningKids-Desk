@@ -50,5 +50,43 @@ namespace MathAdminApp.AccesoDatos
                 return false;
             }
         }
+
+        public static void AsegurarColumnasSoftDelete()
+        {
+            string[] tablas =
+            [
+                "Usuarios",
+                "Alumnos",
+                "Tutores",
+                "Roles",
+                "CamposFormativos",
+                "Proyectos",
+                "Temas",
+                "Pruebas",
+                "Preguntas",
+                "Respuestas",
+                "Resultados",
+                "DocenteAlumno"
+            ];
+
+            using var conexion = ObtenerConexion();
+            conexion.Open();
+
+            foreach (string tabla in tablas)
+            {
+                string constraint = $"DF_{tabla}_activo";
+                string query = $@"
+                    IF OBJECT_ID(N'dbo.{tabla}', N'U') IS NOT NULL
+                       AND COL_LENGTH(N'dbo.{tabla}', N'activo') IS NULL
+                    BEGIN
+                        ALTER TABLE dbo.{tabla}
+                        ADD activo bit NOT NULL
+                        CONSTRAINT {constraint} DEFAULT (1)
+                    END";
+
+                using var comando = new SqlCommand(query, conexion);
+                comando.ExecuteNonQuery();
+            }
+        }
     }
 }

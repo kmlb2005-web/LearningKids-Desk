@@ -7,5 +7,7 @@
         public int IdDocente { get; set; }
 
         public int IdAlumno { get; set; }
+
+        public bool Activo { get; set; } = true;
     }
 }

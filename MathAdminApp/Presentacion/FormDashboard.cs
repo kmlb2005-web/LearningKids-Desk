@@ -30,6 +30,7 @@ namespace MathAdminApp.Presentacion
         private Button btnExamenes = null!;
         private Button btnPreguntas = null!;
         private Button btnResultados = null!;
+        private Button btnBitacoraPdf = null!;
         private Button btnCerrarSesion = null!;
 
         private readonly Usuario _usuarioActual;
@@ -179,6 +180,15 @@ namespace MathAdminApp.Presentacion
                     710
                 );
 
+            btnBitacoraPdf =
+                CrearBotonMenu(
+                    "📄   Bitácora PDF",
+                    780
+                );
+
+            btnBitacoraPdf.Visible =
+                _usuarioActual.IdRol == 1;
+
             // =================================================
             // ROBOT
             // =================================================
@@ -268,6 +278,9 @@ namespace MathAdminApp.Presentacion
             btnResultados.Click +=
                 (s, e) => MostrarResultados();
 
+            btnBitacoraPdf.Click +=
+                BtnBitacoraPdf_Click;
+
             // =================================================
             // AGREGAR MENU
             // =================================================
@@ -291,6 +304,8 @@ namespace MathAdminApp.Presentacion
             panelMenu.Controls.Add(btnPreguntas);
 
             panelMenu.Controls.Add(btnResultados);
+
+            panelMenu.Controls.Add(btnBitacoraPdf);
 
             panelMenu.Controls.Add(robot);
 
@@ -1240,7 +1255,7 @@ namespace MathAdminApp.Presentacion
         {
             panelContenido.Controls.Clear();
 
-            ControlCampos control =new ControlCampos
+            ControlCampos control =new ControlCampos(_usuarioActual)
                 {
                     Dock = DockStyle.Fill
                 };
@@ -1333,6 +1348,65 @@ namespace MathAdminApp.Presentacion
             if (resultado == DialogResult.Yes)
             {
                 this.Close();
+            }
+        }
+
+        private void BtnBitacoraPdf_Click(
+            object? sender,
+            EventArgs e
+        )
+        {
+            if (_usuarioActual.IdRol != 1)
+            {
+                MessageBox.Show(
+                    "Solo el administrador puede generar la bitácora.",
+                    "Acceso denegado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+            }
+
+            using SaveFileDialog dialogo = new()
+            {
+                Title = "Guardar bitácora",
+                Filter = "Archivo PDF (*.pdf)|*.pdf",
+                FileName = $"Bitacora_LearningKids_{DateTime.Now:yyyyMMdd_HHmm}.pdf"
+            };
+
+            if (dialogo.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                ExportadorBitacoraPdf.Generar(
+                    _usuarioActual,
+                    dialogo.FileName
+                );
+
+                new BitacoraSistemaBLL().Registrar(
+                    _usuarioActual,
+                    "Bitacora",
+                    "Exportacion",
+                    $"Genero la bitacora PDF '{Path.GetFileName(dialogo.FileName)}'."
+                );
+
+                MessageBox.Show(
+                    "Bitácora generada correctamente.",
+                    "Bitácora PDF",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"No se pudo generar la bitácora:\n{ex.Message}",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
     }

@@ -16,6 +16,7 @@ namespace MathAdminApp.Presentacion
         private readonly ResultadoBLL _resultadoBll = new();
         private readonly UsuarioBLL _usuarioBll = new();
         private readonly PruebaBLL _pruebaBll = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Usuario _usuarioActual;
         private List<Usuario> _alumnos = new();
         private List<Prueba> _pruebas = new();
@@ -349,7 +350,7 @@ namespace MathAdminApp.Presentacion
             }
 
             var confirmacion = MessageBox.Show(
-                "Desea eliminar el resultado seleccionado?",
+                "Desea desactivar el resultado seleccionado?",
                 "Confirmar",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -360,7 +361,17 @@ namespace MathAdminApp.Presentacion
             try
             {
                 _resultadoBll.EliminarResultado(resultado.IdResultado);
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Resultados",
+                    "Desactivacion",
+                    $"Desactivo el resultado ID {resultado.IdResultado} del alumno {resultado.IdAlumno}."
+                );
+
                 CargarResultados();
+
+                MessageBox.Show("Resultado desactivado correctamente.", "Éxito",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {

@@ -15,6 +15,7 @@ namespace MathAdminApp.Presentacion
         private readonly ResultadoBLL _resultadoBll = new();
         private readonly UsuarioBLL _usuarioBll = new();
         private readonly PruebaBLL _pruebaBll = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Resultado? _resultado;
         private readonly Usuario? _usuarioActual;
         private readonly bool _esEdicion;
@@ -199,9 +200,25 @@ namespace MathAdminApp.Presentacion
                 resultado.Fecha = dtpFecha.Value.Date;
 
                 if (_esEdicion)
+                {
                     _resultadoBll.ActualizarResultado(resultado);
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Resultados",
+                        "Actualizacion",
+                        $"Actualizo resultado del alumno '{_alumnos[cmbAlumno.SelectedIndex].Nombre}' con calificacion {resultado.Calificacion:0.##}."
+                    );
+                }
                 else
+                {
                     _resultadoBll.AgregarResultado(resultado);
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Resultados",
+                        "Alta",
+                        $"Agrego resultado del alumno '{_alumnos[cmbAlumno.SelectedIndex].Nombre}' con calificacion {resultado.Calificacion:0.##}."
+                    );
+                }
 
                 DialogResult = DialogResult.OK;
                 Close();

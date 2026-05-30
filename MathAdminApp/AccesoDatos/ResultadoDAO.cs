@@ -22,11 +22,12 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idResultado,
-                    idAlumno,
-                    idPrueba,
-                    calificacion,
-                    fecha
+                    ISNULL(idAlumno, 0),
+                    ISNULL(idPrueba, 0),
+                    ISNULL(calificacion, 0),
+                    ISNULL(fecha, GETDATE())
                 FROM Resultados
+                WHERE ISNULL(activo, 1) = 1
                 ORDER BY fecha DESC";
 
             using var comando = new SqlCommand(query, conexion);
@@ -57,14 +58,16 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     r.idResultado,
-                    r.idAlumno,
-                    r.idPrueba,
-                    r.calificacion,
-                    r.fecha
+                    ISNULL(r.idAlumno, 0),
+                    ISNULL(r.idPrueba, 0),
+                    ISNULL(r.calificacion, 0),
+                    ISNULL(r.fecha, GETDATE())
                 FROM Resultados r
                 INNER JOIN DocenteAlumno da
                     ON da.idAlumno = r.idAlumno
                 WHERE da.idDocente = @IdDocente
+                  AND ISNULL(r.activo, 1) = 1
+                  AND ISNULL(da.activo, 1) = 1
                 ORDER BY r.fecha DESC";
 
             using var comando = new SqlCommand(query, conexion);
@@ -98,12 +101,13 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idResultado,
-                    idAlumno,
-                    idPrueba,
-                    calificacion,
-                    fecha
+                    ISNULL(idAlumno, 0),
+                    ISNULL(idPrueba, 0),
+                    ISNULL(calificacion, 0),
+                    ISNULL(fecha, GETDATE())
                 FROM Resultados
-                WHERE idResultado = @IdResultado";
+                WHERE idResultado = @IdResultado
+                  AND ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 
@@ -142,12 +146,13 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idResultado,
-                    idAlumno,
-                    idPrueba,
-                    calificacion,
-                    fecha
+                    ISNULL(idAlumno, 0),
+                    ISNULL(idPrueba, 0),
+                    ISNULL(calificacion, 0),
+                    ISNULL(fecha, GETDATE())
                 FROM Resultados
                 WHERE idAlumno = @IdAlumno
+                  AND ISNULL(activo, 1) = 1
                 ORDER BY fecha DESC";
 
             using var comando = new SqlCommand(query, conexion);
@@ -185,14 +190,16 @@ namespace MathAdminApp.AccesoDatos
                     idAlumno,
                     idPrueba,
                     calificacion,
-                    fecha
+                    fecha,
+                    activo
                 )
                 VALUES
                 (
                     @IdAlumno,
                     @IdPrueba,
                     @Calificacion,
-                    @Fecha
+                    @Fecha,
+                    1
                 )";
 
             using var comando = new SqlCommand(query, conexion);
@@ -242,7 +249,8 @@ namespace MathAdminApp.AccesoDatos
             conexion.Open();
 
             string query = @"
-                DELETE FROM Resultados
+                UPDATE Resultados
+                SET activo = 0
                 WHERE idResultado = @IdResultado";
 
             using var comando = new SqlCommand(query, conexion);
@@ -260,7 +268,7 @@ namespace MathAdminApp.AccesoDatos
             using var conexion = ConexionBD.ObtenerConexion();
             conexion.Open();
 
-            string query = "SELECT COUNT(*) FROM Resultados";
+            string query = "SELECT COUNT(*) FROM Resultados WHERE ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 

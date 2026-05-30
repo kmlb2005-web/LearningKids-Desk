@@ -14,6 +14,7 @@ namespace MathAdminApp.Presentacion
 
         private readonly ProyectoBLL _proyectoBLL = new();
         private readonly CampoFormativoBLL _campoBLL = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Proyecto? _proyecto;
         private readonly Usuario? _usuarioActual;
         private readonly bool _esEdicion;
@@ -206,9 +207,25 @@ namespace MathAdminApp.Presentacion
                     proyecto.creadoPor = _usuarioActual?.IdUsuario ?? 1;
 
                 if (_esEdicion)
+                {
                     _proyectoBLL.Actualizar(proyecto);
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Proyectos",
+                        "Actualizacion",
+                        $"Actualizo el proyecto '{proyecto.nombre}' (ID {proyecto.idProyecto})."
+                    );
+                }
                 else
+                {
                     _proyectoBLL.Crear(proyecto);
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Proyectos",
+                        "Alta",
+                        $"Agrego el proyecto '{proyecto.nombre}' para grado {proyecto.grado}."
+                    );
+                }
 
                 DialogResult = DialogResult.OK;
                 Close();

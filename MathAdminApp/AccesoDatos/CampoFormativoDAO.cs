@@ -25,6 +25,7 @@ namespace MathAdminApp.AccesoDatos
                     idCampo,
                     nombre
                 FROM CamposFormativos
+                WHERE ISNULL(activo, 1) = 1
                 ORDER BY nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -55,7 +56,8 @@ namespace MathAdminApp.AccesoDatos
                     idCampo,
                     nombre
                 FROM CamposFormativos
-                WHERE idCampo = @IdCampo";
+                WHERE idCampo = @IdCampo
+                  AND ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 
@@ -86,11 +88,13 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 INSERT INTO CamposFormativos
                 (
-                    nombre
+                    nombre,
+                    activo
                 )
                 VALUES
                 (
-                    @Nombre
+                    @Nombre,
+                    1
                 )";
 
             using var comando = new SqlCommand(query, conexion);
@@ -131,7 +135,8 @@ namespace MathAdminApp.AccesoDatos
             conexion.Open();
 
             string query = @"
-                DELETE FROM CamposFormativos
+                UPDATE CamposFormativos
+                SET activo = 0
                 WHERE idCampo = @IdCampo";
 
             using var comando = new SqlCommand(query, conexion);
@@ -149,7 +154,7 @@ namespace MathAdminApp.AccesoDatos
             using var conexion = ConexionBD.ObtenerConexion();
             conexion.Open();
 
-            string query = "SELECT COUNT(*) FROM CamposFormativos";
+            string query = "SELECT COUNT(*) FROM CamposFormativos WHERE ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 

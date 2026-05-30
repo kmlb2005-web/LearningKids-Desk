@@ -24,13 +24,21 @@ namespace MathAdminApp.Presentacion
         // =====================================================
 
         private readonly CampoFormativoBLL _campoBLL = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
+        private readonly Usuario? _usuarioActual;
 
         // =====================================================
         // CONSTRUCTOR
         // =====================================================
 
-        public ControlCampos()
+        public ControlCampos() : this(null)
         {
+        }
+
+        public ControlCampos(Usuario? usuarioActual)
+        {
+            _usuarioActual = usuarioActual;
+
             InicializarComponentes();
 
             CargarCampos();
@@ -465,6 +473,13 @@ namespace MathAdminApp.Presentacion
 
                 _campoBLL.Agregar(campo);
 
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Campos",
+                    "Alta",
+                    $"Agrego el campo formativo '{campo.Nombre}'."
+                );
+
                 CargarCampos();
 
                 MessageBox.Show(
@@ -538,6 +553,13 @@ namespace MathAdminApp.Presentacion
 
                 _campoBLL.Editar(campo);
 
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Campos",
+                    "Actualizacion",
+                    $"Actualizo el campo formativo '{campo.Nombre}' (ID {campo.IdCampo})."
+                );
+
                 CargarCampos();
 
                 MessageBox.Show(
@@ -596,7 +618,7 @@ namespace MathAdminApp.Presentacion
 
                 DialogResult resultado =
                     MessageBox.Show(
-                        $"¿Eliminar '{campo.Nombre}'?",
+                        $"¿Desactivar '{campo.Nombre}'?",
                         "Confirmar",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question
@@ -608,10 +630,17 @@ namespace MathAdminApp.Presentacion
                         campo.IdCampo
                     );
 
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Campos",
+                        "Desactivacion",
+                        $"Desactivo el campo formativo '{campo.Nombre}' (ID {campo.IdCampo})."
+                    );
+
                     CargarCampos();
 
                     MessageBox.Show(
-                        "Campo eliminado."
+                        "Campo desactivado correctamente."
                     );
                 }
             }

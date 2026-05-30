@@ -15,6 +15,7 @@ namespace MathAdminApp.Presentacion
 
         private readonly PruebaBLL _pruebaBll = new();
         private readonly TemaBLL _temaBll = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Usuario _usuarioActual;
         private List<Tema> _temas = new();
 
@@ -292,6 +293,13 @@ namespace MathAdminApp.Presentacion
                 };
 
                 _pruebaBll.Agregar(prueba);
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Pruebas",
+                    "Alta",
+                    $"Agrego la prueba '{prueba.Titulo}' al tema '{tema.Nombre}'."
+                );
+
                 txtTitulo.Clear();
                 CargarPruebas(tema.IdTema);
                 MessageBox.Show("Prueba agregada correctamente.", "Exito",
@@ -314,7 +322,7 @@ namespace MathAdminApp.Presentacion
             }
 
             var resultado = MessageBox.Show(
-                $"Desea eliminar la prueba '{prueba.Titulo}'?",
+                $"Desea desactivar la prueba '{prueba.Titulo}'?",
                 "Confirmar",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -325,7 +333,17 @@ namespace MathAdminApp.Presentacion
             try
             {
                 _pruebaBll.Eliminar(prueba.IdPrueba);
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Pruebas",
+                    "Desactivacion",
+                    $"Desactivo la prueba '{prueba.Titulo}' (ID {prueba.IdPrueba})."
+                );
+
                 CmbTema_SelectedIndexChanged(null, EventArgs.Empty);
+
+                MessageBox.Show("Prueba desactivada correctamente.", "Éxito",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {

@@ -20,6 +20,7 @@ namespace MathAdminApp.AccesoDatos
                     idPregunta
                 FROM Respuestas
                 WHERE idPregunta = @IdPregunta
+                  AND ISNULL(activo, 1) = 1
                 ORDER BY idRespuesta";
 
             using var comando = new SqlCommand(query, conexion);
@@ -51,7 +52,7 @@ namespace MathAdminApp.AccesoDatos
             try
             {
                 using (var eliminar = new SqlCommand(
-                    "DELETE FROM Respuestas WHERE idPregunta = @IdPregunta",
+                    "UPDATE Respuestas SET activo = 0 WHERE idPregunta = @IdPregunta",
                     conexion,
                     transaccion))
                 {
@@ -66,13 +67,15 @@ namespace MathAdminApp.AccesoDatos
                         (
                             texto,
                             esCorrecta,
-                            idPregunta
+                            idPregunta,
+                            activo
                         )
                         VALUES
                         (
                             @Texto,
                             @EsCorrecta,
-                            @IdPregunta
+                            @IdPregunta,
+                            1
                         )",
                         conexion,
                         transaccion);

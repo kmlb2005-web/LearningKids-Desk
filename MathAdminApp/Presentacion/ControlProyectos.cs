@@ -20,6 +20,7 @@ namespace MathAdminApp.Presentacion
         private TextBox txtBuscar = null!;
 
         private readonly ProyectoBLL _bll = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Usuario _usuarioActual;
 
         // =====================================================
@@ -534,7 +535,7 @@ namespace MathAdminApp.Presentacion
 
             var resultado =
                 MessageBox.Show(
-                    $"¿Desea eliminar el proyecto '{proyecto.nombre}'?",
+                    $"¿Desea desactivar el proyecto '{proyecto.nombre}'?",
                     "Confirmar",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question
@@ -546,7 +547,21 @@ namespace MathAdminApp.Presentacion
                     proyecto.idProyecto
                 );
 
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Proyectos",
+                    "Desactivacion",
+                    $"Desactivo el proyecto '{proyecto.nombre}' (ID {proyecto.idProyecto})."
+                );
+
                 CargarDatos();
+
+                MessageBox.Show(
+                    "Proyecto desactivado correctamente.",
+                    "Éxito",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
             }
         }
     }

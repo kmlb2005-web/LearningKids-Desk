@@ -24,6 +24,7 @@ namespace MathAdminApp.AccesoDatos
                     idRol,
                     nombre
                 FROM Roles
+                WHERE ISNULL(activo, 1) = 1
                 ORDER BY nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -54,7 +55,8 @@ namespace MathAdminApp.AccesoDatos
                     idRol,
                     nombre
                 FROM Roles
-                WHERE idRol = @IdRol";
+                WHERE idRol = @IdRol
+                  AND ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 
@@ -87,7 +89,8 @@ namespace MathAdminApp.AccesoDatos
                     idRol,
                     nombre
                 FROM Roles
-                WHERE UPPER(nombre) = UPPER(@Nombre)";
+                WHERE UPPER(nombre) = UPPER(@Nombre)
+                  AND ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 
@@ -118,11 +121,13 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 INSERT INTO Roles
                 (
-                    nombre
+                    nombre,
+                    activo
                 )
                 VALUES
                 (
-                    @Nombre
+                    @Nombre,
+                    1
                 )";
 
             using var comando = new SqlCommand(query, conexion);
@@ -163,7 +168,8 @@ namespace MathAdminApp.AccesoDatos
             conexion.Open();
 
             string query = @"
-                DELETE FROM Roles
+                UPDATE Roles
+                SET activo = 0
                 WHERE idRol = @IdRol";
 
             using var comando = new SqlCommand(query, conexion);
@@ -181,7 +187,7 @@ namespace MathAdminApp.AccesoDatos
             using var conexion = ConexionBD.ObtenerConexion();
             conexion.Open();
 
-            string query = "SELECT COUNT(*) FROM Roles";
+            string query = "SELECT COUNT(*) FROM Roles WHERE ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 

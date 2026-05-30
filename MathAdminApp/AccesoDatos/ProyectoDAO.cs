@@ -23,12 +23,13 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT 
                     idProyecto,
-                    nombre,
-                    descripcion,
-                    grado,
-                    idCampo,
-                    creadoPor
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(grado, 0),
+                    ISNULL(idCampo, 0),
+                    ISNULL(creadoPor, 0)
                 FROM Proyectos
+                WHERE ISNULL(activo, 1) = 1
                 ORDER BY nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -60,13 +61,14 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idProyecto,
-                    nombre,
-                    descripcion,
-                    grado,
-                    idCampo,
-                    creadoPor
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(grado, 0),
+                    ISNULL(idCampo, 0),
+                    ISNULL(creadoPor, 0)
                 FROM Proyectos
                 WHERE creadoPor = @IdDocente
+                  AND ISNULL(activo, 1) = 1
                 ORDER BY nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -101,13 +103,14 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT 
                     idProyecto,
-                    nombre,
-                    descripcion,
-                    grado,
-                    idCampo,
-                    creadoPor
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(grado, 0),
+                    ISNULL(idCampo, 0),
+                    ISNULL(creadoPor, 0)
                 FROM Proyectos
-                WHERE idProyecto = @IdProyecto";
+                WHERE idProyecto = @IdProyecto
+                  AND ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
             comando.Parameters.AddWithValue("@IdProyecto", idProyecto);
@@ -145,7 +148,8 @@ namespace MathAdminApp.AccesoDatos
                     descripcion,
                     grado,
                     idCampo,
-                    creadoPor
+                    creadoPor,
+                    activo
                 )
                 VALUES
                 (
@@ -153,7 +157,8 @@ namespace MathAdminApp.AccesoDatos
                     @Descripcion,
                     @Grado,
                     @IdCampo,
-                    @CreadoPor
+                    @CreadoPor,
+                    1
                 )";
 
             using var comando = new SqlCommand(query, conexion);
@@ -206,7 +211,8 @@ namespace MathAdminApp.AccesoDatos
             conexion.Open();
 
             string query = @"
-                DELETE FROM Proyectos
+                UPDATE Proyectos
+                SET activo = 0
                 WHERE idProyecto = @IdProyecto";
 
             using var comando = new SqlCommand(query, conexion);
@@ -223,7 +229,7 @@ namespace MathAdminApp.AccesoDatos
             using var conexion = ConexionBD.ObtenerConexion();
             conexion.Open();
 
-            string query = "SELECT COUNT(*) FROM Proyectos";
+            string query = "SELECT COUNT(*) FROM Proyectos WHERE ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 

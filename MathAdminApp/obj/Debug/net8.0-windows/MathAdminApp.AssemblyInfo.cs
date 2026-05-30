@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MathAdminApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+88773646a69283c20afd66905840fe81e51d4d59")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b3d6d16f0bca243d4c59a6b34a2dfef895254588")]
 [assembly: System.Reflection.AssemblyProductAttribute("MathAdminApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MathAdminApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

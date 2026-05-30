@@ -10,5 +10,6 @@ namespace MathAdminApp.Modelos
 
         public int CreadoPor { get; set; }
 
+        public bool Activo { get; set; } = true;
     }
 }

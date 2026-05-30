@@ -9,5 +9,7 @@
         public bool EsCorrecta { get; set; }
 
         public int IdPregunta { get; set; }
+
+        public bool Activo { get; set; } = true;
     }
 }

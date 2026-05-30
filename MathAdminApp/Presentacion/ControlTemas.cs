@@ -26,6 +26,7 @@ namespace MathAdminApp.Presentacion
 
         private readonly TemaBLL _temaBLL = new();
         private readonly ProyectoBLL _proyectoBLL = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Usuario _usuarioActual;
 
         // =====================================================
@@ -559,7 +560,7 @@ namespace MathAdminApp.Presentacion
                 dgvTemas.CurrentRow.Cells["nombre"].Value.ToString()!;
 
             var confirm = MessageBox.Show(
-                $"¿Desea eliminar el tema \"{nombre}\"?",
+                $"¿Desea desactivar el tema \"{nombre}\"?",
                 "Confirmar",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question
@@ -571,10 +572,17 @@ namespace MathAdminApp.Presentacion
                 {
                     _temaBLL.EliminarTema(idTema);
 
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Temas",
+                        "Desactivacion",
+                        $"Desactivo el tema '{nombre}' (ID {idTema})."
+                    );
+
                     CargarTemas();
 
                     MessageBox.Show(
-                        "Tema eliminado correctamente.",
+                        "Tema desactivado correctamente.",
                         "Éxito",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
@@ -583,7 +591,7 @@ namespace MathAdminApp.Presentacion
                 catch (Exception ex)
                 {
                     MessageBox.Show(
-                        "Error al eliminar: " + ex.Message,
+                        "Error al desactivar: " + ex.Message,
                         "Error",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error

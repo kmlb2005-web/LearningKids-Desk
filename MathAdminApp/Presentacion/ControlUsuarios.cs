@@ -25,6 +25,7 @@ namespace MathAdminApp.Presentacion
         private TextBox txtBuscar = null!;
 
         private readonly UsuarioBLL _bll = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Usuario _usuarioActual;
 
         // =====================================================
@@ -370,7 +371,7 @@ namespace MathAdminApp.Presentacion
             if (dgvUsuarios.CurrentRow == null)
             {
                 MessageBox.Show(
-                    "Seleccione un usuario para eliminar.",
+                    "Seleccione un usuario para desactivar.",
                     "Aviso",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
@@ -383,7 +384,7 @@ namespace MathAdminApp.Presentacion
                 (Usuario)dgvUsuarios.CurrentRow.DataBoundItem;
 
             var resultado = MessageBox.Show(
-                $"¿Desea eliminar al usuario '{usuario.Nombre}'?",
+                $"¿Desea desactivar al usuario '{usuario.Nombre}'?",
                 "Confirmar",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question
@@ -396,10 +397,17 @@ namespace MathAdminApp.Presentacion
                     _bll.EliminarUsuario(
                         usuario.IdUsuario);
 
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Usuarios",
+                        "Desactivacion",
+                        $"Desactivo el usuario/alumno '{usuario.Nombre}' (ID {usuario.IdUsuario})."
+                    );
+
                     CargarDatos();
 
                     MessageBox.Show(
-                        "Usuario eliminado correctamente.",
+                        "Usuario desactivado correctamente.",
                         "Éxito",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information

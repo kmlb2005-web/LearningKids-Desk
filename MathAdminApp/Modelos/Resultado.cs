@@ -11,5 +11,7 @@ namespace MathAdminApp.Modelos
         public decimal Calificacion { get; set; }
 
         public DateTime Fecha { get; set; }
+
+        public bool Activo { get; set; } = true;
     }
 }

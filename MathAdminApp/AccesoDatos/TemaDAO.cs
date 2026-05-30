@@ -22,10 +22,11 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idTema,
-                    nombre,
-                    descripcion,
-                    idProyecto
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(idProyecto, 0)
                 FROM Temas
+                WHERE ISNULL(activo, 1) = 1
                 ORDER BY nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -55,13 +56,15 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     t.idTema,
-                    t.nombre,
-                    t.descripcion,
-                    t.idProyecto
+                    ISNULL(t.nombre, ''),
+                    ISNULL(t.descripcion, ''),
+                    ISNULL(t.idProyecto, 0)
                 FROM Temas t
                 INNER JOIN Proyectos p
                     ON p.idProyecto = t.idProyecto
                 WHERE p.creadoPor = @IdDocente
+                  AND ISNULL(t.activo, 1) = 1
+                  AND ISNULL(p.activo, 1) = 1
                 ORDER BY t.nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -94,11 +97,12 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idTema,
-                    nombre,
-                    descripcion,
-                    idProyecto
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(idProyecto, 0)
                 FROM Temas
-                WHERE idTema = @IdTema";
+                WHERE idTema = @IdTema
+                  AND ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 
@@ -133,11 +137,12 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idTema,
-                    nombre,
-                    descripcion,
-                    idProyecto
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(idProyecto, 0)
                 FROM Temas
                 WHERE idProyecto = @IdProyecto
+                  AND ISNULL(activo, 1) = 1
                 ORDER BY nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -173,13 +178,15 @@ namespace MathAdminApp.AccesoDatos
                 (
                     nombre,
                     descripcion,
-                    idProyecto
+                    idProyecto,
+                    activo
                 )
                 VALUES
                 (
                     @Nombre,
                     @Descripcion,
-                    @IdProyecto
+                    @IdProyecto,
+                    1
                 )";
 
             using var comando = new SqlCommand(query, conexion);
@@ -226,7 +233,8 @@ namespace MathAdminApp.AccesoDatos
             conexion.Open();
 
             string query = @"
-                DELETE FROM Temas
+                UPDATE Temas
+                SET activo = 0
                 WHERE idTema = @IdTema";
 
             using var comando = new SqlCommand(query, conexion);
@@ -244,7 +252,7 @@ namespace MathAdminApp.AccesoDatos
             using var conexion = ConexionBD.ObtenerConexion();
             conexion.Open();
 
-            string query = "SELECT COUNT(*) FROM Temas";
+            string query = "SELECT COUNT(*) FROM Temas WHERE ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 

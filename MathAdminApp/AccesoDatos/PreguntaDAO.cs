@@ -27,6 +27,7 @@ namespace MathAdminApp.AccesoDatos
                     idPrueba
                 FROM Preguntas
                 WHERE idPrueba = @IdPrueba
+                  AND ISNULL(activo, 1) = 1
                 ORDER BY idPregunta";
 
             using var comando =
@@ -67,12 +68,14 @@ namespace MathAdminApp.AccesoDatos
                 INSERT INTO Preguntas
                 (
                     texto,
-                    idPrueba
+                    idPrueba,
+                    activo
                 )
                 VALUES
                 (
                     @Texto,
-                    @IdPrueba
+                    @IdPrueba,
+                    1
                 );
 
                 SELECT SCOPE_IDENTITY();";
@@ -148,7 +151,7 @@ namespace MathAdminApp.AccesoDatos
             try
             {
                 using (var eliminarRespuestas = new SqlCommand(
-                    "DELETE FROM Respuestas WHERE idPregunta = @IdPregunta",
+                    "UPDATE Respuestas SET activo = 0 WHERE idPregunta = @IdPregunta",
                     conexion,
                     transaccion))
                 {
@@ -157,7 +160,7 @@ namespace MathAdminApp.AccesoDatos
                 }
 
                 using var eliminarPregunta = new SqlCommand(
-                    "DELETE FROM Preguntas WHERE idPregunta = @IdPregunta",
+                    "UPDATE Preguntas SET activo = 0 WHERE idPregunta = @IdPregunta",
                     conexion,
                     transaccion);
 

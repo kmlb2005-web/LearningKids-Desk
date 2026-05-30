@@ -1,5 +1,5 @@
 ﻿// ============================================================
-// FORMULARIO MODERNO - NUEVO ALUMNO
+// FORMULARIO MODERNO - NUEVO / EDITAR USUARIO
 // ============================================================
 
 using MathAdminApp.LogicaNegocio;
@@ -14,6 +14,8 @@ namespace MathAdminApp.Presentacion
         // =====================================================
 
         private readonly UsuarioBLL _bll = new();
+        private readonly AlumnoBLL _alumnoBLL = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
 
         private readonly Usuario? _usuario;
         private readonly Usuario? _usuarioActual;
@@ -25,11 +27,12 @@ namespace MathAdminApp.Presentacion
         // =====================================================
 
         private TextBox txtNombre = null!;
-        private TextBox txtCorreo = null!;
         private TextBox txtUsuario = null!;
         private TextBox txtContrasena = null!;
 
+        private ComboBox cmbRol = null!;
         private ComboBox cmbGrado = null!;
+        private Label lblGrado = null!;
 
         private Button btnGuardar = null!;
         private Button btnCancelar = null!;
@@ -66,8 +69,8 @@ namespace MathAdminApp.Presentacion
             // =================================================
 
             this.Text = _esEdicion
-                ? "Editar Alumno"
-                : "Nuevo Alumno";
+                ? "Editar Usuario"
+                : "Nuevo Usuario";
 
             this.Size = new Size(950, 820);
 
@@ -120,8 +123,8 @@ namespace MathAdminApp.Presentacion
             Label lblTitulo = new Label
             {
                 Text = _esEdicion
-                    ? "✏️ Editar Alumno"
-                    : "➕ Nuevo Alumno",
+                    ? "✏️ Editar Usuario"
+                    : "➕ Nuevo Usuario",
 
                 Font = new Font(
                     "Segoe UI",
@@ -143,7 +146,7 @@ namespace MathAdminApp.Presentacion
             Label lblSubtitulo = new Label
             {
                 Text =
-                    "Completa la información del alumno ✨",
+                    "Completa la información según el rol ✨",
 
                 Font = new Font("Segoe UI", 16),
 
@@ -186,19 +189,19 @@ namespace MathAdminApp.Presentacion
             );
 
             txtNombre.PlaceholderText =
-                "Escribe el nombre completo del alumno...";
+                "Escribe el nombre completo...";
 
             panel.Controls.Add(txtNombre);
 
             // =================================================
-            // CORREO
+            // ROL
             // =================================================
 
             y += 115;
 
             panel.Controls.Add(
                 CrearLabel(
-                    "✉️ Correo electrónico",
+                    "👔 Rol",
                     x,
                     y
                 )
@@ -206,20 +209,21 @@ namespace MathAdminApp.Presentacion
 
             y += 45;
 
-            txtCorreo = CrearTextBox(
-                x,
-                y,
-                width
-            );
+            cmbRol = new ComboBox
+            {
+                Font = new Font("Segoe UI", 14),
+                Location = new Point(x, y),
+                Size = new Size(width, 55),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.White,
+                ForeColor = Color.FromArgb(30, 50, 90)
+            };
 
-            txtCorreo.PlaceholderText =
-                "ejemplo@correo.com";
+            ConfigurarRoles();
+            cmbRol.SelectedIndexChanged += (s, e) => ActualizarCamposPorRol();
 
-            panel.Controls.Add(txtCorreo);
-
-            // =================================================
-            // USUARIO
-            // =================================================
+            panel.Controls.Add(cmbRol);
 
             y += 115;
 
@@ -284,13 +288,13 @@ namespace MathAdminApp.Presentacion
 
             y += 20;
 
-            panel.Controls.Add(
-                CrearLabel(
-                    "🎓 Grado",
-                    x,
-                    y
-                )
+            lblGrado = CrearLabel(
+                "🎓 Grado",
+                x,
+                y
             );
+
+            panel.Controls.Add(lblGrado);
 
             y += 45;
 
@@ -444,6 +448,8 @@ namespace MathAdminApp.Presentacion
             panel.Controls.Add(btnCancelar);
 
             this.Controls.Add(panel);
+
+            ActualizarCamposPorRol();
         }
 
         // =====================================================
@@ -513,8 +519,6 @@ namespace MathAdminApp.Presentacion
 
             txtNombre.Text = _usuario.Nombre;
 
-            txtCorreo.Text = string.Empty;
-
             txtUsuario.Text =
                 _usuario.Username;
 
@@ -522,7 +526,16 @@ namespace MathAdminApp.Presentacion
                 _usuario.Password;
 
             if (cmbGrado.Items.Count > 0)
-                cmbGrado.SelectedIndex = 0;
+            {
+                Alumno? alumno = _usuario.IdRol == 3
+                    ? _alumnoBLL.ObtenerPorId(_usuario.IdUsuario)
+                    : null;
+
+                int grado = alumno?.Grado ?? 1;
+                cmbGrado.SelectedIndex = Math.Max(0, Math.Min(5, grado - 1));
+            }
+
+            SeleccionarRol(_usuario.IdRol);
         }
 
         // =====================================================
@@ -538,6 +551,8 @@ namespace MathAdminApp.Presentacion
             {
                 if (_esEdicion && _usuario != null)
                 {
+                    int idRol = ObtenerRolSeleccionado();
+
                     _usuario.Nombre =
                         txtNombre.Text.Trim();
 
@@ -547,13 +562,20 @@ namespace MathAdminApp.Presentacion
                     _usuario.Password =
                         txtContrasena.Text;
 
-                    if (_usuario.IdRol <= 0)
-                        _usuario.IdRol = 3;
+                    _usuario.IdRol = idRol;
 
                     _bll.ActualizarUsuario(_usuario);
+                    GuardarDatosAlumnoSiAplica(_usuario.IdUsuario, idRol);
+
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Usuarios",
+                        "Actualizacion",
+                        $"Actualizo el usuario '{_usuario.Nombre}' como {ObtenerNombreRol(idRol)} (ID {_usuario.IdUsuario})."
+                    );
 
                     MessageBox.Show(
-                        "Alumno actualizado correctamente.",
+                        "Usuario actualizado correctamente.",
                         "Éxito",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
@@ -561,6 +583,8 @@ namespace MathAdminApp.Presentacion
                 }
                 else
                 {
+                    int idRol = ObtenerRolSeleccionado();
+
                     var nuevo = new Usuario
                     {
                         Nombre =
@@ -572,11 +596,13 @@ namespace MathAdminApp.Presentacion
                         Password =
                             txtContrasena.Text,
 
-                        IdRol = 3
+                        IdRol = idRol
                     };
 
                     if (_usuarioActual != null && _usuarioActual.IdRol == 2)
                     {
+                        nuevo.IdRol = 3;
+
                         _bll.AgregarAlumnoParaDocente(
                             nuevo,
                             _usuarioActual.IdUsuario
@@ -587,8 +613,17 @@ namespace MathAdminApp.Presentacion
                         _bll.AgregarUsuario(nuevo);
                     }
 
+                    GuardarDatosAlumnoSiAplica(nuevo.IdUsuario, nuevo.IdRol);
+
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Usuarios",
+                        "Alta",
+                        $"Agrego el usuario '{nuevo.Nombre}' como {ObtenerNombreRol(nuevo.IdRol)} con usuario '{nuevo.Username}'."
+                    );
+
                     MessageBox.Show(
-                        "Alumno agregado correctamente.",
+                        "Usuario agregado correctamente.",
                         "Éxito",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
@@ -617,6 +652,122 @@ namespace MathAdminApp.Presentacion
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        private void ConfigurarRoles()
+        {
+            cmbRol.Items.Clear();
+
+            if (_usuarioActual != null && _usuarioActual.IdRol == 2)
+            {
+                cmbRol.Items.Add(new RolItem(3, "Alumno"));
+            }
+            else
+            {
+                cmbRol.Items.Add(new RolItem(1, "Administrador"));
+                cmbRol.Items.Add(new RolItem(2, "Docente"));
+                cmbRol.Items.Add(new RolItem(3, "Alumno"));
+            }
+
+            cmbRol.SelectedIndex = cmbRol.Items.Count > 0
+                ? cmbRol.Items.Count - 1
+                : -1;
+        }
+
+        private void SeleccionarRol(int idRol)
+        {
+            for (int i = 0; i < cmbRol.Items.Count; i++)
+            {
+                if (cmbRol.Items[i] is RolItem item && item.Id == idRol)
+                {
+                    cmbRol.SelectedIndex = i;
+                    return;
+                }
+            }
+        }
+
+        private int ObtenerRolSeleccionado()
+        {
+            if (cmbRol.SelectedItem is not RolItem item)
+                throw new ArgumentException("Debe seleccionar un rol.");
+
+            return item.Id;
+        }
+
+        private string ObtenerNombreRol(int idRol)
+        {
+            return idRol switch
+            {
+                1 => "Administrador",
+                2 => "Docente",
+                3 => "Alumno",
+                _ => "Usuario"
+            };
+        }
+
+        private int ObtenerGradoSeleccionado()
+        {
+            return cmbGrado.SelectedIndex < 0
+                ? 1
+                : cmbGrado.SelectedIndex + 1;
+        }
+
+        private void ActualizarCamposPorRol()
+        {
+            bool esAlumno = ObtenerRolSeleccionadoSeguro() == 3;
+
+            lblGrado.Visible = esAlumno;
+            cmbGrado.Visible = esAlumno;
+        }
+
+        private int ObtenerRolSeleccionadoSeguro()
+        {
+            return cmbRol.SelectedItem is RolItem item
+                ? item.Id
+                : 3;
+        }
+
+        private void GuardarDatosAlumnoSiAplica(int idUsuario, int idRol)
+        {
+            if (idUsuario <= 0)
+                return;
+
+            Alumno? alumno = _alumnoBLL.ObtenerPorId(idUsuario);
+
+            if (idRol == 3)
+            {
+                Alumno datosAlumno = new()
+                {
+                    IdAlumno = idUsuario,
+                    IdTutor = alumno?.IdTutor,
+                    Grado = ObtenerGradoSeleccionado()
+                };
+
+                if (alumno == null)
+                    _alumnoBLL.AgregarAlumno(datosAlumno);
+                else
+                    _alumnoBLL.ActualizarAlumno(datosAlumno);
+
+                return;
+            }
+
+            if (alumno != null)
+                _alumnoBLL.EliminarAlumno(idUsuario);
+        }
+
+        private sealed class RolItem
+        {
+            public int Id { get; }
+
+            public string Nombre { get; }
+
+            public RolItem(int id, string nombre)
+            {
+                Id = id;
+                Nombre = nombre;
+            }
+
+            public override string ToString() => Nombre;
         }
     }
 }

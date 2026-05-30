@@ -8,5 +8,6 @@ namespace MathAdminApp.Modelos
 
         public int IdPrueba { get; set; }
 
+        public bool Activo { get; set; } = true;
     }
 }

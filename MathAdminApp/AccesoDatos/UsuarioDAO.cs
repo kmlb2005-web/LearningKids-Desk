@@ -21,13 +21,14 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT 
                     idUsuario,
-                    nombre,
-                    username,
-                    password,
-                    idRol
+                    ISNULL(nombre, ''),
+                    ISNULL(username, ''),
+                    ISNULL(password, ''),
+                    ISNULL(idRol, 0)
                 FROM Usuarios
                 WHERE username = @Username
-                  AND password = @Password";
+                  AND password = @Password
+                  AND ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 
@@ -64,11 +65,12 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT 
                     idUsuario,
-                    nombre,
-                    username,
-                    password,
-                    idRol
+                    ISNULL(nombre, ''),
+                    ISNULL(username, ''),
+                    ISNULL(password, ''),
+                    ISNULL(idRol, 0)
                 FROM Usuarios
+                WHERE ISNULL(activo, 1) = 1
                 ORDER BY nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -102,14 +104,16 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT 
                     u.idUsuario,
-                    u.nombre,
-                    u.username,
-                    u.password,
-                    u.idRol
+                    ISNULL(u.nombre, ''),
+                    ISNULL(u.username, ''),
+                    ISNULL(u.password, ''),
+                    ISNULL(u.idRol, 0)
                 FROM Usuarios u
                 INNER JOIN Roles r 
                     ON r.idRol = u.idRol
                 WHERE UPPER(r.nombre) = 'ALUMNO'
+                  AND ISNULL(u.activo, 1) = 1
+                  AND ISNULL(r.activo, 1) = 1
                 ORDER BY u.nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -140,10 +144,10 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     u.idUsuario,
-                    u.nombre,
-                    u.username,
-                    u.password,
-                    u.idRol
+                    ISNULL(u.nombre, ''),
+                    ISNULL(u.username, ''),
+                    ISNULL(u.password, ''),
+                    ISNULL(u.idRol, 0)
                 FROM Usuarios u
                 INNER JOIN DocenteAlumno da
                     ON da.idAlumno = u.idUsuario
@@ -151,6 +155,9 @@ namespace MathAdminApp.AccesoDatos
                     ON r.idRol = u.idRol
                 WHERE da.idDocente = @IdDocente
                   AND UPPER(r.nombre) = 'ALUMNO'
+                  AND ISNULL(u.activo, 1) = 1
+                  AND ISNULL(da.activo, 1) = 1
+                  AND ISNULL(r.activo, 1) = 1
                 ORDER BY u.nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -191,14 +198,16 @@ namespace MathAdminApp.AccesoDatos
                         nombre,
                         username,
                         password,
-                        idRol
+                        idRol,
+                        activo
                     )
                     VALUES
                     (
                         @Nombre,
                         @Username,
                         @Password,
-                        @IdRol
+                        @IdRol,
+                        1
                     );
 
                     SELECT SCOPE_IDENTITY();";
@@ -221,13 +230,15 @@ namespace MathAdminApp.AccesoDatos
                         (
                             idAlumno,
                             idTutor,
-                            grado
+                            grado,
+                            activo
                         )
                         VALUES
                         (
                             @IdAlumno,
                             NULL,
-                            NULL
+                            NULL,
+                            1
                         )";
 
                     using var comandoAlumno =
@@ -289,7 +300,7 @@ namespace MathAdminApp.AccesoDatos
             try
             {
                 string queryDocenteAlumno =
-                    "DELETE FROM DocenteAlumno WHERE idAlumno = @IdUsuario OR idDocente = @IdUsuario";
+                    "UPDATE DocenteAlumno SET activo = 0 WHERE idAlumno = @IdUsuario OR idDocente = @IdUsuario";
 
                 using var comandoDocenteAlumno =
                     new SqlCommand(queryDocenteAlumno, conexion, transaccion);
@@ -297,9 +308,8 @@ namespace MathAdminApp.AccesoDatos
                 comandoDocenteAlumno.Parameters.AddWithValue("@IdUsuario", idUsuario);
                 comandoDocenteAlumno.ExecuteNonQuery();
 
-                // Eliminar de Alumnos si existe
                 string queryAlumno =
-                    "DELETE FROM Alumnos WHERE idAlumno = @IdUsuario";
+                    "UPDATE Alumnos SET activo = 0 WHERE idAlumno = @IdUsuario";
 
                 using var comandoAlumno =
                     new SqlCommand(queryAlumno, conexion, transaccion);
@@ -308,9 +318,8 @@ namespace MathAdminApp.AccesoDatos
 
                 comandoAlumno.ExecuteNonQuery();
 
-                // Eliminar usuario
                 string queryUsuario =
-                    "DELETE FROM Usuarios WHERE idUsuario = @IdUsuario";
+                    "UPDATE Usuarios SET activo = 0 WHERE idUsuario = @IdUsuario";
 
                 using var comandoUsuario =
                     new SqlCommand(queryUsuario, conexion, transaccion);
@@ -343,7 +352,9 @@ namespace MathAdminApp.AccesoDatos
                 FROM Usuarios u
                 INNER JOIN Roles r
                     ON r.idRol = u.idRol
-                WHERE UPPER(r.nombre) = 'ALUMNO'";
+                WHERE UPPER(r.nombre) = 'ALUMNO'
+                  AND ISNULL(u.activo, 1) = 1
+                  AND ISNULL(r.activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 

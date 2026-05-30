@@ -25,6 +25,7 @@ namespace MathAdminApp.AccesoDatos
                     idTutor,
                     grado
                 FROM Alumnos
+                WHERE ISNULL(activo, 1) = 1
                 ORDER BY idAlumno";
 
             using var comando = new SqlCommand(query, conexion);
@@ -63,7 +64,8 @@ namespace MathAdminApp.AccesoDatos
                     idTutor,
                     grado
                 FROM Alumnos
-                WHERE idAlumno = @IdAlumno";
+                WHERE idAlumno = @IdAlumno
+                  AND ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 
@@ -99,18 +101,32 @@ namespace MathAdminApp.AccesoDatos
             conexion.Open();
 
             string query = @"
-                INSERT INTO Alumnos
-                (
-                    idAlumno,
-                    idTutor,
-                    grado
-                )
-                VALUES
-                (
-                    @IdAlumno,
-                    @IdTutor,
-                    @Grado
-                )";
+                IF EXISTS (SELECT 1 FROM Alumnos WHERE idAlumno = @IdAlumno)
+                BEGIN
+                    UPDATE Alumnos
+                    SET
+                        idTutor = @IdTutor,
+                        grado = @Grado,
+                        activo = 1
+                    WHERE idAlumno = @IdAlumno
+                END
+                ELSE
+                BEGIN
+                    INSERT INTO Alumnos
+                    (
+                        idAlumno,
+                        idTutor,
+                        grado,
+                        activo
+                    )
+                    VALUES
+                    (
+                        @IdAlumno,
+                        @IdTutor,
+                        @Grado,
+                        1
+                    )
+                END";
 
             using var comando = new SqlCommand(query, conexion);
 
@@ -174,7 +190,8 @@ namespace MathAdminApp.AccesoDatos
             conexion.Open();
 
             string query = @"
-                DELETE FROM Alumnos
+                UPDATE Alumnos
+                SET activo = 0
                 WHERE idAlumno = @IdAlumno";
 
             using var comando = new SqlCommand(query, conexion);
@@ -192,7 +209,7 @@ namespace MathAdminApp.AccesoDatos
             using var conexion = ConexionBD.ObtenerConexion();
             conexion.Open();
 
-            string query = "SELECT COUNT(*) FROM Alumnos";
+            string query = "SELECT COUNT(*) FROM Alumnos WHERE ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 

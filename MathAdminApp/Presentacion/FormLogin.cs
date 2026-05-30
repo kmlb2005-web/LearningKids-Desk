@@ -5,6 +5,7 @@
 
 using MathAdminApp.LogicaNegocio;
 using MathAdminApp.Modelos;
+using System.IO;
 
 namespace MathAdminApp.Presentacion
 {
@@ -72,7 +73,9 @@ namespace MathAdminApp.Presentacion
 
             PictureBox picLogo = new PictureBox
             {
-                Image = Image.FromFile("Resources/Logo.png"),
+                Image = Image.FromFile(
+                    Path.Combine(Application.StartupPath, "Resources", "Logo.png")
+                ),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Size = new Size(300, 120),
                 Location = new Point(70, 25),

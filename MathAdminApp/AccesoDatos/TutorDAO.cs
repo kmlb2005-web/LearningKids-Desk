@@ -25,6 +25,7 @@ namespace MathAdminApp.AccesoDatos
                     nombre,
                     correo
                 FROM Tutores
+                WHERE ISNULL(activo, 1) = 1
                 ORDER BY nombre";
 
             using var comando = new SqlCommand(query, conexion);
@@ -57,7 +58,8 @@ namespace MathAdminApp.AccesoDatos
                     nombre,
                     correo
                 FROM Tutores
-                WHERE idTutor = @IdTutor";
+                WHERE idTutor = @IdTutor
+                  AND ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 
@@ -92,7 +94,8 @@ namespace MathAdminApp.AccesoDatos
                     nombre,
                     correo
                 FROM Tutores
-                WHERE correo = @Correo";
+                WHERE correo = @Correo
+                  AND ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 
@@ -125,12 +128,14 @@ namespace MathAdminApp.AccesoDatos
                 INSERT INTO Tutores
                 (
                     nombre,
-                    correo
+                    correo,
+                    activo
                 )
                 VALUES
                 (
                     @Nombre,
-                    @Correo
+                    @Correo,
+                    1
                 )";
 
             using var comando = new SqlCommand(query, conexion);
@@ -174,7 +179,8 @@ namespace MathAdminApp.AccesoDatos
             conexion.Open();
 
             string query = @"
-                DELETE FROM Tutores
+                UPDATE Tutores
+                SET activo = 0
                 WHERE idTutor = @IdTutor";
 
             using var comando = new SqlCommand(query, conexion);
@@ -192,7 +198,7 @@ namespace MathAdminApp.AccesoDatos
             using var conexion = ConexionBD.ObtenerConexion();
             conexion.Open();
 
-            string query = "SELECT COUNT(*) FROM Tutores";
+            string query = "SELECT COUNT(*) FROM Tutores WHERE ISNULL(activo, 1) = 1";
 
             using var comando = new SqlCommand(query, conexion);
 

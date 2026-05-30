@@ -8,6 +8,7 @@ namespace MathAdminApp
             try
             {
                 ApplicationConfiguration.Initialize();
+                AccesoDatos.ConexionBD.AsegurarColumnasSoftDelete();
 
                 Application.Run(
                     new Presentacion.FormLogin()

@@ -9,5 +9,7 @@
         public string Descripcion { get; set; } = string.Empty;
 
         public int IdProyecto { get; set; }
+
+        public bool Activo { get; set; } = true;
     }
 }
