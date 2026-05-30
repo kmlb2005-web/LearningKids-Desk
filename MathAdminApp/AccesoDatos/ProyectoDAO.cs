@@ -23,11 +23,11 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT 
                     idProyecto,
-                    nombre,
-                    descripcion,
-                    grado,
-                    idCampo,
-                    creadoPor
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(grado, 0),
+                    ISNULL(idCampo, 0),
+                    ISNULL(creadoPor, 0)
                 FROM Proyectos
                 ORDER BY nombre";
 
@@ -60,11 +60,11 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idProyecto,
-                    nombre,
-                    descripcion,
-                    grado,
-                    idCampo,
-                    creadoPor
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(grado, 0),
+                    ISNULL(idCampo, 0),
+                    ISNULL(creadoPor, 0)
                 FROM Proyectos
                 WHERE creadoPor = @IdDocente
                 ORDER BY nombre";
@@ -101,11 +101,11 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT 
                     idProyecto,
-                    nombre,
-                    descripcion,
-                    grado,
-                    idCampo,
-                    creadoPor
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(grado, 0),
+                    ISNULL(idCampo, 0),
+                    ISNULL(creadoPor, 0)
                 FROM Proyectos
                 WHERE idProyecto = @IdProyecto";
 

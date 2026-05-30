@@ -15,6 +15,7 @@ namespace MathAdminApp.Presentacion
 
         private readonly PruebaBLL _pruebaBll = new();
         private readonly TemaBLL _temaBll = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Usuario _usuarioActual;
         private List<Tema> _temas = new();
 
@@ -292,6 +293,13 @@ namespace MathAdminApp.Presentacion
                 };
 
                 _pruebaBll.Agregar(prueba);
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Pruebas",
+                    "Alta",
+                    $"Agrego la prueba '{prueba.Titulo}' al tema '{tema.Nombre}'."
+                );
+
                 txtTitulo.Clear();
                 CargarPruebas(tema.IdTema);
                 MessageBox.Show("Prueba agregada correctamente.", "Exito",
@@ -325,6 +333,13 @@ namespace MathAdminApp.Presentacion
             try
             {
                 _pruebaBll.Eliminar(prueba.IdPrueba);
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Pruebas",
+                    "Eliminacion",
+                    $"Elimino la prueba '{prueba.Titulo}' (ID {prueba.IdPrueba})."
+                );
+
                 CmbTema_SelectedIndexChanged(null, EventArgs.Empty);
             }
             catch (Exception ex)

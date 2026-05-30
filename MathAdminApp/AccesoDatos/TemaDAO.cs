@@ -22,9 +22,9 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idTema,
-                    nombre,
-                    descripcion,
-                    idProyecto
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(idProyecto, 0)
                 FROM Temas
                 ORDER BY nombre";
 
@@ -55,9 +55,9 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     t.idTema,
-                    t.nombre,
-                    t.descripcion,
-                    t.idProyecto
+                    ISNULL(t.nombre, ''),
+                    ISNULL(t.descripcion, ''),
+                    ISNULL(t.idProyecto, 0)
                 FROM Temas t
                 INNER JOIN Proyectos p
                     ON p.idProyecto = t.idProyecto
@@ -94,9 +94,9 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idTema,
-                    nombre,
-                    descripcion,
-                    idProyecto
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(idProyecto, 0)
                 FROM Temas
                 WHERE idTema = @IdTema";
 
@@ -133,9 +133,9 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idTema,
-                    nombre,
-                    descripcion,
-                    idProyecto
+                    ISNULL(nombre, ''),
+                    ISNULL(descripcion, ''),
+                    ISNULL(idProyecto, 0)
                 FROM Temas
                 WHERE idProyecto = @IdProyecto
                 ORDER BY nombre";

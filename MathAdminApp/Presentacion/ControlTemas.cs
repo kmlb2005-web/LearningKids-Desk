@@ -26,6 +26,7 @@ namespace MathAdminApp.Presentacion
 
         private readonly TemaBLL _temaBLL = new();
         private readonly ProyectoBLL _proyectoBLL = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Usuario _usuarioActual;
 
         // =====================================================
@@ -570,6 +571,13 @@ namespace MathAdminApp.Presentacion
                 try
                 {
                     _temaBLL.EliminarTema(idTema);
+
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Temas",
+                        "Eliminacion",
+                        $"Elimino el tema '{nombre}' (ID {idTema})."
+                    );
 
                     CargarTemas();
 

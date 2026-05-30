@@ -25,9 +25,9 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idPrueba,
-                    titulo,
-                    idTema,
-                    creadoPor
+                    ISNULL(titulo, ''),
+                    ISNULL(idTema, 0),
+                    ISNULL(creadoPor, 0)
                 FROM Pruebas";
 
             if (idTema.HasValue)
@@ -73,9 +73,9 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     pr.idPrueba,
-                    pr.titulo,
-                    pr.idTema,
-                    pr.creadoPor
+                    ISNULL(pr.titulo, ''),
+                    ISNULL(pr.idTema, 0),
+                    ISNULL(pr.creadoPor, 0)
                 FROM Pruebas pr
                 INNER JOIN Temas t
                     ON t.idTema = pr.idTema

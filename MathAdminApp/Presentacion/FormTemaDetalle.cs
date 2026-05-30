@@ -16,6 +16,7 @@ namespace MathAdminApp.Presentacion
 
         private readonly TemaBLL _temaBLL = new();
         private readonly ProyectoBLL _proyectoBLL = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
 
         private readonly Tema? _tema;
         private readonly Usuario? _usuarioActual;
@@ -499,6 +500,13 @@ namespace MathAdminApp.Presentacion
 
                     _temaBLL.ActualizarTema(_tema);
 
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Temas",
+                        "Actualizacion",
+                        $"Actualizo el tema '{_tema.Nombre}' (ID {_tema.IdTema})."
+                    );
+
                     MessageBox.Show(
                         "Tema actualizado correctamente.",
                         "Éxito",
@@ -519,6 +527,13 @@ namespace MathAdminApp.Presentacion
                     };
 
                     _temaBLL.AgregarTema(nuevo);
+
+                    _bitacoraBLL.Registrar(
+                        _usuarioActual,
+                        "Temas",
+                        "Alta",
+                        $"Agrego el tema '{nuevo.Nombre}' al proyecto {nuevo.IdProyecto}."
+                    );
 
                     MessageBox.Show(
                         "Tema guardado correctamente.",

@@ -21,10 +21,10 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT 
                     idUsuario,
-                    nombre,
-                    username,
-                    password,
-                    idRol
+                    ISNULL(nombre, ''),
+                    ISNULL(username, ''),
+                    ISNULL(password, ''),
+                    ISNULL(idRol, 0)
                 FROM Usuarios
                 WHERE username = @Username
                   AND password = @Password";
@@ -64,10 +64,10 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT 
                     idUsuario,
-                    nombre,
-                    username,
-                    password,
-                    idRol
+                    ISNULL(nombre, ''),
+                    ISNULL(username, ''),
+                    ISNULL(password, ''),
+                    ISNULL(idRol, 0)
                 FROM Usuarios
                 ORDER BY nombre";
 
@@ -102,10 +102,10 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT 
                     u.idUsuario,
-                    u.nombre,
-                    u.username,
-                    u.password,
-                    u.idRol
+                    ISNULL(u.nombre, ''),
+                    ISNULL(u.username, ''),
+                    ISNULL(u.password, ''),
+                    ISNULL(u.idRol, 0)
                 FROM Usuarios u
                 INNER JOIN Roles r 
                     ON r.idRol = u.idRol
@@ -140,10 +140,10 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     u.idUsuario,
-                    u.nombre,
-                    u.username,
-                    u.password,
-                    u.idRol
+                    ISNULL(u.nombre, ''),
+                    ISNULL(u.username, ''),
+                    ISNULL(u.password, ''),
+                    ISNULL(u.idRol, 0)
                 FROM Usuarios u
                 INNER JOIN DocenteAlumno da
                     ON da.idAlumno = u.idUsuario

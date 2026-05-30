@@ -15,6 +15,7 @@ namespace MathAdminApp.Presentacion
 
         private readonly PreguntaBLL _preguntaBll = new();
         private readonly PruebaBLL _pruebaBll = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Usuario _usuarioActual;
         private List<Prueba> _pruebas = new();
 
@@ -310,7 +311,16 @@ namespace MathAdminApp.Presentacion
             var form = new FormPreguntaDetalle(prueba.IdPrueba);
 
             if (form.ShowDialog() == DialogResult.OK)
+            {
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Preguntas",
+                    "Alta",
+                    $"Agrego una pregunta a la prueba '{prueba.Titulo}' (ID {prueba.IdPrueba})."
+                );
+
                 CargarPreguntas(prueba.IdPrueba);
+            }
         }
 
         private void BtnEditar_Click(object? sender, EventArgs e)
@@ -325,7 +335,16 @@ namespace MathAdminApp.Presentacion
             var form = new FormPreguntaDetalle(pregunta.IdPrueba, pregunta);
 
             if (form.ShowDialog() == DialogResult.OK)
+            {
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Preguntas",
+                    "Actualizacion",
+                    $"Actualizo una pregunta de la prueba ID {pregunta.IdPrueba}."
+                );
+
                 CargarPreguntas(pregunta.IdPrueba);
+            }
         }
 
         private void BtnEliminar_Click(object? sender, EventArgs e)
@@ -349,6 +368,13 @@ namespace MathAdminApp.Presentacion
             try
             {
                 _preguntaBll.Eliminar(pregunta.IdPregunta);
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Preguntas",
+                    "Eliminacion",
+                    $"Elimino la pregunta '{pregunta.Texto}' (ID {pregunta.IdPregunta})."
+                );
+
                 CmbPrueba_SelectedIndexChanged(null, EventArgs.Empty);
             }
             catch (Exception ex)

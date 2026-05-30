@@ -20,6 +20,7 @@ namespace MathAdminApp.Presentacion
         private TextBox txtBuscar = null!;
 
         private readonly ProyectoBLL _bll = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Usuario _usuarioActual;
 
         // =====================================================
@@ -544,6 +545,13 @@ namespace MathAdminApp.Presentacion
             {
                 _bll.Eliminar(
                     proyecto.idProyecto
+                );
+
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Proyectos",
+                    "Eliminacion",
+                    $"Elimino el proyecto '{proyecto.nombre}' (ID {proyecto.idProyecto})."
                 );
 
                 CargarDatos();

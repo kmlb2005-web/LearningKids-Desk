@@ -16,6 +16,7 @@ namespace MathAdminApp.Presentacion
         private readonly ResultadoBLL _resultadoBll = new();
         private readonly UsuarioBLL _usuarioBll = new();
         private readonly PruebaBLL _pruebaBll = new();
+        private readonly BitacoraSistemaBLL _bitacoraBLL = new();
         private readonly Usuario _usuarioActual;
         private List<Usuario> _alumnos = new();
         private List<Prueba> _pruebas = new();
@@ -360,6 +361,13 @@ namespace MathAdminApp.Presentacion
             try
             {
                 _resultadoBll.EliminarResultado(resultado.IdResultado);
+                _bitacoraBLL.Registrar(
+                    _usuarioActual,
+                    "Resultados",
+                    "Eliminacion",
+                    $"Elimino el resultado ID {resultado.IdResultado} del alumno {resultado.IdAlumno}."
+                );
+
                 CargarResultados();
             }
             catch (Exception ex)

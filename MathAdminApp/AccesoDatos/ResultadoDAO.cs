@@ -22,10 +22,10 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idResultado,
-                    idAlumno,
-                    idPrueba,
-                    calificacion,
-                    fecha
+                    ISNULL(idAlumno, 0),
+                    ISNULL(idPrueba, 0),
+                    ISNULL(calificacion, 0),
+                    ISNULL(fecha, GETDATE())
                 FROM Resultados
                 ORDER BY fecha DESC";
 
@@ -57,10 +57,10 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     r.idResultado,
-                    r.idAlumno,
-                    r.idPrueba,
-                    r.calificacion,
-                    r.fecha
+                    ISNULL(r.idAlumno, 0),
+                    ISNULL(r.idPrueba, 0),
+                    ISNULL(r.calificacion, 0),
+                    ISNULL(r.fecha, GETDATE())
                 FROM Resultados r
                 INNER JOIN DocenteAlumno da
                     ON da.idAlumno = r.idAlumno
@@ -98,10 +98,10 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idResultado,
-                    idAlumno,
-                    idPrueba,
-                    calificacion,
-                    fecha
+                    ISNULL(idAlumno, 0),
+                    ISNULL(idPrueba, 0),
+                    ISNULL(calificacion, 0),
+                    ISNULL(fecha, GETDATE())
                 FROM Resultados
                 WHERE idResultado = @IdResultado";
 
@@ -142,10 +142,10 @@ namespace MathAdminApp.AccesoDatos
             string query = @"
                 SELECT
                     idResultado,
-                    idAlumno,
-                    idPrueba,
-                    calificacion,
-                    fecha
+                    ISNULL(idAlumno, 0),
+                    ISNULL(idPrueba, 0),
+                    ISNULL(calificacion, 0),
+                    ISNULL(fecha, GETDATE())
                 FROM Resultados
                 WHERE idAlumno = @IdAlumno
                 ORDER BY fecha DESC";
